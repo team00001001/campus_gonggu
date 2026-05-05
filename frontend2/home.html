@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동구매 메인 화면</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* 헤더 (로고 및 검색창) */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-bar input {
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .search-bar button {
+            padding: 0.5rem 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 메인 컨텐츠 영역 */
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 카드 그리드 레이아웃 */
+        .card-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 개별 카드 스타일 */
+        .card {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            text-decoration: none; /* 링크 밑줄 제거 */
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            background-color: #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+
+        .card-content {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .participants {
+            color: #6c757d;
+        }
+
+        /* 모집 상태 라벨 디자인 */
+        .status {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status.recruiting {
+            background-color: #e8f4fd;
+            color: #007bff;
+        }
+
+        .status.completed {
+            background-color: #f1f3f5;
+            color: #adb5bd;
+        }
+
+        /* 글 작성 플로팅 버튼 (우측 하단) */
+        .floating-write-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: crimson; /* 브랜드 컬러(그린) 유지 */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 199, 107, 0.4); /* 버튼 아래에 은은한 그림자 추가 */
+            text-decoration: none;
+            transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+            z-index: 1000; /* 다른 요소들(카드 등)보다 항상 위에 보이도록 설정 */
+        }
+
+        /* 마우스를 올렸을 때의 액션 */
+        .floating-write-btn:hover {
+            background-color: #00a157;
+            transform: translateY(-3px) scale(1.05); /* 살짝 위로 떠오르며 커지는 효과 */
+            box-shadow: 0 6px 16px rgba(0, 199, 107, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+ <header>
+        <div class="header-left">
+            <!-- 마이페이지 아이콘 버튼 (svg 활용) -->
+            <a href="home.html" class="mypage-btn" aria-label="마이페이지">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </a>
+            
+            <!-- 귀엽고 신뢰감 있는 텍스트 로고 -->
+            <a href="home.html" class="logo">
+                <span>공구</span>
+            </a>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" placeholder="어떤 상품을 찾으시나요?">
+            <button>검색</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-list">
+            <!-- 카드 1: 모집중 -->
+            <!-- 상세 페이지 이동은 href 속성에 링크를 걸어주면 됩니다 -->
+            <a href="detail.html" class="card">
+                <div class="card-image">상품 이미지</div>
+                <div class="card-content">
+                    <h3 class="product-name">제주 고당도 감귤 5kg</h3>
+                    <p class="price">15,900원</p>
+                    <div class="card-footer">
+                        <span class="participants">👥 3/5명</span>
+                        <span class="status recruiting">모집중</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 카드 2: 모집완료 -->
+            <a href="detail.html" class="card">
+                <div class="card-image">상품 이미지</div>
+                <div class="card-content">
+                    <h3 class="product-name">유기농 햇감자 3kg</h3>
+                    <p class="price">8,500원</p>
+                    <div class="card-footer">
+                        <span class="participants">👥 5/5명</span>
+                        <span class="status completed">모집완료</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 카드 3: 모집중 -->
+            <a href="detail.html" class="card">
+                <div class="card-image">상품 이미지</div>
+                <div class="card-content">
+                    <h3 class="product-name">1등급 한우 국거리 300g</h3>
+                    <p class="price">12,000원</p>
+                    <div class="card-footer">
+                        <span class="participants">👥 1/3명</span>
+                        <span class="status recruiting">모집중</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+    </main>
+<!-- 메인 컨텐츠 끝 -->
+    
+    <!-- 글 작성 플로팅 버튼 -->
+    <a href="write.html" class="floating-write-btn" aria-label="글 작성하기">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </a>
+
+</body>
+</html>

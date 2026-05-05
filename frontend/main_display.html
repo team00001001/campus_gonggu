@@ -7,21 +7,30 @@
   <link rel="stylesheet" href="style_main_display.css">
 </head>
 <body>
+<header class="header">
+  <div class="logo">Campus Gonggu</div>
 
-  <header class="header">
-    <div class="logo">Campus Gonggu</div>
-
+  <div class="header-right">
     <input 
       type="text" 
       class="search-box" 
       placeholder="공동구매 상품 검색"
     >
-  </header>
+    <a href="login.html" class="login-btn">로그인</a>
+  </div>
+</header>
 
   <main class="container">
-    <h1>공동구매 게시글</h1>
+    <div class="board-header">
+      <h1>공동구매 게시글</h1>
+      
+      <!-- 🌟 바로 이 부분! onclick="location.href='경로'" 를 추가합니다 -->
+      <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
+      
+    </div>
 
-    <section class="product-list">
+    <section class="product-list">
+      <!-- (아래 카드 목록들...) -->
       
       <!-- 첫 번째 상품 카드 -->
       <a href="detail.html" class="card-link">

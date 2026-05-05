@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동구매 글 작성</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* 상단 헤더 */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            color: #333;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #00c76b;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* 메인 폼 영역 */
+        main {
+            padding: 2rem;
+            max-width: 600px; /* 글 작성 폼은 시선 분산을 막기 위해 폭을 좁게 설정 */
+            margin: 0 auto;
+        }
+
+        .write-form {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* 입력칸 사이의 간격 */
+        }
+
+        /* 개별 입력 그룹 */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        /* 필수 입력 별표 */
+        .required::after {
+            content: " *";
+            color: #fa5252;
+        }
+
+        /* 입력칸 (Input, Textarea) 공통 스타일 */
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* 텍스트 영역 (상품 설명) 전용 설정 */
+        .input-group textarea {
+            resize: vertical; /* 세로로만 크기 조절 가능 */
+            min-height: 150px;
+        }
+
+        /* 입력칸 클릭(포커스) 시 효과 */
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #00c76b;
+            box-shadow: 0 0 0 3px rgba(0, 199, 107, 0.2); /* 브랜드 컬러의 은은한 테두리 빛 */
+        }
+
+        /* 가격, 인원 등 숫자가 들어가는 칸은 조금 더 짧게 처리 가능 (선택사항) */
+        .short-input input {
+            width: 50%;
+            min-width: 150px;
+        }
+
+        /* 등록하기 버튼 */
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #00c76b;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #00a157;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <header>
+        <a href="home.html" class="back-btn" aria-label="메인으로 돌아가기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+        <div class="header-title">공동구매 열기</div>
+    </header>
+
+    <main>
+        <!-- 글 작성 폼 -->
+        <form class="write-form" action="home.html" method="get">
+            
+            <!-- 1. 상품명 입력 -->
+            <div class="input-group">
+                <label for="productName" class="required">상품명</label>
+                <input type="text" id="productName" placeholder="예) 유기농 햇감자 3kg 나눌 분!" required>
+            </div>
+
+            <!-- 2. 가격 입력 -->
+            <div class="input-group short-input">
+                <label for="price" class="required">1인당 예상 가격 (원)</label>
+                <input type="number" id="price" placeholder="예) 8500" required>
+            </div>
+
+            <!-- 3. 모집 인원 입력 -->
+            <div class="input-group short-input">
+                <label for="people" class="required">모집 인원 (본인 포함)</label>
+                <input type="number" id="people" placeholder="예) 5" min="2" required>
+            </div>
+
+            <!-- 4. 수령 장소 입력 -->
+            <div class="input-group">
+                <label for="location" class="required">수령/배분 장소</label>
+                <input type="text" id="location" placeholder="예) 학생회관 앞 벤치, 기숙사 A동 로비" required>
+            </div>
+
+            <!-- 5. 이미지 URL 입력 -->
+            <div class="input-group">
+                <label for="imageUrl">상품 이미지 URL (선택)</label>
+                <input type="url" id="imageUrl" placeholder="http:// 또는 https:// 로 시작하는 이미지 주소">
+            </div>
+
+            <!-- 6. 상품 설명 입력 -->
+            <div class="input-group">
+                <label for="description" class="required">상세 설명</label>
+                <textarea id="description" placeholder="어떤 상품인지, 왜 같이 사고 싶은지 자세히 적어주세요!&#10;예) 배송비 아끼려고 공구 엽니다. 금요일 오후 6시에 수령하실 분 구해요." required></textarea>
+            </div>
+
+            <!-- 7. 등록 버튼 -->
+            <button type="submit" class="submit-btn">공동구매 등록하기</button>
+
+        </form>
+    </main>
+
+</body>
+</html>

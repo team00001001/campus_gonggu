@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동구매 글쓰기</title>
+    <style>
+        /* 기본 여백 초기화 및 폰트 설정 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: '맑은 고딕', sans-serif;
+        }
+
+        body {
+            background-color: #f5f6f8; /* 메인/상세 화면과 동일한 배경색 */
+            padding: 40px 20px;
+        }
+
+        /* 폼 전체를 감싸는 중앙 박스 */
+        .write-container {
+            max-width: 600px; /* 상세 화면보다 살짝 좁게 해서 시선 집중 */
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .write-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        /* 각 입력칸을 묶어주는 그룹 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 입력칸의 제목 (라벨) */
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        /* 입력칸 및 텍스트 구역 디자인 */
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        /* 🌟 [추가된 코드] 숫자 입력칸의 업다운 화살표 숨기기 🌟 */
+        /* 크롬, 사파리, 엣지용 */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* 파이어폭스용 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* 입력칸 클릭했을 때 테두리 색상 변화 */
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            border-color: #2f6fed;
+        }
+
+        /* 텍스트 구역(설명란) 전용 세팅 */
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical; /* 사용자가 세로로만 크기 조절 가능하게 */
+        }
+
+        /* 나란히 배치해야 하는 인원수와 가격 (반반 나누기) */
+        .half-group {
+            display: flex;
+            gap: 20px;
+        }
+        .half-group .form-group {
+            flex: 1; /* 똑같이 반반씩 차지 */
+        }
+
+        /* 등록하기 버튼 */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #2f6fed;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #1f57c8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="write-container">
+        <h1 class="write-header">새 공동구매 모집하기</h1>
+
+        <!-- 백엔드로 데이터를 보낼 폼 (나중에 action에 서버 주소를 넣으면 됨) -->
+        <form action="#" method="POST">
+            
+            <!-- 1. 상품명 -->
+            <div class="form-group">
+                <label for="productName">상품명</label>
+                <input type="text" id="productName" name="productName" placeholder="예: 생수 2L 12병 묶음" required>
+            </div>
+
+            <!-- 2. 가격 & 3. 모집 인원 (반반 나란히 배치) -->
+            <div class="half-group">
+                <div class="form-group">
+                    <label for="price">총 가격 (원)</label>
+                    <input type="number" id="price" name="price" placeholder="예: 12000" required>
+                </div>
+                <div class="form-group">
+                    <label for="maxPeople">모집 인원 (명)</label>
+                    <input type="number" id="maxPeople" name="maxPeople" placeholder="예: 4" required>
+                </div>
+            </div>
+
+            <!-- 4. 수령 장소 -->
+            <div class="form-group">
+                <label for="location">수령 장소</label>
+                <input type="text" id="location" name="location" placeholder="예: 공대 3호관 1층 로비" required>
+            </div>
+
+            <!-- 5. 이미지 URL -->
+            <div class="form-group">
+                <label for="imageUrl">상품 이미지 URL</label>
+                <input type="url" id="imageUrl" name="imageUrl" placeholder="http://... (이미지 링크를 넣어주세요)">
+            </div>
+
+            <!-- 6. 상품 설명 -->
+            <div class="form-group">
+                <label for="description">상세 설명</label>
+                <textarea id="description" name="description" placeholder="배송비 분담이나 픽업 시간 등 참여자들에게 알릴 내용을 자세히 적어주세요!" required></textarea>
+            </div>
+
+            <!-- 7. 등록 버튼 -->
+            <button type="submit" class="submit-btn">등록하기</button>
+            
+        </form>
+    </div>
+
+</body>
+</html>

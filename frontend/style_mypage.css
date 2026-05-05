@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f6f8;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.home-link {
+  text-decoration: none;
+  color: #2f6fed;
+  font-weight: bold;
+}
+
+.container {
+  padding: 40px;
+}
+
+.profile-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 36px;
+}
+
+.profile-card h1 {
+  margin: 0 0 10px;
+}
+
+.school-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #e8f3ff;
+  color: #2f6fed;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.trust-score {
+  text-align: center;
+}
+
+.trust-score span {
+  display: block;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.trust-score strong {
+  font-size: 36px;
+  color: #2f6fed;
+}
+
+.list-section {
+  margin-bottom: 40px;
+}
+
+.list-section h2 {
+  margin-bottom: 16px;
+}
+
+.gonggu-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.gonggu-card {
+  background-color: white;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.gonggu-card h3 {
+  margin-top: 0;
+}
+
+.gonggu-card p {
+  color: #555;
+}
+
+.gonggu-card span {
+  color: #2f6fed;
+  font-weight: bold;
+}

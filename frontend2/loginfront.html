@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 대학생 공동구매</title>
+    <style>
+        /* 기본 스타일 및 웹 폰트 적용 */
+        @import url('https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 💡 Light Crimson 테마 배경: 아주 연한 붉은빛(분홍빛) 그라데이션 */
+        body {
+            font-family: 'D2Coding', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            color: #333333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 로그인 박스 상단 라인 수정 */
+        .login-container {
+            /* 기존 속성들은 그대로 두고 border-top 색상만 변경 */
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(138, 21, 56, 0.08); /* 그림자 톤도 맞춰서 수정 */
+            width: 100%;
+            max-width: 400px;
+            border-top: 4px solid #8a1538; /* 더 깊고 진한 크림슨 레드 */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #8a1538; /* 크림슨 텍스트 */
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555555;
+        }
+
+        /* 밝은 테마 입력창 스타일 */
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #fafafa;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'D2Coding', 'Malgun Gothic', sans-serif;
+            color: #333333;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #8a1538;
+            box-shadow: 0 0 5px rgba(138, 21, 56, 0.2);
+            background-color: #ffffff;
+        }
+
+        /* 기본 버튼 (로그인) */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #8a1538; /* 밝고 강렬한 크림슨 */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #6b0f2a;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 서브 버튼 (회원가입) */
+        .btn-signup {
+            background-color: #ffffff;
+            border: 1px solid #8a1538;
+            color: #8a1538;
+            margin-top: 15px;
+        }
+
+        .btn-signup:hover {
+            background-color: #fdf0f3; /* 마우스 오버 시 아주 연한 빨간색 배경 */
+        }
+
+        /* 하단 옵션 (로그인 유지, 비밀번호 찾기) */
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            margin-top: 20px;
+            color: #777777;
+        }
+
+        .options label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .options a {
+            color: #8a1538;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .options a:hover {
+            color: #6b0f2a;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>LOGIN</h2>
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label for="user-id">학교 이메일</label>
+                <input type="text" id="user-id" placeholder="이메일 아이디 입력" required>
+            </div>
+
+            <div class="form-group">
+                <label for="user-pw">비밀번호</label>
+                <input type="password" id="user-pw" placeholder="비밀번호 입력" required>
+            </div>
+
+            <button type="submit" class="btn">로그인</button>
+        </form>
+
+        <!-- 회원가입 페이지 연결 -->
+        <button type="button" class="btn btn-signup" onclick="location.href='signup.html'">회원가입</button>
+
+        <div class="options">
+            <label><input type="checkbox"> 로그인 유지</label>
+            <a href="#">비밀번호를 잊으셨나요?</a>
+        </div>
+    </div>
+
+</body>
+</html>
