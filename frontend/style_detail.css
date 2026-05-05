@@ -1,0 +1,61 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f6f8;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.back-btn {
+  text-decoration: none;
+  color: #2f6fed;
+  font-weight: bold;
+}
+
+.container {
+  padding: 40px;
+}
+
+.detail-card {
+  background-color: white;
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.description {
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.detail-info p {
+  margin: 12px 0;
+}
+
+.join-btn {
+  margin-top: 24px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2f6fed;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.join-btn:hover {
+  background-color: #1f57c8;
+}

@@ -1,190 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공동구매 상세페이지</title>
-    <style>
-        /* 기본 여백 초기화 및 폰트 설정 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: '맑은 고딕', sans-serif;
-        }
-
-        body {
-            background-color: #f5f6f8; /* 아주 연한 회색 배경 */
-            padding: 20px;
-        }
-
-        /* 전체 내용을 감싸는 박스 */
-        .detail-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex; /* 이미지와 정보를 양옆으로 배치 */
-            gap: 30px;
-        }
-
-        /* 왼쪽: 상품 이미지 영역 */
-        .image-section {
-            flex: 1; /* 반반 차지 */
-        }
-        .product-image {
-            width: 100%;
-            height: 400px;
-            background-color: #e9ecef;
-            border-radius: 8px;
-            object-fit: cover;
-            /* 실제 이미지가 없을 때 엑스박스 대신 회색 배경을 보여주기 위함 */
-        }
-
-        /* 오른쪽: 상품 정보 영역 */
-        .info-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* 위아래로 내용 꽉 차게 분배 */
-        }
-
-        /* 신뢰 요소 뱃지 (학교 인증, 신뢰 점수) */
-        .trust-badges {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .badge {
-            background-color: #e3f2fd;
-            color: #1976d2;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .badge.score {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        /* 상품명 및 가격 */
-        .product-title {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .product-price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #e53935; /* 강조되는 빨간색 */
-            margin-bottom: 20px;
-        }
-
-        /* 상세 정보 리스트 (인원, 장소 등) */
-        .info-list {
-            list-style: none;
-            margin-bottom: 20px;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            padding: 15px 0;
-        }
-        .info-list li {
-            margin-bottom: 10px;
-            font-size: 15px;
-            color: #555;
-            display: flex;
-        }
-        .info-list li strong {
-            width: 80px; /* 라벨 너비 고정으로 깔끔하게 정렬 */
-            color: #222;
-        }
-
-        /* 상품 설명 텍스트 */
-        .product-desc {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        /* 참여하기 / 완료 버튼 */
-        .action-btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        /* 기본 상태: 참여 가능 (파란색) */
-        .btn-join {
-            background-color: #1976d2;
-        }
-        .btn-join:hover {
-            background-color: #1565c0;
-        }
-
-        /* 마감 상태: 참여 불가 (회색) */
-        .btn-closed {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공동구매 상세</title>
+  <link rel="stylesheet" href="style_detail.css">
 </head>
 <body>
 
-    <div class="detail-container">
-        <!-- 왼쪽 이미지 영역 -->
-        <div class="image-section">
-            <!-- 나중에 실제 이미지 경로(src)를 넣으면 됩니다 -->
-            <img src="" alt="상품 이미지" class="product-image">
-        </div>
+<header class="header">
+  <div class="logo">Campus Gonggu</div>
+  <a href="main_display.html" class="back-btn">목록으로</a>
+</header>
 
-        <!-- 오른쪽 정보 영역 -->
-        <div class="info-section">
-            <div>
-                <!-- 신뢰 요소 뱃지 -->
-                <div class="trust-badges">
-                    <span class="badge">🏫 학교 인증 완료</span>
-                    <span class="badge score">⭐ 신뢰 점수 95점</span>
-                </div>
+<main class="container">
+  <section class="detail-card" id="detail-card">
+    <p>불러오는 중...</p>
+  </section>
+</main>
 
-                <!-- 상품 기본 정보 -->
-                <h1 class="product-title">자취생 필수품 생수 2L 12병 공구합니다!</h1>
-                <div class="product-price">12,000원 <span style="font-size: 14px; color:#888; font-weight:normal;">(1인당 3,000원)</span></div>
-
-                <!-- 상세 정보 -->
-                <ul class="info-list">
-                    <li><strong>모집 인원</strong> 3명 / 4명 (1명 남음!)</li>
-                    <li><strong>수령 장소</strong> 공대 3호관 1층 로비</li>
-                    <li><strong>마감 일자</strong> 2026년 5월 10일</li>
-                </ul>
-
-                <!-- 상세 설명 -->
-                <p class="product-desc">
-                    배송비 아끼려고 같이 시키실 분 구해요!<br>
-                    도착하면 제가 공대 3호관으로 가져갈 테니 시간 맞춰서 찾아가시면 됩니다.<br>
-                    꼭 확실히 참여하실 분만 눌러주세요.
-                </p>
-            </div>
-
-            <!-- 하단 버튼 영역 -->
-            <!-- 현재는 '모집중' 상태를 가정하여 파란색 버튼 활성화. 
-                 나중에 인원이 꽉 차면 class를 'action-btn btn-closed'로 바꾸고 텍스트를 '모집 완료'로 변경하면 됩니다. -->
-            <button class="action-btn btn-join">참여하기 (1명 남음)</button>
-            
-            <!-- (참고) 모집 완료 시 사용할 버튼 모양
-            <button class="action-btn btn-closed" disabled>모집 완료</button>
-            -->
-        </div>
-    </div>
+<script src="detail.js"></script>
 
 </body>
 </html>
