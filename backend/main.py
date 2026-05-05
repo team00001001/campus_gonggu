@@ -1,9 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# 프론트와 백엔드 연결 허용
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -12,44 +11,48 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+posts = [
+    {
+        "id": 1,
+        "title": "과자 공동구매",
+        "description": "여러 종류 같이 구매해요",
+        "people": "3/5명",
+        "deadline": "오늘 마감",
+        "price": "10,000원",
+        "place": "학생회관 앞"
+    },
+    {
+        "id": 2,
+        "title": "생수 묶음",
+        "description": "2L 대용량 같이 구매",
+        "people": "2/4명",
+        "deadline": "내일 마감",
+        "price": "8,000원",
+        "place": "기숙사 로비"
+    },
+    {
+        "id": 3,
+        "title": "배달 공동주문",
+        "description": "최소금액 맞추기",
+        "people": "1/3명",
+        "deadline": "오늘 밤",
+        "price": "각자 정산",
+        "place": "정문 앞"
+    }
+]
+
 @app.get("/")
 def home():
     return {"message": "Backend running"}
 
 @app.get("/api/posts")
 def get_posts():
-    return [
-        {
-            "id": 1,
-            "title": "과자 공동구매",
-            "description": "여러 종류 같이 구매해요",
-            "people": "3/5명",
-            "deadline": "오늘 마감"
-        },
-        {
-            "id": 2,
-            "title": "생수 묶음",
-            "description": "2L 대용량 같이 구매",
-            "people": "2/4명",
-            "deadline": "내일 마감"
-        },
-        {
-            "id": 3,
-            "title": "배달 공동주문",
-            "description": "최소금액 맞추기",
-            "people": "1/3명",
-            "deadline": "오늘 밤"
-        }
-    ]
+    return posts
 
-@app.post("/api/login")
-def login():
-    return {
-        "success": True,
-        "message": "로그인 성공",
-        "user": {
-            "name": "홍길동",
-            "schoolVerified": True,
-            "trustScore": 92
-        }
-    }
+@app.get("/api/posts/{post_id}")
+def get_post_detail(post_id: int):
+    for post in posts:
+        if post["id"] == post_id:
+            return post
+
+    raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")

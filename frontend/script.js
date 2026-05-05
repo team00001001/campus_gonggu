@@ -5,7 +5,7 @@ fetch("http://127.0.0.1:8000/api/posts")
 
     data.forEach(post => {
       const cardLink = document.createElement("a");
-      cardLink.href = "detail.html";
+      cardLink.href = `detail.html?id=${post.id}`;
       cardLink.className = "card-link";
 
       const card = document.createElement("article");
