@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>믿구 - 마이페이지</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* 상단 헤더 (뒤로가기 + 타이틀) */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            color: #333;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #00c76b;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* 메인 컨텐츠 영역 */
+        main {
+            padding: 2rem;
+            max-width: 800px; /* 마이페이지는 화면이 너무 넓으면 어색하므로 폭을 줄임 */
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* 1. 프로필 카드 영역 */
+        .profile-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: #e8f4fd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 학교 인증 완료 라벨 */
+        .badge-verified {
+            font-size: 0.8rem;
+            font-weight: bold;
+            background-color: #e3f9ee;
+            color: #00c76b;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            vertical-align: middle;
+        }
+
+        /* 신뢰 점수 영역 */
+        .trust-score-box {
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .score-value {
+            color: #00c76b;
+            font-size: 1.1rem;
+        }
+
+        .score-bar-bg {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background-color: #00c76b;
+            border-radius: 5px;
+            /* 점수에 따라 width 조절 */
+        }
+
+        /* 2. 공동구매 목록 영역 (참여한/작성한) */
+        .list-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #2b2b2b;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .activity-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .activity-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transform: translateX(4px); /* 마우스를 올리면 오른쪽으로 살짝 이동하는 액션 */
+        }
+
+        .item-thumbnail {
+            width: 80px;
+            height: 80px;
+            background-color: #dee2e6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #6c757d;
+            flex-shrink: 0;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.4rem;
+            flex-grow: 1;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .item-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* 상태 라벨 (메인 화면과 통일) */
+        .status {
+            align-self: flex-start;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status.recruiting {
+            background-color: #e3f9ee;
+            color: #00c76b;
+        }
+
+        .status.completed {
+            background-color: #f1f3f5;
+            color: #adb5bd;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <header>
+        <a href="home.html" class="back-btn" aria-label="메인으로 돌아가기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+        <div class="header-title">마이페이지</div>
+    </header>
+
+    <main>
+        <!-- 1. 프로필 & 신뢰 점수 영역 -->
+        <section class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">🌱</div>
+                <div class="profile-info">
+                    <div class="user-name">
+                        김믿구 
+                        <span class="badge-verified">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            한국대학교 인증완료
+                        </span>
+                    </div>
+                    <p style="color: #6c757d; font-size: 0.95rem;">경영학과 21학번</p>
+                </div>
+            </div>
+
+            <!-- 신뢰 점수 -->
+            <div class="trust-score-box">
+                <div class="score-header">
+                    <span>나의 신뢰 온도</span>
+                    <span class="score-value">92°C</span>
+                </div>
+                <div class="score-bar-bg">
+                    <!-- width 퍼센티지로 점수 표현 -->
+                    <div class="score-bar-fill" style="width: 92%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 참여한 공동구매 목록 -->
+        <section class="list-section">
+            <h3>🙋‍♀️ 참여한 공동구매</h3>
+            <div class="activity-list">
+                <a href="detail.html" class="activity-item">
+                    <div class="item-thumbnail">이미지</div>
+                    <div class="item-details">
+                        <div class="item-title">유기농 햇감자 3kg</div>
+                        <div class="item-meta">결제금액: 8,500원 | 2023.10.25</div>
+                    </div>
+                    <span class="status completed">모집완료</span>
+                </a>
+
+                <a href="detail.html" class="activity-item">
+                    <div class="item-thumbnail">이미지</div>
+                    <div class="item-details">
+                        <div class="item-title">자취생 필수품 생수 2L 12병</div>
+                        <div class="item-meta">결제금액: 6,000원 | 2023.10.26</div>
+                    </div>
+                    <span class="status recruiting">모집중</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 3. 작성한 공동구매 목록 -->
+        <section class="list-section">
+            <h3>📝 작성한 공동구매</h3>
+            <div class="activity-list">
+                <a href="detail.html" class="activity-item">
+                    <div class="item-thumbnail">이미지</div>
+                    <div class="item-details">
+                        <div class="item-title">제주 고당도 감귤 5kg (총대 맵니다)</div>
+                        <div class="item-meta">목표인원: 5명 | 2023.10.27 작성</div>
+                    </div>
+                    <span class="status recruiting">모집중</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

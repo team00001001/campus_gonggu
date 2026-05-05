@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대학생 공동구매 - 회원가입</title>
+    <style>
+        /* 기본 스타일 및 웹 폰트 적용 */
+        @import url('https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'D2Coding', 'Malgun Gothic', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'D2Coding', 'Malgun Gothic', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .email-input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .email-input-group input {
+            flex: 1;
+        }
+
+        .email-input-group span {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .email-input-group select {
+            flex: 1;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* 인증번호 입력란 숨김 처리용 클래스 */
+        .hidden {
+            display: none;
+        }
+
+        .verification-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .verification-group input {
+            flex: 2;
+        }
+
+        .verification-group button {
+            flex: 1;
+        }
+
+        .msg {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .msg.error {
+            color: #dc3545;
+        }
+
+        .msg.success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="signup-container">
+        <h2>학생 인증 및 회원가입</h2>
+        <form id="signup-form">
+            
+            <!-- 학교 이메일 인증 -->
+            <div class="form-group">
+                <label>학교 이메일</label>
+                <div class="email-input-group">
+                    <input type="text" id="email-id" placeholder="이메일 아이디" required>
+                    <select id="email-domain">
+                        <option value="korea.ac.kr">@ korea.ac.kr</option>
+                        <option value="direct">직접 입력</option>
+                    </select>
+                </div>
+                <!-- 직접 입력 선택 시 나타나는 입력창 (기본 숨김) -->
+                <input type="text" id="custom-domain" class="hidden" placeholder="예: univ.ac.kr" style="margin-bottom: 10px;">
+                <button type="button" class="btn btn-secondary" id="btn-send-code">인증번호 전송</button>
+            </div>
+
+            <!-- 인증번호 입력 (처음엔 숨김 처리) -->
+            <div class="form-group hidden" id="verification-section">
+                <label>인증번호</label>
+                <div class="verification-group">
+                    <input type="text" id="verification-code" placeholder="6자리 숫자 입력">
+                    <button type="button" class="btn" id="btn-verify-code">확인</button>
+                </div>
+                <span class="msg" id="verification-msg"></span>
+            </div>
+
+            <!-- 닉네임 -->
+            <div class="form-group">
+                <label for="nickname">닉네임</label>
+                <input type="text" id="nickname" placeholder="사용할 닉네임을 입력하세요" required>
+            </div>
+
+            <!-- 비밀번호 -->
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" placeholder="8자리 이상 영문, 숫자 조합" required>
+            </div>
+
+            <!-- 비밀번호 확인 -->
+            <div class="form-group">
+                <label for="password-confirm">비밀번호 확인</label>
+                <input type="password" id="password-confirm" placeholder="비밀번호를 다시 입력하세요" required>
+                <span class="msg" id="pw-match-msg"></span>
+            </div>
+
+            <button type="submit" class="btn">가입 완료하기</button>
+        </form>
+    </div>
+
+    <script>
+        const emailDomainSelect = document.getElementById('email-domain');
+        const customDomainInput = document.getElementById('custom-domain');
+        const btnSendCode = document.getElementById('btn-send-code');
+        const verificationSection = document.getElementById('verification-section');
+        const btnVerifyCode = document.getElementById('btn-verify-code');
+        const verificationMsg = document.getElementById('verification-msg');
+        
+        const passwordInput = document.getElementById('password');
+        const passwordConfirmInput = document.getElementById('password-confirm');
+        const pwMatchMsg = document.getElementById('pw-match-msg');
+
+        // 1. 도메인 직접 입력 처리
+        emailDomainSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'direct') {
+                customDomainInput.classList.remove('hidden');
+                customDomainInput.focus();
+            } else {
+                customDomainInput.classList.add('hidden');
+            }
+        });
+
+        // 2. 인증번호 전송 버튼 클릭 로직
+        btnSendCode.addEventListener('click', () => {
+            const emailId = document.getElementById('email-id').value;
+            let domain = emailDomainSelect.value;
+            
+            if(domain === 'direct') {
+                domain = customDomainInput.value;
+            }
+
+            if (!emailId || !domain) {
+                alert('이메일을 정확히 입력해주세요.');
+                return;
+            }
+
+            // 간단한 학교 이메일 검증 로직 (.ac.kr 또는 .edu)
+            if (!domain.endsWith('.ac.kr') && !domain.endsWith('.edu')) {
+                alert('대학교 이메일(.ac.kr 또는 .edu)만 가입 가능합니다.');
+                return;
+            }
+
+            // 실제 구현 시에는 백엔드(Python 등)로 API 요청을 보내는 부분
+            alert(`${emailId}@${domain} 으로 인증번호가 발송되었습니다.`);
+            
+            // 인증번호 입력칸 표시
+            verificationSection.classList.remove('hidden');
+        });
+
+        // 3. 인증번호 확인 로직 (가상의 하드코딩된 로직)
+        btnVerifyCode.addEventListener('click', () => {
+            const code = document.getElementById('verification-code').value;
+            if (code === '123456') { // 임시 인증번호
+                verificationMsg.textContent = '인증이 완료되었습니다.';
+                verificationMsg.className = 'msg success';
+                document.getElementById('verification-code').readOnly = true;
+                btnVerifyCode.disabled = true;
+            } else {
+                verificationMsg.textContent = '인증번호가 일치하지 않습니다.';
+                verificationMsg.className = 'msg error';
+            }
+        });
+
+        // 4. 비밀번호 일치 여부 실시간 확인 로직
+        function checkPasswordMatch() {
+            const pw = passwordInput.value;
+            const pwConfirm = passwordConfirmInput.value;
+
+            if (pwConfirm === '') {
+                pwMatchMsg.textContent = '';
+                return;
+            }
+
+            if (pw === pwConfirm) {
+                pwMatchMsg.textContent = '비밀번호가 일치합니다.';
+                pwMatchMsg.className = 'msg success';
+            } else {
+                pwMatchMsg.textContent = '비밀번호가 일치하지 않습니다.';
+                pwMatchMsg.className = 'msg error';
+            }
+        }
+
+        passwordInput.addEventListener('input', checkPasswordMatch);
+        passwordConfirmInput.addEventListener('input', checkPasswordMatch);
+
+        // 5. 폼 제출 로직
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (passwordInput.value !== passwordConfirmInput.value) {
+                alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+                return;
+            }
+
+            // 백엔드로 데이터 전송 (AJAX/Fetch API) 부분
+            alert('회원가입이 완료되었습니다!');
+        });
+    </script>
+</body>
+</html>
