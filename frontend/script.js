@@ -1,17 +1,27 @@
-const products = [
-  { title: "생수 공동구매", current: 2, max: 5 },
-  { title: "사과 공동구매", current: 3, max: 5 }
-];
+fetch("http://127.0.0.1:8000/api/posts")
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("product-list");
 
-const list = document.getElementById("product-list");
+    data.forEach(post => {
+      const cardLink = document.createElement("a");
+      cardLink.href = "detail.html";
+      cardLink.className = "card-link";
 
-products.forEach(p => {
-  const div = document.createElement("div");
-  div.className = "card";
-  div.innerHTML = `
-    <h3>${p.title}</h3>
-    <p>${p.current}/${p.max}명</p>
-    <button>참여하기</button>
-  `;
-  list.appendChild(div);
-});
+      const card = document.createElement("article");
+      card.className = "product-card";
+
+      card.innerHTML = `
+        <h2>${post.title}</h2>
+        <p>${post.description}</p>
+        <div class="card-info">
+          <span>${post.people}</span>
+          <span>${post.deadline}</span>
+        </div>
+        <button>참여하기</button>
+      `;
+
+      cardLink.appendChild(card);
+      container.appendChild(cardLink);
+    });
+  });

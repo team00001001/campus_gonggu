@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style_main_display.css">
 </head>
 <body>
+
 <header class="header">
   <div class="logo">Campus Gonggu</div>
 
@@ -20,59 +21,19 @@
   </div>
 </header>
 
-  <main class="container">
-    <div class="board-header">
-      <h1>공동구매 게시글</h1>
-      
-      <!-- 🌟 바로 이 부분! onclick="location.href='경로'" 를 추가합니다 -->
-      <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
-      
-    </div>
+<main class="container">
 
-    <section class="product-list">
-      <!-- (아래 카드 목록들...) -->
-      
-      <!-- 첫 번째 상품 카드 -->
-      <a href="detail.html" class="card-link">
-        <article class="product-card">
-          <h2>과자 공동구매</h2>
-          <p>여러 종류 같이 구매해요</p>
-          <div class="card-info">
-            <span>3/5명</span>
-            <span>오늘 마감</span>
-          </div>
-          <button>참여하기</button>
-        </article>
-      </a>
+  <div class="board-header">
+    <h1>공동구매 게시글</h1>
+    <button class="write-btn" onclick="location.href='write.html'">글쓰기</button>
+  </div>
 
-      <!-- 두 번째 상품 카드 -->
-      <a href="detail.html" class="card-link">
-        <article class="product-card">
-          <h2>생수 묶음</h2>
-          <p>2L 대용량 같이 구매</p>
-          <div class="card-info">
-            <span>2/4명</span>
-            <span>내일 마감</span>
-          </div>
-          <button>참여하기</button>
-        </article>
-      </a>
+  <!-- 🔥 여기가 핵심 (비워둠) -->
+  <section class="product-list" id="product-list"></section>
 
-      <!-- 세 번째 상품 카드 -->
-      <a href="detail.html" class="card-link">
-        <article class="product-card">
-          <h2>배달 공동주문</h2>
-          <p>최소금액 맞추기</p>
-          <div class="card-info">
-            <span>1/3명</span>
-            <span>오늘 밤</span>
-          </div>
-          <button>참여하기</button>
-        </article>
-      </a>
+</main>
 
-    </section>
-  </main>
+<script src="script.js"></script>
 
 </body>
 </html>
