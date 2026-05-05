@@ -68,3 +68,28 @@ button {
 button:hover {
   background-color: #1f57c8;
 }
+
+.card-link {
+  text-decoration: none;   /* 밑줄 제거 */
+  color: inherit;          /* 글자 색 유지 */
+  display: block;          /* 카드 전체 클릭 가능 */
+}
+
+.card-link:hover .product-card {
+  transform: translateY(-5px); /* 살짝 올라오는 효과 */
+  transition: 0.2s;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.product-card {
+  transition: 0.2s;
+}
+
+.card-link:hover .product-card {
+  transform: translateY(-5px);
+}
