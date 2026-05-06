@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 상세 | KU GONGGU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 크림슨 컬러로 완벽 통일 (파란색, 그라데이션 제거) */
+            --ku-crimson: #8A1538;
+            --surface-color: #FFFFFF;
+            --text-dark: #333333; /* 텍스트도 살짝 부드럽게 */
+            --text-gray: #888888;
+            --border-light: #f0e6e6; /* 테두리도 배경에 맞게 따뜻한 톤으로 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 100px; 
+        }
+
+        .container {
+            max-width: 900px; /* 전체 너비도 살짝 줄여서 안정감 있게 */
+            margin: 0 auto;
+            padding: 0 24px 100px;
+        }
+
+        /* ==========================================
+           1. 상품 상단 요약 (정돈된 느낌으로 폰트 크기 축소)
+           ========================================== */
+        .product-hero {
+            display: flex;
+            gap: 32px;
+            background: var(--surface-color);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(138, 21, 56, 0.04); /* 그림자도 크림슨 톤으로 옅게 */
+            margin-bottom: 30px;
+        }
+
+        .product-image {
+            flex: 1;
+            max-width: 360px;
+            height: 360px;
+            border-radius: 12px;
+            object-fit: cover;
+            background-color: #f9f9f9;
+        }
+
+        .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 파란색 금지 -> 옅은 크림슨 배경으로 통일 */
+        .category-badge {
+            align-self: flex-start;
+            background-color: #ffeaea;
+            color: var(--ku-crimson);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 1.6rem; /* 2rem -> 1.6rem 축소 */
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .price-box {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .original-price {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            text-decoration: line-through;
+            margin-bottom: 4px;
+        }
+
+        .n-pay-price {
+            font-size: 1.6rem; /* 2rem -> 1.6rem 축소 */
+            font-weight: 700;
+            color: var(--ku-crimson);
+        }
+
+        .n-pay-price span {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+        /* 모집 현황 진행바 */
+        .progress-section {
+            margin-bottom: 24px;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .status-header .count {
+            color: var(--ku-crimson);
+            font-weight: 700;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px; /* 두께 축소 */
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--ku-crimson); /* 그라데이션 제거, 솔리드 컬러 */
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .deadline-text {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .join-btn {
+            margin-top: auto;
+            width: 100%;
+            background: var(--ku-crimson); /* 그라데이션 제거 */
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1rem; /* 폰트 축소 */
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .join-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ==========================================
+           2. 호스트 정보 및 상세 설명
+           ========================================== */
+        .details-section {
+            background: var(--surface-color);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(138, 21, 56, 0.04);
+        }
+
+        .host-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: #fffcfc;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-light);
+        }
+
+        .host-avatar {
+            width: 44px;
+            height: 44px;
+            background: var(--ku-crimson);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .host-details {
+            flex: 1;
+        }
+
+        .host-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        /* 파란색 금지 -> 크림슨 컬러로 통일, 매너온도 -> 크림슨 지수 */
+        .host-trust {
+            font-size: 0.85rem;
+            color: var(--ku-crimson);
+            font-weight: 500;
+        }
+
+        .content-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .content-body {
+            font-size: 0.95rem; /* 폰트 축소 */
+            line-height: 1.7;
+            color: #555;
+            white-space: pre-line;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 영역 -->
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <!-- 1. 상품 상단 영역 -->
+        <section class="product-hero">
+            <img src="none" alt="아이패드 필름" class="product-image">
+            
+            <div class="product-info">
+                <span class="category-badge">📚 스터디/전공</span>
+                <h1 class="title">아이패드 종이질감 필름 공동구매 (배송비 N빵)</h1>
+                
+                <div class="price-box">
+                    <div class="original-price">총 상품 금액 : 30,000원 + 배송비 3,000원</div>
+                    <div class="n-pay-price">인당 5,500원 <span>(6명 기준)</span></div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="status-header">
+                        <span>모집 현황</span>
+                        <span class="count">4명 / 6명</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" style="width: 66%;"></div> 
+                    </div>
+                    <div class="deadline-text">
+                        ⏳ 마감까지 2일 14시간 남음 (3월 25일 마감)
+                    </div>
+                </div>
+
+                <button class="join-btn" onclick="joinGroupBuy()">이 공구에 참여하기</button>
+            </div>
+        </section>
+
+        <!-- 2. 상세 설명 영역 -->
+        <section class="details-section">
+            <div class="host-info">
+                <div class="host-avatar">호</div>
+                <div class="host-details">
+                    <div class="host-name">호랑이학우 (경영학과 21)</div>
+                    <!-- 매너온도 -> 크림슨 지수로 변경 완료 -->
+                    <div class="host-trust">✓ 고대생 인증 완료 · 크림슨 지수 38.5도</div>
+                </div>
+            </div>
+
+            <h2 class="content-title">상세 내용</h2>
+            <div class="content-body">
+                안녕하세요! 아이패드 필름 교체할 때가 되었는데 배송비가 아까워서 공구원 모집합니다.
+                
+                📌 제품: 랩씨 종이질감 필름 (기종 상관없이 맞춰서 주문 가능합니다)
+                📌 수령 장소: 정경관 앞 벤치 또는 안암역 3번 출구
+                📌 수령 일시: 다음주 수요일(27일) 오후 3시 이후
+                
+                현재 4명 모였고 2명만 더 모이면 바로 결제하겠습니다. 
+                참여 원하시는 분들은 기종 꼭 남겨주세요!
+            </div>
+        </section>
+    </div>
+
+    <!-- 스크립트: 헤더 불러오기 및 로직 -->
+    <script>
+        fetch('header.html')
+            .then(res => {
+                if (!res.ok) throw new Error('header.html 파일을 찾을 수 없습니다.');
+                return res.text();
+            })
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                updateHeader(); 
+            })
+            .catch(err => console.error(err));
+
+        function updateHeader() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authButtons = document.querySelectorAll('.auth-only');
+            const guestButtons = document.querySelectorAll('.guest-only');
+
+            if (isLoggedIn) {
+                authButtons.forEach(btn => btn.style.display = 'inline-block');
+                guestButtons.forEach(btn => btn.style.display = 'none');
+            } else {
+                authButtons.forEach(btn => btn.style.display = 'none');
+                guestButtons.forEach(btn => btn.style.display = 'inline-block');
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if(e.target && e.target.id === 'logout-btn') {
+                localStorage.removeItem('isLoggedIn');
+                alert('로그아웃 되었습니다.');
+                location.reload();
+            }
+        });
+
+        function joinGroupBuy() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if(!isLoggedIn) {
+                alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+                location.href = "login.html"; 
+            } else {
+                if(confirm("정말로 이 공동구매에 참여하시겠습니까?")) {
+                    alert("참여가 완료되었습니다! 채팅방이 생성되었습니다.");
+                    location.href = "chat.html"; 
+                }
+            }
+        }
+    </script>
+</body>
+</html>
