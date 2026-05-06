@@ -7,12 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 크림슨 컬러로 완벽 통일 (파란색, 그라데이션 제거) */
+            /* 메인 컬러 */
             --ku-crimson: #8A1538;
             --surface-color: #FFFFFF;
-            --text-dark: #333333; /* 텍스트도 살짝 부드럽게 */
+            --text-dark: #333333; 
             --text-gray: #888888;
-            --border-light: #f0e6e6; /* 테두리도 배경에 맞게 따뜻한 톤으로 */
+            --border-light: #f0e6e6; 
+
+            /* 카테고리 파스텔 톤 (main_login.html 기준) */
+            --color-food: #FFF3E0;
+            --color-living: #E3F2FD;
+            --color-study: #E8F5E9;
+            --color-etc: #F3E5F5;
         }
 
         * {
@@ -31,13 +37,13 @@
         }
 
         .container {
-            max-width: 900px; /* 전체 너비도 살짝 줄여서 안정감 있게 */
+            max-width: 900px; 
             margin: 0 auto;
             padding: 0 24px 100px;
         }
 
         /* ==========================================
-           1. 상품 상단 요약 (정돈된 느낌으로 폰트 크기 축소)
+           1. 상품 상단 요약
            ========================================== */
         .product-hero {
             display: flex;
@@ -45,7 +51,7 @@
             background: var(--surface-color);
             padding: 32px;
             border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(138, 21, 56, 0.04); /* 그림자도 크림슨 톤으로 옅게 */
+            box-shadow: 0 4px 20px rgba(138, 21, 56, 0.04); 
             margin-bottom: 30px;
         }
 
@@ -64,20 +70,33 @@
             flex-direction: column;
         }
 
-        /* 파란색 금지 -> 옅은 크림슨 배경으로 통일 */
+        .badge-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* 뱃지 공통 스타일 */
         .category-badge {
-            align-self: flex-start;
-            background-color: #ffeaea;
-            color: var(--ku-crimson);
             padding: 5px 10px;
             border-radius: 8px;
             font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 10px;
         }
 
+        /* 파란색 금지 취소! main_login의 파스텔톤 적용 */
+        .tag-hot { background-color: #FFF0F0; color: #FF4B4B; }
+        .tag-official { background-color: #F0F7FF; color: #007AFF; }
+        
+        /* 카테고리 파스텔 톤 뱃지 */
+        .tag-study { background-color: var(--color-study); color: #2E7D32; } /* 스터디/전공: 파스텔 그린 */
+        .tag-food { background-color: var(--color-food); color: #E65100; } /* 식재료: 파스텔 오렌지 */
+        .tag-living { background-color: var(--color-living); color: #1565C0; } /* 자취/생필품: 파스텔 블루 */
+        .tag-etc { background-color: var(--color-etc); color: #6A1B9A; } /* 기타: 파스텔 퍼플 */
+
         .title {
-            font-size: 1.6rem; /* 2rem -> 1.6rem 축소 */
+            font-size: 1.6rem; 
             font-weight: 700;
             line-height: 1.35;
             margin-bottom: 12px;
@@ -98,7 +117,7 @@
         }
 
         .n-pay-price {
-            font-size: 1.6rem; /* 2rem -> 1.6rem 축소 */
+            font-size: 1.6rem; 
             font-weight: 700;
             color: var(--ku-crimson);
         }
@@ -130,7 +149,7 @@
 
         .progress-bar-bg {
             width: 100%;
-            height: 8px; /* 두께 축소 */
+            height: 8px; 
             background-color: #f0f0f0;
             border-radius: 8px;
             overflow: hidden;
@@ -139,7 +158,7 @@
 
         .progress-fill {
             height: 100%;
-            background: var(--ku-crimson); /* 그라데이션 제거, 솔리드 컬러 */
+            background: var(--ku-crimson); 
             border-radius: 8px;
             transition: width 0.5s ease;
         }
@@ -153,11 +172,11 @@
         .join-btn {
             margin-top: auto;
             width: 100%;
-            background: var(--ku-crimson); /* 그라데이션 제거 */
+            background: var(--ku-crimson); 
             color: white;
             border: none;
             padding: 16px;
-            font-size: 1rem; /* 폰트 축소 */
+            font-size: 1rem; 
             font-weight: 600;
             border-radius: 12px;
             cursor: pointer;
@@ -213,11 +232,10 @@
             margin-bottom: 2px;
         }
 
-        /* 파란색 금지 -> 크림슨 컬러로 통일, 매너온도 -> 크림슨 지수 */
         .host-trust {
             font-size: 0.85rem;
-            color: var(--ku-crimson);
-            font-weight: 500;
+            color: #007AFF; /* 여기서도 파란색 복구 */
+            font-weight: 600;
         }
 
         .content-title {
@@ -229,7 +247,7 @@
         }
 
         .content-body {
-            font-size: 0.95rem; /* 폰트 축소 */
+            font-size: 0.95rem; 
             line-height: 1.7;
             color: #555;
             white-space: pre-line;
@@ -248,7 +266,13 @@
             <img src="none" alt="아이패드 필름" class="product-image">
             
             <div class="product-info">
-                <span class="category-badge">📚 스터디/전공</span>
+                <!-- 태그 묶음(badge-group) -->
+                <div class="badge-group">
+                    <span class="category-badge tag-hot">🔥 마감임박</span>
+                    <span class="category-badge tag-official">✓ 신뢰도 인증</span>
+                    <span class="category-badge tag-study">📚 스터디/전공</span>
+                </div>
+                
                 <h1 class="title">아이패드 종이질감 필름 공동구매 (배송비 N빵)</h1>
                 
                 <div class="price-box">
@@ -259,10 +283,10 @@
                 <div class="progress-section">
                     <div class="status-header">
                         <span>모집 현황</span>
-                        <span class="count">4명 / 6명</span>
+                        <span class="count">24명 / 30명</span>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-fill" style="width: 66%;"></div> 
+                        <div class="progress-fill" style="width: 80%;"></div> 
                     </div>
                     <div class="deadline-text">
                         ⏳ 마감까지 2일 14시간 남음 (3월 25일 마감)
@@ -279,7 +303,6 @@
                 <div class="host-avatar">호</div>
                 <div class="host-details">
                     <div class="host-name">호랑이학우 (경영학과 21)</div>
-                    <!-- 매너온도 -> 크림슨 지수로 변경 완료 -->
                     <div class="host-trust">✓ 고대생 인증 완료 · 크림슨 지수 38.5도</div>
                 </div>
             </div>
