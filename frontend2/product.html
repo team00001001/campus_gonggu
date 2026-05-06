@@ -329,7 +329,7 @@
             if(e.target && e.target.id === 'logout-btn') {
                 localStorage.removeItem('isLoggedIn');
                 alert('로그아웃 되었습니다.');
-                location.reload();
+                location.href = 'main_login.html'; 
             }
         });
 
