@@ -1,0 +1,30 @@
+<!-- fakelogin.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 | 고대공구</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f7f8fa; }
+        .login-box { background: white; padding: 50px; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+        h2 { color: #8A1538; margin-bottom: 20px; }
+        button { width: 100%; padding: 15px; background: #8A1538; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>KU GONGGU</h2>
+        <p style="margin-bottom: 20px; color: #666;">임시 로그인 페이지입니다.</p>
+        <button onclick="fakeLoginAction()">로그인 하기</button>
+    </div>
+
+    <script>
+        function fakeLoginAction() {
+            // 1. 로그인 성공 증표 저장
+            localStorage.setItem('isLoggedIn', 'true');
+            // 2. 메인 화면으로 이동
+            location.href = 'main_login.html'; 
+        }
+    </script>
+</body>
+</html>
