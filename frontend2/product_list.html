@@ -162,61 +162,10 @@
 <!-- 2. 대형 검색창 (메인과 통일) -->
 <section class="search-hero">
     <div class="search-box-wrapper">
-        <input type="text" id="main-search" placeholder="어떤 물품을 찾고 계신가요? (ex. 아이패드)" value="아이패드">
+        <input type="text" id="main-search" placeholder="어떤 물품을 찾고 계신가요? (ex. 아이패드)">
     </div>
 </section>
-
-<!-- 3. 검색 결과 목록 -->
-<main class="container">
-    <div class="result-info">
-        <span>'아이패드'</span> 검색 결과입니다.
-    </div>
-
-    <div class="product-grid">
-        <!-- 상품 1 -->
-        <div class="product-card">
-            <div class="img-area">📚</div>
-            <div class="card-body">
-                <div class="category-tag">전공 / 문구</div>
-                <div class="product-title">아이패드 프로 M4 11인치 실버 - 같이 사실 분 계신가요?</div>
-                <div class="card-footer">
-                    <span class="price">1,450,000원</span>
-                    <span class="badge">모집중</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 상품 2 -->
-        <div class="product-card">
-            <div class="img-area">🍎</div>
-            <div class="card-body">
-                <div class="category-tag">식재료 / 배달</div>
-                <div class="product-title">아침 정기배송 사과 공동구매 (고대 정문 직거래)</div>
-                <div class="card-footer">
-                    <span class="price">1,500원</span>
-                    <span class="badge">마감임박</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 상품 3 -->
-        <div class="product-card">
-            <div class="img-area">📦</div>
-            <div class="card-body">
-                <div class="category-tag">기타 물품</div>
-                <div class="product-title">다이소 리빙박스 10개 묶음 대량구매 하실 분</div>
-                <div class="card-footer">
-                    <span class="price">2,000원</span>
-                    <span class="badge">2명 더 필요</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<!-- 플로팅 글쓰기 버튼 (auth-only 클래스 추가하여 함께 제어) -->
-<a href="writefront.html" class="write-btn auth-only" style="display: none;">✎</a>
-
+<!--잠시 비워두기-->
 <script>
     // 1. 페이지 로드 시 헤더 가져오기
     fetch('header.html')
@@ -263,5 +212,20 @@
         }
     });
 </script>
+
+<!-- 메인 콘텐츠 영역 (이 부분을 수정해주세요!) -->
+<main class="container">
+    <!-- 검색 결과 텍스트가 표시될 곳 -->
+    <div id="resultText" class="result-info" style="display: none;"></div>
+    
+    <!-- 카드가 나열될 그리드 상자 (class="product-grid" 적용 완료) -->
+    <div id="roomGrid" class="product-grid">
+        <!-- 자바스크립트가 여기에 카드를 채워 넣습니다 -->
+    </div>
+</main>
+
+<!-- 파일 맨 아래에 추가 -->
+<script src="script.js"></script>
+
 </body>
 </html>
