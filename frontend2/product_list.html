@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU GONGGU - 검색 결과</title>
+    <!-- Pretendard 폰트 적용 (이미지 내 폰트와 가장 유사) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <style>
+        :root {
+            --main-burgundy: #8A1538; /* 고대 버건디 */
+            --bg-light-gray: #F8F9FA; /* 검색창 영역 배경색 */
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            margin: 0 auto;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 1. 공통 헤더가 들어갈 영역 */
+        #header-placeholder {
+            width: 100%;
+        }
+
+        /* 2. 대형 검색창 섹션 (메인 화면 스타일 계승) */
+        .search-hero {
+            background-color: var(--bg-light-gray);
+            padding: 120px 60px;
+            text-align: center;
+        }
+
+        .search-box-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box-wrapper input {
+            width: 100%;
+            padding: 22px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 40px; /* 메인의 부드러운 둥근 처리 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .search-box-wrapper input:focus {
+            box-shadow: 0 4px 25px rgba(138, 21, 56, 0.15);
+        }
+
+        /* 3. 메인 콘텐츠 컨테이너 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px;
+        }
+
+        .result-info {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        .result-info span {
+            color: var(--main-burgundy);
+        }
+
+        /* 4. 상품 그리드 레이아웃 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 5. 상품 카드 디자인 (이미지 하단 카테고리 카드 느낌) */
+        .product-card {
+            background: #fff;
+            border-radius: 24px; /* 메인의 둥근 카드 스타일 */
+            border: 1px solid #f0f0f0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--main-burgundy);
+        }
+
+        .img-area {
+            width: 100%;
+            height: 220px;
+            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .card-body {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-tag {
+            font-size: 14px;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #222;
+            word-break: keep-all;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f9f9f9;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .badge {
+            background-color: #FFF0F3;
+            color: var(--main-burgundy);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<!-- 1. 공통 헤더가 삽입될 위치 (이게 빠져있어서 안 떴을 거예요!) -->
+<div id="header-placeholder"></div>
+
+<!-- 2. 대형 검색창 (메인과 통일) -->
+<section class="search-hero">
+    <div class="search-box-wrapper">
+        <input type="text" id="main-search" placeholder="어떤 물품을 찾고 계신가요? (ex. 아이패드)" value="아이패드">
+    </div>
+</section>
+
+<!-- 3. 검색 결과 목록 -->
+<main class="container">
+    <div class="result-info">
+        <span>'아이패드'</span> 검색 결과입니다.
+    </div>
+
+    <div class="product-grid">
+        <!-- 상품 1 -->
+        <div class="product-card">
+            <div class="img-area">📚</div>
+            <div class="card-body">
+                <div class="category-tag">전공 / 문구</div>
+                <div class="product-title">아이패드 프로 M4 11인치 실버 - 같이 사실 분 계신가요?</div>
+                <div class="card-footer">
+                    <span class="price">1,450,000원</span>
+                    <span class="badge">모집중</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 상품 2 -->
+        <div class="product-card">
+            <div class="img-area">🍎</div>
+            <div class="card-body">
+                <div class="category-tag">식재료 / 배달</div>
+                <div class="product-title">아침 정기배송 사과 공동구매 (고대 정문 직거래)</div>
+                <div class="card-footer">
+                    <span class="price">1,500원</span>
+                    <span class="badge">마감임박</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 상품 3 -->
+        <div class="product-card">
+            <div class="img-area">📦</div>
+            <div class="card-body">
+                <div class="category-tag">기타 물품</div>
+                <div class="product-title">다이소 리빙박스 10개 묶음 대량구매 하실 분</div>
+                <div class="card-footer">
+                    <span class="price">2,000원</span>
+                    <span class="badge">2명 더 필요</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 플로팅 글쓰기 버튼 (auth-only 클래스 추가하여 함께 제어) -->
+<a href="writefront.html" class="write-btn auth-only" style="display: none;">✎</a>
+
+<script>
+    // 1. 페이지 로드 시 헤더 가져오기
+    fetch('header.html')
+        .then(res => {
+            if (!res.ok) throw new Error('header.html을 찾을 수 없습니다.');
+            return res.text();
+        })
+        .then(data => {
+            // 헤더 삽입
+            const placeholder = document.getElementById('header-placeholder');
+            if (placeholder) {
+                placeholder.innerHTML = data;
+                // 삽입 직후 버튼 상태 업데이트
+                updateHeader();
+            }
+        })
+        .catch(err => console.error(err));
+
+    // 2. 로그인 상태에 따라 버튼 가리기/보여주기
+    function updateHeader() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        
+        // 헤더 안의 요소들과 플로팅 버튼(auth-only) 모두 찾기
+        const authElements = document.querySelectorAll('.auth-only');
+        const guestElements = document.querySelectorAll('.guest-only');
+
+        if (isLoggedIn) {
+            authElements.forEach(el => el.style.display = 'inline-block');
+            guestElements.forEach(el => el.style.display = 'none');
+        } else {
+            authElements.forEach(el => el.style.display = 'none');
+            guestElements.forEach(el => el.style.display = 'inline-block');
+        }
+    }
+
+    // 3. 로그아웃 기능 (이벤트 위임)
+    document.addEventListener('click', function(e) {
+        // 클릭된 요소가 logout-btn이거나 그 자식 요소일 경우 처리
+        const logoutBtn = e.target.closest('#logout-btn');
+        if(logoutBtn) {
+            localStorage.removeItem('isLoggedIn');
+            alert('로그아웃 되었습니다.');
+            location.href = 'main_beforelogin.html'; 
+        }
+    });
+</script>
+</body>
+</html>
