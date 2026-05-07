@@ -1,0 +1,51 @@
+
+<!-- 다이나믹 히어로 섹션 -->
+        <section class="hero-section">
+            <div class="hero-text-area">
+                <span class="hero-badge">🔥 실시간 트렌드</span>
+                
+                <h2 class="hero-main-text" id="hero-main">
+                    필요한 물건,<br>
+                    고대생끼리 <span>스마트하게.</span>
+                </h2>
+                
+                <p class="hero-sub-text" id="hero-sub">배달비 절약부터 대량구매 할인까지. 학우들과 함께하세요!</p>
+                
+                <div class="search-input-box">
+                    <input type="text" id="hero-search-input" placeholder="하고 싶은 말이 있나요?">
+                </div>
+            </div>
+            <div class="hero-image-area"></div>
+        </section>
+
+<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('hero-search-input');
+                const mainText = document.getElementById('hero-main');
+                const subText = document.getElementById('hero-sub');
+
+                // 요청하신 기본 문구 저장
+                const defaultMainHTML = `
+                    필요한 물건,<br>
+                    고대생끼리 <span>스마트하게.</span>
+                `;
+                const defaultSubHTML = `배달비 절약부터 대량구매 할인까지. 학우들과 함께하세요!`;
+
+                // 검색창 입력 이벤트 리스너
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        const inputText = e.target.value;
+
+                        if (inputText.trim() !== '') {
+                            // 1. 텍스트가 입력되면 main-text에 반영하고 sub-text는 비움
+                            mainText.textContent = inputText;
+                            subText.textContent = '';
+                        } else {
+                            // 2. 텍스트를 모두 지우면 원래 기본 문구로 복구
+                            mainText.innerHTML = defaultMainHTML;
+                            subText.innerHTML = defaultSubHTML;
+                        }
+                    }
+                });
+            });
+        </script>
