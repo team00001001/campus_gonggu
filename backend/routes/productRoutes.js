@@ -41,21 +41,21 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
 
     const {
-        title,
-        category,
-        targetCount,
-        price,
-        duration,
-        location,
-        imageUrl,
-        chatUrl,
-        description
+    title,
+    category,
+    targetCount,
+    price,
+    duration,
+    location,
+    imageUrl,
+    chatUrl,
+    description
     } = req.body;
 
     const sql = `
-        INSERT INTO products
-        (title, category, targetCount, price, duration, location, imageUrl, chatUrl, description)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO products
+    (title, category, targetCount, price, duration, location, imageUrl, chatUrl, description)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
