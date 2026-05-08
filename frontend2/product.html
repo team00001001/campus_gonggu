@@ -534,14 +534,22 @@
         function joinGroupBuy() {
             localStorage.setItem('isLoggedIn', 'true'); // 개발용 강제 로그인 처리
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('id');
+
+            if (!productId) {
+                alert('상품 ID가 없습니다.');
+                return;
+            }
             
-            if(!isLoggedIn) {
+            if (!isLoggedIn) {
                 alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
                 location.href = "login.html"; 
             } else {
-                if(confirm("정말로 이 공동구매에 참여하시겠습니까?\n참여 후 취소는 어려울 수 있습니다.")) {
+                if (confirm("정말로 이 공동구매에 참여하시겠습니까?\n참여 후 취소는 어려울 수 있습니다.")) {
                     alert("참여가 완료되었습니다! 호스트와의 채팅방으로 이동합니다.");
-                    location.href = "chat.html";
+                    location.href = `chat.html?id=${productId}`;
                 }
             }
         }

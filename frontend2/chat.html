@@ -266,7 +266,7 @@
             <h1 class="chat-title">아이패드 필름 공구<br>실시간 채팅방</h1>
             <p class="chat-desc">호스트 및 다른 학우들과<br>입금 및 수령 장소를 조율해보세요.</p>
 
-            <a href="https://open.kakao.com/o/example" target="_blank" class="enter-btn">
+            <a href="#" class="enter-btn" id="kakao-chat-btn">
                 <svg viewBox="0 0 24 24" fill="#191919">
                     <path d="M12 3C6.477 3 2 6.48 2 10.78c0 2.747 1.832 5.153 4.603 6.548l-1.168 4.275c-.105.385.344.69.664.477l5.12-3.398c.253.024.51.038.771.038 5.523 0 10-3.48 10-7.78S17.523 3 12 3z"/>
                 </svg>
@@ -294,23 +294,36 @@
 
         // 2. products.json 데이터를 불러와 화면 업데이트하기
         if (productId) {
-            fetch('products.json')
+            fetch('http://localhost:3000/products')
                 .then(response => {
                     if (!response.ok) throw new Error('네트워크 응답이 정상이 아닙니다.');
                     return response.json();
                 })
                 .then(products => {
                     // ID가 일치하는 상품 찾기
-                    const product = products.find(p => p.id === productId);
-
+                   const product = products.find(p => p.id == productId);
                     if (product) {
                         // 제목 업데이트
                         const chatTitle = document.querySelector('.chat-title');
                         chatTitle.innerHTML = `${product.title}<br>실시간 채팅방`;
 
                         // 오픈 채팅방 링크 업데이트
-                        const enterBtn = document.querySelector('.enter-btn');
-                        enterBtn.href = product.chatUrl;
+                        // 오픈 채팅방 링크 업데이트
+const enterBtn = document.getElementById('kakao-chat-btn');
+
+                        enterBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+
+                            console.log('상품:', product);
+                            console.log('카카오 링크:', product.chatUrl);
+
+                            if (!product.chatUrl || product.chatUrl.trim() === '') {
+                                alert('등록된 오픈채팅방 링크가 없습니다.');
+                                return;
+                            }
+
+                            location.href = product.chatUrl;
+                        });
 
                         // 뒤로가기 링크 업데이트 (해당 상품 상세 페이지로)
                         const backLink = document.querySelector('.back-link');
