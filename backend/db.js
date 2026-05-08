@@ -1,19 +1,16 @@
 const mysql = require('mysql2');
 
-const db = mysql.createConnection({
-    host: '127.0.0.1',
-    port: 3306,
+const db = mysql.createPool({
+    host: 'turntable.proxy.rlwy.net',
     user: 'root',
-    password: 'uichan1125',
-    database: 'campus_gonggu'
+    password: 'wsxOYdQguktaHckZoyESufWdxDoIKnFH',
+    database: 'railway',
+    port: 42253,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-db.connect((err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log('MySQL 연결 성공!');
-    }
-});
+console.log('Railway MySQL Pool 생성 완료!');
 
 module.exports = db;
