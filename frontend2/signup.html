@@ -302,16 +302,50 @@
         passwordConfirmInput.addEventListener('input', checkPasswordMatch);
 
         // 5. 폼 제출 로직
-        document.getElementById('signup-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            if (passwordInput.value !== passwordConfirmInput.value) {
-                alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
-                return;
-            }
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            // 백엔드로 데이터 전송 (AJAX/Fetch API) 부분
-            alert('회원가입이 완료되었습니다!');
+    if (passwordInput.value !== passwordConfirmInput.value) {
+        alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+        return;
+    }
+
+    const emailId = document.getElementById('email-id').value;
+    let domain = emailDomainSelect.value;
+
+    if (domain === 'direct') {
+        domain = customDomainInput.value;
+    }
+
+    const userData = {
+        email: `${emailId}@${domain}`,
+        nickname: document.getElementById('nickname').value,
+        password: document.getElementById('password').value
+    };
+
+    try {
+        const response = await fetch('http://localhost:3000/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    alert(result.error || '회원가입 실패');
+                    return;
+                }
+
+                alert('회원가입이 완료되었습니다!');
+                location.href = 'login.html';
+
+            } catch (error) {
+                console.error(error);
+                alert('서버 연결 실패. 백엔드 서버가 켜져 있는지 확인해줘.');
+            }
         });
     </script>
 </body>
