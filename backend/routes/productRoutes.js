@@ -99,4 +99,52 @@ router.post('/', (req, res) => {
     );
 });
 
+// 상품 수정 (PUT 요청 처리)
+router.put('/:id', (req, res) => {
+    const productId = req.params.id;
+    const {
+        title,
+        category,
+        targetCount,
+        price,
+        duration,
+        location,
+        imageUrl,
+        chatUrl,
+        description
+    } = req.body;
+
+    // 데이터베이스의 정보를 업데이트하는 SQL 문법입니다.
+    const sql = `
+        UPDATE products 
+        SET title = ?, 
+            category = ?, 
+            targetCount = ?, 
+            price = ?, 
+            duration = ?, 
+            location = ?, 
+            imageUrl = ?, 
+            chatUrl = ?, 
+            description = ? 
+        WHERE id = ?
+    `;
+
+    db.query(
+        sql,
+        [title, category, targetCount, price, duration, location, imageUrl, chatUrl, description, productId],
+        (err, result) => {
+            if (err) {
+                console.error('DB 수정 에러:', err);
+                return res.status(500).json({ error: '데이터베이스 수정 실패' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: '수정할 상품을 찾을 수 없습니다.' });
+            }
+
+            res.json({ message: '상품 수정 성공' });
+        }
+    );
+});
+
 module.exports = router;
