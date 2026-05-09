@@ -322,7 +322,7 @@ const enterBtn = document.getElementById('kakao-chat-btn');
                                 return;
                             }
 
-                            location.href = product.chatUrl;
+                            window.open(product.chatUrl, '_blank');
                         });
 
                         // 뒤로가기 링크 업데이트 (해당 상품 상세 페이지로)
