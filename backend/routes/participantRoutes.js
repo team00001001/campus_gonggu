@@ -154,5 +154,43 @@ router.patch('/cancel', async (req, res) => {
         conn.release();
     }
 });
+router.get('/', async (req, res) => {
+    const { productId } = req.query;
 
+    if (!productId) {
+        return res.status(400).json({
+            message: 'productId가 필요합니다.'
+        });
+    }
+
+    try {
+        const [rows] = await pool.promise().query(
+            `
+            SELECT
+                pp.id AS participant_id,
+                pp.product_id,
+                pp.user_id,
+                pp.status,
+                pp.created_at,
+                u.nickname,
+                u.email,
+                u.trust_score
+            FROM product_participants pp
+            JOIN users u ON pp.user_id = u.id
+            WHERE pp.product_id = ?
+              AND pp.status = 'joined'
+            ORDER BY pp.created_at ASC
+            `,
+            [productId]
+        );
+
+        res.json(rows);
+
+    } catch (error) {
+        console.error('참여자 조회 실패:', error);
+        res.status(500).json({
+            message: '참여자 조회 실패'
+        });
+    }
+});
 module.exports = router;
