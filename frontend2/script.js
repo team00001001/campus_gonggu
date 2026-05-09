@@ -77,6 +77,9 @@ function renderRooms(rooms, keyword) {
                         ${room.category} <span style="color:#ddd; margin:0 6px;">|</span> 📍 ${room.location}
                     </div>
                     <div class="product-title">${room.title}</div>
+                    <p style="font-size: 13px; color: #777; margin-bottom: 8px;">
+                        작성자: ${room.writer || '익명 학우'}
+                    </p>
                     <p style="font-size: 13px; color: #666; margin-bottom: 16px; margin-top: -6px; font-weight: 500;">
                         ⏳ ${room.duration} 남음 · 👥 ${room.currentCount}/${room.targetCount}명
                     </p>

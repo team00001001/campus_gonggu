@@ -478,8 +478,8 @@
                 <div class="host-avatar">호</div>
                 <div class="host-details">
                     <div class="host-name-row">
-                        <span class="host-name">호랑이학우</span>
-                        <span class="host-dept">익명 학우</span>
+                        <span class="host-name" id="host-name">로딩중</span>
+                        <span class="host-dept" id="host-dept">익명 학우</span>
                     </div>
                     <div class="host-trust-bar">
                         <span class="trust-icon">✓</span> 고대생 인증 완료 · 크림슨 지수 30
@@ -609,6 +609,12 @@
 
                 // 제목 업데이트
                 document.getElementById('product-title').innerText = product.title;
+                // 작성자 업데이트
+                document.getElementById('host-name').innerText =
+                    product.writer || '익명 학우';
+
+                document.getElementById('host-dept').innerText =
+                    '작성자';
 
                 // 가격 업데이트
                 document.getElementById('product-price').innerHTML = `${product.price.toLocaleString()}원 <span>(${product.targetCount}명 기준)</span>`;
