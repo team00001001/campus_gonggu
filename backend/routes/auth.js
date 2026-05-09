@@ -23,6 +23,11 @@ router.post('/send-auth-email', async (req, res) => {
         }
 
         // 💡 2. 여기까지 무사히 통과했다면? 원래대로 메일 전송 시작!
+        // 환경 변수 체크: 메일 전송에 필요한 환경 변수가 설정되어 있는지 확인
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            throw new Error('EMAIL_USER와 EMAIL_PASS 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.');
+        }
+
         const authCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         const transporter = nodemailer.createTransport({
