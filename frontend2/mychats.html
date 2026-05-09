@@ -8,6 +8,8 @@
     <style>
         :root {
             --ku-crimson: #8A1538;
+            --text-dark: #222222; /* 헤더용 컬러 변수 추가 */
+            
             --bg-color: #F8F9FA;
             --surface-color: #FFFFFF;
             --border-color: #EAECEF;
@@ -27,21 +29,25 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
-            padding-top: 90px;
+            padding-top: 100px; /* 고정 헤더를 고려하여 상단 여백을 살짝 늘림 */
             min-height: 100vh;
         }
 
-        /* 헤더 스타일 (기존과 동일) */
+        /* ==========================================
+        mypage.html과 동일한 헤더 CSS
+        ========================================== */
         header {
             background-color: var(--ku-crimson);
+            backdrop-filter: blur(8px);
             height: 70px;
             display: flex;
             align-items: center;
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .nav-inner {
@@ -56,10 +62,49 @@
 
         .logo {
             color: white;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 800;
             text-decoration: none;
+            letter-spacing: -0.5px;
         }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a.menu-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        nav a.menu-link:hover {
+            color: var(--text-dark);
+        }
+
+        .btn-login-nav {
+            background: var(--ku-crimson);
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(138, 21, 56, 0.3);
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(138, 21, 56, 0.4);
+        }
+        /* ========================================== */
 
         /* 메인 컨텐츠 */
         .container {
@@ -177,18 +222,13 @@
 </head>
 <body>
 
-    <header>
-        <div class="nav-inner">
-            <a href="main_login.html" class="logo">KU GONGGU</a>
-        </div>
-    </header>
+    <div id="header-placeholder"></div>
 
     <div class="container">
         <h1 class="page-title">내 참여 채팅방 <span id="count-badge">0</span></h1>
         
         <div id="chat-list" class="chat-list">
-            <!-- 자바스크립트로 데이터가 삽입됩니다 -->
-        </div>
+            </div>
 
         <div id="empty-view" class="empty-state" style="display: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -200,12 +240,23 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // 1. 페이지 열리자마자 헤더 가져오기
+            fetch('header.html')
+                .then(res => {
+                    if (!res.ok) throw new Error('header.html 파일을 찾을 수 없습니다.');
+                    return res.text();
+                })
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                    updateHeader(); // 로그인 상태에 따른 헤더 버튼 업데이트
+                })
+                .catch(err => console.error(err));
+
             const listContainer = document.getElementById('chat-list');
             const emptyView = document.getElementById('empty-view');
             const countBadge = document.getElementById('count-badge');
 
-            // 1. 참여한 상품 ID 목록 가져오기 (localStorage)
-            // product.html에서 참여 완료 시 'joinedGroups'에 ID를 저장한다고 가정합니다.
+            // 2. 참여한 상품 ID 목록 가져오기 (localStorage)
             const joinedIds = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
 
             if (joinedIds.length === 0) {
@@ -214,11 +265,11 @@
             }
 
             try {
-                // 2. 전체 상품 데이터 불러오기
+                // 3. 전체 상품 데이터 불러오기
                 const response = await fetch('products.json');
                 const allProducts = await response.json();
 
-                // 3. 내가 참여한 상품만 필터링
+                // 4. 내가 참여한 상품만 필터링
                 const myProducts = allProducts.filter(p => joinedIds.includes(p.id.toString()) || joinedIds.includes(p.id));
                 
                 countBadge.innerText = myProducts.length;
@@ -228,7 +279,7 @@
                     return;
                 }
 
-                // 4. 화면에 리스트 그리기
+                // 5. 화면에 리스트 그리기
                 myProducts.forEach(product => {
                     const card = document.createElement('div');
                     card.className = 'chat-card';
@@ -252,6 +303,22 @@
                 alert('목록을 불러오는 중 오류가 발생했습니다.');
             }
         });
+
+        // 헤더 로그인/로그아웃 상태 업데이트 함수
+        function updateHeader() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            const authButtons = document.querySelectorAll('.auth-only');
+            const guestButtons = document.querySelectorAll('.guest-only');
+
+            if (isLoggedIn) {
+                authButtons.forEach(btn => btn.style.display = 'inline-block');
+                guestButtons.forEach(btn => btn.style.display = 'none');
+            } else {
+                authButtons.forEach(btn => btn.style.display = 'none');
+                guestButtons.forEach(btn => btn.style.display = 'inline-block');
+            }
+        }
     </script>
 </body>
 </html>
