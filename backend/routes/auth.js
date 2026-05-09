@@ -57,15 +57,20 @@ router.post('/send-auth-email', async (req, res) => {
         res.status(200).json({ message: '인증번호가 전송되었습니다. 이메일을 확인해주세요!' });
 
     } catch (error) {
-        // 💡 3. 위에서 발생한 DB 에러나 이메일 전송 에러를 여기서 한 번에 다 잡음! (Missing catch 해결)
-        console.error('인증번호 처리 에러:', error);
-        res.status(500).json({ message: '메일 전송에 실패했습니다.' });
-    }
+    console.error('인증번호 처리 에러 전체:', error);
+    console.error('에러 코드:', error.code);
+    console.error('에러 응답:', error.response);
+
+    res.status(500).json({
+        message: '메일 전송에 실패했습니다.',
+        error: error.message
+    });
+}
 });
 // 🚀 2. 인증번호 확인 API
 router.post('/verify-auth-code', (req, res) => {
     const { email, code } = req.body;
-
+console.log('인증 메일 요청 들어옴:', email);
     // 저장된 인증번호와 입력한 번호가 같은지 확인
     if (authCodes[email] && authCodes[email] === code) {
         // 성공하면 삭제해서 재사용 방지

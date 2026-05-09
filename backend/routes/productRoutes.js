@@ -146,5 +146,24 @@ router.put('/:id', (req, res) => {
         }
     );
 });
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const [result] = await db.promise().query(
+            'DELETE FROM products WHERE id = ?',
+            [id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: '공고를 찾을 수 없습니다.' });
+        }
+
+        res.json({ message: '공고 삭제 완료' });
+
+    } catch (error) {
+        console.error('공고 삭제 실패:', error);
+        res.status(500).json({ message: '공고 삭제 실패' });
+    }
+});
 module.exports = router;

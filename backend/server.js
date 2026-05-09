@@ -1,4 +1,6 @@
 require('dotenv').config();
+console.log('EMAIL_USER:', process.env.EMAIL_USER);
+console.log('EMAIL_PASS 있음?:', !!process.env.EMAIL_PASS);
 const participantRoutes = require('./routes/participantRoutes');
 const db = require('./db');
 const express = require('express');

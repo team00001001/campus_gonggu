@@ -239,33 +239,52 @@
         });
 
         // 2. 인증번호 전송 버튼 클릭 로직
-        btnSendCode.addEventListener('click', () => {
-            const emailId = document.getElementById('email-id').value;
-            let domain = emailDomainSelect.value;
-            
-            if(domain === 'direct') {
-                domain = customDomainInput.value;
-            }
+        btnSendCode.addEventListener('click', async () => {
+    const emailId = document.getElementById('email-id').value;
+    let domain = emailDomainSelect.value;
 
-            if (!emailId || !domain) {
-                alert('이메일을 정확히 입력해주세요.');
-                return;
-            }
+    if (domain === 'direct') {
+        domain = customDomainInput.value;
+    }
 
-            // 간단한 학교 이메일 검증 로직 (.ac.kr 또는 .edu)
-            if (!domain.endsWith('.ac.kr') && !domain.endsWith('.edu')) {
-                alert('대학교 이메일(.ac.kr 또는 .edu)만 가입 가능합니다.');
-                return;
-            }
+    if (!emailId || !domain) {
+        alert('이메일을 정확히 입력해주세요.');
+        return;
+    }
 
-            // 실제 구현 시에는 백엔드(Python 등)로 API 요청을 보내는 부분
-            alert(`${emailId}@${domain} 으로 인증번호가 발송되었습니다.`);
-            
-            // 인증번호 입력칸 표시
-            verificationSection.classList.remove('hidden');
+    if (!domain.endsWith('.ac.kr') && !domain.endsWith('.edu')) {
+        alert('대학교 이메일(.ac.kr 또는 .edu)만 가입 가능합니다.');
+        return;
+    }
+
+    const email = `${emailId}@${domain}`;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/send-auth-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
         });
 
-        // 3. 인증번호 확인 로직 (가상의 하드코딩된 로직)
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.message || '인증번호 전송 실패');
+            return;
+        }
+
+        alert(result.message);
+
+        verificationSection.classList.remove('hidden');
+
+    } catch (error) {
+        console.error(error);
+        alert('서버 연결 실패');
+    }
+});
+        // 3. 인증번호 확인 로직 (가상의 하드코딩된 로직)   
         btnVerifyCode.addEventListener('click', () => {
             const code = document.getElementById('verification-code').value;
             if (code === '123456') { // 임시 인증번호
