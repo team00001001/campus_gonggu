@@ -649,9 +649,12 @@
         });
     </script>
     <script>
-async function loadProductDetail() {
-    const params = new URLSearchParams(window.location.search);
-    const productId = params.get('id');
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. 초기 설정 및 유저 정보 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    const currentUserId = localStorage.getItem('userId'); // 내 ID
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
     if (!productId) {
         alert('상품 ID가 없습니다.');
@@ -659,60 +662,139 @@ async function loadProductDetail() {
         return;
     }
 
+    // 헤더 불러오기 (기존 로직 유지)
+    fetch('header.html')
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+            if(typeof updateHeader === 'function') updateHeader();
+        });
+
     try {
+        // 2. 서버에서 상품 상세 데이터 가져오기
+        // 주의: 서버에서 응답 줄 때 참여자 명단(members)이 포함되어야 합니다.
         const response = await fetch(`http://localhost:3000/products/${productId}`);
         const product = await response.json();
 
-        if (!response.ok) {
-            alert(product.error || '상품 정보를 불러오지 못했습니다.');
-            return;
-        }
+        if (!response.ok) throw new Error('상품 정보를 불러오지 못했습니다.');
 
-        document.querySelector('.title').textContent = product.title;
+        // 3. 공통 데이터 렌더링 (제목, 가격, 인원 등)
+        renderProductInfo(product);
 
-        document.querySelector('.original-price').textContent =
-            `1인당 예상 가격`;
+        // 4. 권한별 버튼 및 리스트 생성
+        const infoArea = document.querySelector('.product-info');
+        const detailArea = document.querySelector('.details-section');
 
-        document.querySelector('.n-pay-price').innerHTML =
-            `${Number(product.price).toLocaleString()}원 <span>(${product.currentCount}명 참여 중)</span>`;
+        // 👉 [중요] 작성자인지 확인 (서버의 user_id와 내 userId 비교)
+        const isHost = String(product.user_id) === String(currentUserId);
 
-        document.querySelector('.count').textContent =
-            `${product.currentCount}명 / ${product.targetCount}명`;
-
-        const percent = Math.min(
-            Math.round((product.currentCount / product.targetCount) * 100),
-            100
-        );
-
-        document.querySelector('.progress-fill').style.width = `${percent}%`;
-
-        document.querySelector('.deadline-text').textContent =
-            `⏳ 모집 기간: ${product.duration}`;
-
-        document.querySelector('.content-body').textContent =
-            product.description;
-
-        const image = document.querySelector('.product-image');
-
-        if (product.imageUrl) {
-            image.src = product.imageUrl;
+        if (isHost) {
+            // A. 작성자(방장)일 때
+            renderHostUI(infoArea, detailArea, product);
         } else {
-            image.removeAttribute('src');
-            image.alt = '이미지 준비중';
-        }
-
-        const categoryBadge = document.querySelector('.tag-study');
-        if (categoryBadge) {
-            categoryBadge.textContent = product.category;
+            // B. 참여자(학우)일 때
+            renderGuestUI(infoArea, product, currentUserId);
         }
 
     } catch (error) {
         console.error(error);
-        alert('서버 연결 실패');
+        alert('데이터를 불러오는데 실패했습니다.');
+    }
+});
+
+// --- UI 렌더링 함수들 ---
+
+function renderProductInfo(product) {
+    document.getElementById('product-title').innerText = product.title;
+    document.getElementById('product-price').innerHTML = `${Number(product.price).toLocaleString()}원 <span>(${product.targetCount}명 기준)</span>`;
+    document.getElementById('status-count-text').innerHTML = `현재 <strong>${product.currentCount}명</strong> / 목표 ${product.targetCount}명`;
+    document.getElementById('product-description').innerHTML = product.description.replace(/\n/g, '<br>');
+    
+    const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
+    document.getElementById('progress-fill').style.width = `${percent}%`;
+    document.getElementById('progress-percent').innerText = `${percent}%`;
+    
+    if (product.imageUrl) document.getElementById('product-img').src = product.imageUrl;
+}
+
+// [방장 전용 화면]
+function renderHostUI(infoArea, detailArea, product) {
+    // 1. 참여하기 버튼을 관리 버튼으로 교체
+    const joinBtn = infoArea.querySelector('.join-btn');
+    joinBtn.outerHTML = `
+        <div style="display:flex; gap:10px;">
+            <button class="join-btn" style="background:#444;" onclick="deleteProduct('${product.id}')">공구방 삭제</button>
+            <button class="join-btn" onclick="location.href='edit.html?id=${product.id}'">수정하기</button>
+        </div>
+    `;
+
+    // 2. 참여자 명단 및 노쇼 체크 리스트 추가
+    const memberSection = `
+        <div class="member-list card" style="margin-top:20px; padding:20px;">
+            <h3>👥 참여자 관리 (방장 전용)</h3>
+            <div id="member-items">
+                ${(product.members || []).map(m => `
+                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+                        <span>${m.nickname} 학우</span>
+                        <div>
+                            <button onclick="markStatus('${m.id}', 'success')" style="color:blue; border:none; background:none;">확인</button>
+                            <button onclick="markStatus('${m.id}', 'noshow')" style="color:red; border:none; background:none;">노쇼</button>
+                        </div>
+                    </div>
+                `).join('') || '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
+            </div>
+        </div>
+    `;
+    detailArea.insertAdjacentHTML('beforeend', memberSection);
+}
+
+// [참여자 전용 화면]
+function renderGuestUI(infoArea, product, currentUserId) {
+    const joinBtn = infoArea.querySelector('.join-btn');
+    
+    // 이미 참여했는지 확인
+    const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+    const isAlreadyJoined = joinedGroups.includes(String(product.id));
+
+    if (isAlreadyJoined) {
+        joinBtn.innerText = "참여 완료 (채팅방 가기)";
+        joinBtn.style.background = "#ce152d"; // 고대색
+        joinBtn.onclick = () => location.href = `chat.html?id=${product.id}`;
+
+        // 취소 및 신고 버튼 추가
+        infoArea.insertAdjacentHTML('beforeend', `
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button onclick="leaveGroup('${product.id}')" style="flex:1; padding:8px; border:none; border-radius:5px;">참여 취소</button>
+                <button onclick="reportHost()" style="flex:1; padding:8px; border:1px solid #ddd; background:none; border-radius:5px; color:#999;">신고하기</button>
+            </div>
+        `);
     }
 }
 
-loadProductDetail();
+// --- 액션 함수들 (서버 연동용) ---
+
+async function deleteProduct(id) {
+    if(confirm("공구방을 삭제하시겠습니까? 참여자들에게 알림이 전송됩니다.")) {
+        // fetch(`/api/products/${id}`, { method: 'DELETE' }) ...
+        alert("삭제되었습니다.");
+        location.href = 'main_login.html';
+    }
+}
+
+async function leaveGroup(id) {
+    if(confirm("참여를 취소하시겠습니까?")) {
+        // 서버 인원수 -1 처리 로직 필요
+        alert("참여가 취소되었습니다.");
+        location.reload();
+    }
+}
+
+function markStatus(memberId, status) {
+    const msg = status === 'noshow' ? "노쇼로 등록하시겠습니까?" : "참여 확인 처리하시겠습니까?";
+    if(confirm(msg)) {
+        alert("반영되었습니다.");
+    }
+}
 </script>
 </body>
 </html>
