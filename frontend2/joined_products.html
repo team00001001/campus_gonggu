@@ -318,17 +318,50 @@
         }
 
         // 참여 취소 로직
-        function cancelJoin(id) {
-            if(confirm("정말로 이 공구 참여를 취소하시겠습니까?")) {
-                let joinedIds = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-                // 해당 ID 삭제
-                joinedIds = joinedIds.filter(item => item.toString() !== id.toString());
-                localStorage.setItem('joinedGroups', JSON.stringify(joinedIds));
-                
-                alert("참여가 취소되었습니다.");
-                location.reload(); // 화면 새로고침
-            }
+        async function cancelJoin(id) {
+    if (!confirm("정말로 이 공구 참여를 취소하시겠습니까?")) {
+        return;
+    }
+
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+        alert('로그인이 필요합니다.');
+        location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/participants/cancel', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                productId: id,
+                userId: userId
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.message || '참여 취소 실패');
+            return;
         }
+
+        let joinedIds = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+        joinedIds = joinedIds.filter(item => String(item) !== String(id));
+        localStorage.setItem('joinedGroups', JSON.stringify(joinedIds));
+
+        alert("참여가 취소되었습니다.");
+        location.reload();
+
+    } catch (error) {
+        console.error(error);
+        alert("서버 연결 실패");
+    }
+}
     </script>
 </body>
 </html>

@@ -17,6 +17,6 @@ app.use('/products', productRoutes);
 app.use('/users', userRoutes);
 app.use('/api', authRoutes);
 
-app.listen(3000, () => {
+app.listen(3000, '0.0.0.0', () => {
     console.log('서버 실행 중: http://localhost:3000');
 });

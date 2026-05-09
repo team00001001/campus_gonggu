@@ -99,3 +99,39 @@
         min-height: 44px;
     }
 }
+@media (max-width: 768px) {
+    .hero {
+        min-height: auto !important;
+        padding: 100px 20px 50px !important;
+    }
+
+    .hero-content,
+    .main-hero,
+    .hero-inner {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .hero h1,
+    .hero-title {
+        font-size: 2rem !important;
+        line-height: 1.25 !important;
+        word-break: keep-all !important;
+        white-space: normal !important;
+        writing-mode: horizontal-tb !important;
+    }
+
+    .hero p,
+    .hero-subtitle {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+        word-break: keep-all !important;
+    }
+
+    .hero-card,
+    .visual-card {
+        width: 100% !important;
+        height: auto !important;
+        margin-top: 24px !important;
+    }
+}
