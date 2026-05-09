@@ -229,35 +229,12 @@
 </div>
 
         <div class="section-title">최근 참여 내역 <span style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">전체보기 〉</span></div>
-        <div class="gonggu-grid">
-            <div class="gonggu-card">
-                <span class="badge recruiting">모집중</span>
-                <span class="gonggu-title">[하나스퀘어] 이산수학 제본 공구팟</span>
-                <div class="gonggu-info">
-                    <span>👑 @cs_master</span>
-                    <span>👥 3 / 5 명</span>
-                </div>
-            </div>
-            <div class="gonggu-card" style="opacity: 0.8;">
-                <span class="badge success">배송 완료</span>
-                <span class="gonggu-title">에어팟 프로 폼팁 공동구매</span>
-                <div class="gonggu-info">
-                    <span>👑 @apple_fan</span>
-                    <span>👥 3 / 3 명 (완료)</span>
-                </div>
-            </div>
-        </div>
+        
+        <div class="gonggu-grid" id="recent-participation-grid">
+</div>
 
         <div class="section-title">방금 찜한 공구 <span style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">더보기 〉</span></div>
-        <div class="gonggu-card" style="width: calc(50% - 10px);">
-            <span class="badge recruiting">모집중</span>
-            <span class="gonggu-title">자취생 필수 햇반 36개입 N빵</span>
-            <div class="gonggu-info">
-                <span>👑 @foodie</span>
-                <span>👥 1 / 4 명</span>
-            </div>
-        </div>
-    </div>
+      <div class="jjim-grid" id="liked-products-grid">
 </div>
 
 <script>
@@ -344,6 +321,103 @@ fetch('http://localhost:3000/products')
         document.getElementById('success-count').innerText = `${successProducts.length} 건`;
     })
     .catch(err => console.error(err));
+    async function loadRecentParticipations() {
+    const grid = document.getElementById('recent-participation-grid');
+    const joinedIds = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+
+    grid.innerHTML = '';
+
+    if (joinedIds.length === 0) {
+        grid.innerHTML = '<p style="color:#888;">최근 참여 내역이 없습니다.</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/products');
+        const products = await response.json();
+
+        const joinedProducts = products.filter(product =>
+            joinedIds.includes(String(product.id))
+        );
+
+        if (joinedProducts.length === 0) {
+            grid.innerHTML = '<p style="color:#888;">최근 참여 내역이 없습니다.</p>';
+            return;
+        }
+
+        joinedProducts.slice(0, 2).forEach(product => {
+            const isClosed = product.currentCount >= product.targetCount;
+            const badgeClass = isClosed ? 'success' : 'recruiting';
+            const badgeText = isClosed ? '배송 완료' : '모집중';
+
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="gonggu-card" onclick="location.href='product.html?id=${product.id}'" style="cursor:pointer;">
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                    <span class="gonggu-title">${product.title}</span>
+                    <div class="gonggu-info">
+                        <span>👑 ${product.writer || '@익명'}</span>
+                        <span>👥 ${product.currentCount} / ${product.targetCount} 명</span>
+                    </div>
+                </div>
+            `);
+        });
+
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = '<p style="color:#888;">참여 내역을 불러오지 못했습니다.</p>';
+    }
+}
+
+loadRecentParticipations();
+async function loadLikedProducts() {
+    const grid = document.getElementById('liked-products-grid');
+
+    // localStorage에서 찜 목록 가져오기
+    const likedIds = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+
+    grid.innerHTML = '';
+
+    if (likedIds.length === 0) {
+        grid.innerHTML = '<p style="color:#888;">찜한 공구가 없습니다.</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/products');
+        const products = await response.json();
+
+        const likedProducts = products.filter(product =>
+            likedIds.includes(String(product.id))
+        );
+
+        if (likedProducts.length === 0) {
+            grid.innerHTML = '<p style="color:#888;">찜한 공구가 없습니다.</p>';
+            return;
+        }
+
+        likedProducts.slice(0, 2).forEach(product => {
+            const isClosed = product.currentCount >= product.targetCount;
+            const badgeClass = isClosed ? 'success' : 'recruiting';
+            const badgeText = isClosed ? '배송 완료' : '모집중';
+
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="gonggu-card" onclick="location.href='product.html?id=${product.id}'" style="cursor:pointer;">
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                    <span class="gonggu-title">${product.title}</span>
+                    <div class="gonggu-info">
+                        <span>👑 ${product.writer || '@익명'}</span>
+                        <span>👥 ${product.currentCount} / ${product.targetCount} 명</span>
+                    </div>
+                </div>
+            `);
+        });
+
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = '<p style="color:#888;">찜 목록을 불러오지 못했습니다.</p>';
+    }
+}
+loadLikedProducts();
 </script>
 
 </body>

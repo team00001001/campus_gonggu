@@ -531,33 +531,36 @@
             }
         });
 
+
+           
         function joinGroupBuy() {
-            localStorage.setItem('isLoggedIn', 'true'); 
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
-            if(!isLoggedIn) {
-                alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
-                location.href = "login.html"; 
-            } else {
-                if(confirm("정말로 이 공동구매에 참여하시겠습니까?\n참여 후 취소는 어려울 수 있습니다.")) {
-                    
-                // 👉 여기서부터 추가된 부분: 참여한 상품 ID를 기억해둡니다!
-                const urlParams = new URLSearchParams(window.location.search);
-                const currentId = urlParams.get('id');
-                    
-                let joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-                if(currentId && !joinedGroups.includes(currentId)) {
-                    joinedGroups.push(currentId);
-                    localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups));
-                }
-                // 👉 추가된 부분 끝
-                    
-                alert("참여가 완료되었습니다! 호스트와의 채팅방으로 이동합니다.");
-                location.href = `chat.html?id=${currentId}`;
-            }
-        }
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    if (!isLoggedIn) {
+        alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+        location.href = "login.html";
+        return;
     }
 
+    if (confirm("정말로 이 공동구매에 참여하시겠습니까?\n참여 후 취소는 어려울 수 있습니다.")) {
+
+        // 현재 상품 id 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentId = urlParams.get('id');
+
+        // 최근 참여 내역 저장
+        let joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+
+        if (currentId && !joinedGroups.includes(currentId)) {
+            joinedGroups.push(currentId);
+            localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups));
+        }
+
+        alert("참여가 완료되었습니다! 호스트와의 채팅방으로 이동합니다.");
+
+        location.href = `chat.html?id=${currentId}`;
+    }
+}
         // ==========================================
         // 2. 상품 데이터 동적 로드 스크립트
         // ==========================================
