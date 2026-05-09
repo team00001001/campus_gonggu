@@ -175,6 +175,9 @@
                     <input type="text" id="email-id" placeholder="이메일 아이디" required>
                     <select id="email-domain">
                         <option value="korea.ac.kr">@ korea.ac.kr</option>
+                        <option value="gmail.com">@ gmail.com</option>
+                        <option value="naver.com">@ naver.com</option>
+                        <option value="kakao.com">@ kakao.com</option>
                         <option value="direct">직접 입력</option>
                     </select>
                 </div>
@@ -247,15 +250,11 @@
         domain = customDomainInput.value;
     }
 
-    if (!emailId || !domain) {
-        alert('이메일을 정확히 입력해주세요.');
-        return;
-    }
+if (!emailId || !domain) {
+    alert('이메일을 정확히 입력해주세요.');
+    return;
+}
 
-    if (!domain.endsWith('.ac.kr') && !domain.endsWith('.edu')) {
-        alert('대학교 이메일(.ac.kr 또는 .edu)만 가입 가능합니다.');
-        return;
-    }
 
     const email = `${emailId}@${domain}`;
 
@@ -285,18 +284,51 @@
     }
 });
         // 3. 인증번호 확인 로직 (가상의 하드코딩된 로직)   
-        btnVerifyCode.addEventListener('click', () => {
-            const code = document.getElementById('verification-code').value;
-            if (code === '123456') { // 임시 인증번호
-                verificationMsg.textContent = '인증이 완료되었습니다.';
-                verificationMsg.className = 'msg success';
-                document.getElementById('verification-code').readOnly = true;
-                btnVerifyCode.disabled = true;
-            } else {
-                verificationMsg.textContent = '인증번호가 일치하지 않습니다.';
-                verificationMsg.className = 'msg error';
-            }
+       btnVerifyCode.addEventListener('click', async () => {
+    const code = document.getElementById('verification-code').value;
+
+    const emailId = document.getElementById('email-id').value;
+    let domain = emailDomainSelect.value;
+
+    if (domain === 'direct') {
+        domain = customDomainInput.value;
+    }
+
+    const email = `${emailId}@${domain}`;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/verify-auth-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                code
+            })
         });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            verificationMsg.textContent = result.message;
+            verificationMsg.className = 'msg error';
+            return;
+        }
+
+        verificationMsg.textContent = result.message;
+        verificationMsg.className = 'msg success';
+
+        document.getElementById('verification-code').readOnly = true;
+        btnVerifyCode.disabled = true;
+
+    } catch (error) {
+        console.error(error);
+
+        verificationMsg.textContent = '서버 연결 실패';
+        verificationMsg.className = 'msg error';
+    }
+});
 
         // 4. 비밀번호 일치 여부 실시간 확인 로직
         function checkPasswordMatch() {
