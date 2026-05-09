@@ -193,4 +193,38 @@ router.get('/', async (req, res) => {
         });
     }
 });
+
+// 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
+router.patch('/status', async (req, res) => {
+    const { participantId, userId, status } = req.body; // status: 'success' or 'noshow'
+
+    const conn = await pool.promise().getConnection();
+    try {
+        await conn.beginTransaction();
+
+        // 1. 참여자 상태 업데이트
+        await conn.query(
+            `UPDATE product_participants SET status = ? WHERE id = ?`,
+            [status, participantId]
+        );
+
+        // 2. 유저 신뢰도 점수 업데이트 (노쇼면 -10점, 성공이면 +5점 예시)
+        let scoreChange = status === 'noshow' ? -10 : 5;
+        
+        await conn.query(
+            `UPDATE users SET trust_score = trust_score + ? WHERE id = ?`,
+            [scoreChange, userId]
+        );
+
+        await conn.commit();
+        res.json({ message: '상태 업데이트 및 점수 반영 완료' });
+
+    } catch (error) {
+        await conn.rollback();
+        console.error(error);
+        res.status(500).json({ message: '상태 업데이트 실패' });
+    } finally {
+        conn.release();
+    }
+});
 module.exports = router;

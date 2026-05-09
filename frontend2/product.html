@@ -534,7 +534,7 @@
 
 
            
-       async function joinGroupBuy() {
+    async function joinGroupBuy() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const userId = localStorage.getItem('userId');
 
@@ -618,7 +618,7 @@
                 }
 
                 // 이미지 업데이트
-              const defaultImages = {
+    const defaultImages = {
     '식재료 / 배달': 'images/default-food.png',
     '자취 / 생필품': 'images/default-living.png',
     '전공 / 문구': 'images/default-study.png',
@@ -724,9 +724,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 주의: 서버에서 응답 줄 때 참여자 명단(members)이 포함되어야 합니다.
         const response = await fetch(`http://localhost:3000/products/${productId}`);
         const product = await response.json();
-
         if (!response.ok) throw new Error('상품 정보를 불러오지 못했습니다.');
-
+        const participantsRes = await fetch(`http://localhost:3000/participants?productId=${productId}`);
+        if (participantsRes.ok) {
+            const membersData = await participantsRes.json();
+            product.members = membersData; // 방장 화면에서 맵핑할 수 있게 배열 저장
+        } else {
+            product.members = [];
+        }
 
         // 3. 공통 데이터 렌더링 (제목, 가격, 인원 등)
         renderProductInfo(product)
@@ -879,15 +884,16 @@ function renderHostUI(infoArea, detailArea, product) {
         <div class="member-list card" style="margin-top:20px; padding:20px;">
             <h3>👥 참여자 관리 (방장 전용)</h3>
             <div id="member-items">
-                ${(product.members || []).map(m => `
+                ${(product.members && product.members.length > 0) ? product.members.map(m => `
                     <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
                         <span>${m.nickname} 학우</span>
                         <div>
-                            <button onclick="markStatus('${m.id}', 'success')" style="color:blue; border:none; background:none;">확인</button>
-                            <button onclick="markStatus('${m.id}', 'noshow')" style="color:red; border:none; background:none;">노쇼</button>
+                            <!-- 백엔드 데이터에 맞춰 m.participant_id 와 m.user_id 를 넘겨줍니다 -->
+                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'success')" style="color:blue; border:none; background:none; cursor:pointer;">확인</button>
+                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" style="color:red; border:none; background:none; margin-left:10px; cursor:pointer;">노쇼</button>
                         </div>
                     </div>
-                `).join('') || '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
+                `).join('') : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
             </div>
         </div>
     `;
@@ -918,16 +924,27 @@ function renderGuestUI(infoArea, product, currentUserId) {
 }
 
 // --- 액션 함수들 (서버 연동용) ---
-
+//삭제 버튼
 async function deleteProduct(id) {
     if(confirm("공구방을 삭제하시겠습니까? 참여자들에게 알림이 전송됩니다.")) {
-        // fetch(`/api/products/${id}`, { method: 'DELETE' }) ...
-        alert("삭제되었습니다.");
-        location.href = 'main_login.html';
-        //여기 나중에 진짜 삭제됭ㅇ
+        try {
+            const response = await fetch(`http://localhost:3000/products/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert("삭제되었습니다.");
+                location.href = 'main_login.html'; // 삭제 후 메인으로 이동
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || '삭제 실패');
+            }
+        } catch (error) {
+            console.error(error);
+            alert("서버 오류로 삭제하지 못했습니다.");
+        }
     }
 }
-
 //나중에 참여자 데이터베이스 필요함
 async function leaveGroup(id) {
     if (!confirm("참여를 취소하시겠습니까?")) {
@@ -968,10 +985,41 @@ async function leaveGroup(id) {
     }
 }
 
-function markStatus(memberId, status) {
-    const msg = status === 'noshow' ? "노쇼로 등록하시겠습니까?" : "참여 확인 처리하시겠습니까?";
-    if(confirm(msg)) {
-        alert("반영되었습니다.");
+// 참여자 확인 및 노쇼 처리 함수
+async function markStatus(participantId, userId, status) {
+    // 상태에 따라 확인 메시지 다르게 출력
+    const msg = status === 'noshow' 
+        ? "노쇼로 등록하시겠습니까? (해당 학우의 신뢰도 점수가 하락합니다)" 
+        : "참여 확인 처리하시겠습니까? (해당 학우의 신뢰도 점수가 상승합니다)";
+        
+    if (!confirm(msg)) {
+        return; // 취소 누르면 아무 일도 안 일어남
+    }
+
+    try {
+        // 백엔드 API로 데이터 전송
+        const response = await fetch('http://localhost:3000/participants/status', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                participantId: participantId,
+                userId: userId,
+                status: status
+            })
+        });
+
+        if (response.ok) {
+            alert("정상적으로 처리되었습니다.");
+            location.reload(); // 새로고침해서 변경된 상태를 화면에 바로 반영
+        } else {
+            const errorData = await response.json();
+            alert(errorData.message || "처리 중 오류가 발생했습니다.");
+        }
+    } catch (error) {
+        console.error('상태 업데이트 에러:', error);
+        alert("서버 연결에 실패했습니다.");
     }
 }
 </script>
