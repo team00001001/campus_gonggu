@@ -221,11 +221,6 @@
         <span class="stat-label">성공 공구</span>
         <span class="stat-value" id="success-count">0 건</span>
     </div>
-
-    <div class="stat-card" onclick="location.href='manner.html'">
-        <span class="stat-label">매너 칭찬</span>
-        <span class="stat-value" id="manner-count">24 개</span>
-    </div>
 </div>
 
         <div class="section-title">최근 참여 내역 <span style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">전체보기 〉</span></div>
@@ -247,7 +242,7 @@
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
             
-            // 2. 헤더 조립 끝나자마자 버튼 상태 확인
+        // 2. 헤더 조립 끝나자마자 버튼 상태 확인
             updateHeader();
         })
         .catch(err => console.error(err));
@@ -314,7 +309,17 @@ fetch('http://localhost:3000/products')
     .catch(err => console.error('내 공고 개수 로드 실패:', err));
 
 const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-document.getElementById('joined-count').innerText = `${joinedGroups.length} 건`;
+
+// 백엔드에서 실제 존재하는 상품만 걸러서 정확한 개수 세기
+fetch('http://localhost:3000/products')
+    .then(res => res.json())
+    .then(allProducts => {
+        const validJoinedProducts = allProducts.filter(p => 
+            joinedGroups.includes(String(p.id)) || joinedGroups.includes(p.id)
+        );
+        document.getElementById('joined-count').innerText = `${validJoinedProducts.length} 건`;
+    })
+    .catch(err => console.error('참여 공구 개수 로드 실패:', err));
 
 fetch('http://localhost:3000/products')
     .then(res => res.json())
