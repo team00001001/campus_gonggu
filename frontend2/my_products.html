@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 공고 관리 | KU GONGGU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ku-crimson: #8A1538;
+            --text-dark: #222222;
+            --bg-color: #F8F9FA;
+            --surface-color: #FFFFFF;
+            --border-color: #EAECEF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A5056;
+            --text-tertiary: #818991;
+            --shadow-md: 0 4px 16px rgba(138, 21, 56, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--ku-crimson);
+            backdrop-filter: blur(8px);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .page-title span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ku-crimson);
+            margin-left: 8px;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .product-card {
+            background: var(--surface-color);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .product-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 14px;
+            object-fit: cover;
+            background-color: #eee;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .status-recruiting { background: #FFF0F3; color: var(--ku-crimson); }
+        .status-completed { background: #EEEEEE; color: #777777; }
+
+        .product-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .product-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 15px;
+        }
+
+        .manage-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-manage {
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-secondary);
+            transition: 0.2s;
+        }
+
+        .btn-chat { 
+            color: #FFB300 !important; 
+            border-color: transparent !important; 
+            background: rgba(255, 179, 0, 0.05) !important; 
+        }
+
+        .btn-chat:hover {
+            background: rgba(255, 179, 0, 0.2) !important;
+        }
+
+        .btn-manage:hover {
+            background: #F8F9FA;
+            border-color: #ccc;
+        }
+
+        .btn-edit { color: #007AFF; border-color: transparent; background: #007AFF05; }
+        .btn-delete { color: #FF3B30; border-color: transparent; background: #FF3B3005; }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state p {
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn-write {
+            display: inline-block;
+            background: var(--ku-crimson);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">내가 올린 공고 <span id="count-badge">0</span></h1>
+        </div>
+        
+        <div id="product-list" class="product-list"></div>
+
+        <div id="empty-view" class="empty-state" style="display: none;">
+            <p>아직 올린 공동구매 공고가 없네요!<br>직접 공구를 열어 학우들을 모아보세요.</p>
+            <a href="writefront.html" class="btn-write">공구 글 쓰기</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. 헤더 불러오기
+            fetch('header.html')
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                    updateHeader();
+                });
+
+            const listContainer = document.getElementById('product-list');
+            const emptyView = document.getElementById('empty-view');
+            const countBadge = document.getElementById('count-badge');
+
+            // 2. 현재 로그인한 사용자 이메일 확인
+            const myEmail = localStorage.getItem('userEmail');
+            if (!myEmail) {
+                alert("로그인이 필요합니다.");
+                location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // 3. 백엔드에서 데이터 불러오기
+                const response = await fetch('http://localhost:3000/products'); 
+                const allProducts = await response.json();
+
+                // 4. 내가 올린 글만 필터링 (작성자 필드명: authorEmail, owner, author 등 백엔드 구조에 맞춤)
+                const myProducts = allProducts.filter(p => p.authorEmail === myEmail || p.owner === myEmail || p.author === myEmail);
+                
+                countBadge.innerText = myProducts.length;
+
+                if (myProducts.length === 0) {
+                    emptyView.style.display = 'block';
+                    return;
+                }
+
+                // 5. 화면에 렌더링
+                myProducts.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    
+                    const isCompleted = product.currentCount >= product.targetCount;
+                    const statusClass = isCompleted ? 'status-completed' : 'status-recruiting';
+                    const statusText = isCompleted ? '모집완료' : '모집중';
+
+                    card.innerHTML = `
+                        <img src="${product.imageUrl || 'https://via.placeholder.com/100'}" alt="상품" class="product-img">
+                        <div class="product-info">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <div class="product-name" onclick="location.href='product.html?id=${product.id}'">${product.title}</div>
+                            <div class="product-meta">
+                                <span>💰 ${Number(product.price).toLocaleString()}원</span>
+                                <span>👥 ${product.currentCount} / ${product.targetCount}명</span>
+                            </div>
+                        </div>
+                        <div class="manage-btns">
+                            <a href="chat.html?id=${product.id}" class="btn-manage btn-chat">채팅방</a>
+                            <a href="#" class="btn-manage btn-edit">수정</a>
+                            <a href="#" class="btn-manage btn-danger btn-delete" onclick="deleteProduct(${product.id})">삭제</a>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            } catch (error) {
+                console.error('데이터 로드 실패:', error);
+                listContainer.innerHTML = '<p style="text-align:center; color:#999; padding: 40px 0;">공고 목록을 불러오는 중 오류가 발생했습니다.<br>서버(백엔드)가 켜져 있는지 확인해주세요.</p>';
+            }
+        });
+
+        function updateHeader() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authButtons = document.querySelectorAll('.auth-only');
+            const guestButtons = document.querySelectorAll('.guest-only');
+            if (isLoggedIn) {
+                authButtons.forEach(btn => btn.style.display = 'inline-block');
+                guestButtons.forEach(btn => btn.style.display = 'none');
+            }
+        }
+
+        // 백엔드 연동 시 실제 삭제 로직이 들어갈 부분
+        async function deleteProduct(id) {
+            if(confirm("정말로 이 공고를 삭제하시겠습니까?")) {
+                alert("삭제 요청되었습니다. (백엔드 연동 시 여기에 DELETE 요청 코드를 추가하세요)");
+                /* // 예시 코드:
+                await fetch(`http://localhost:3000/products/${id}`, { method: 'DELETE' });
+                location.reload(); 
+                */
+            }
+        }
+    </script>
+</body>
+</html>
