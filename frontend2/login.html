@@ -141,9 +141,21 @@
     <div class="login-container">
         <h2>LOGIN</h2>
         <form id="login-form">
+            <!-- 이메일 입력 그룹 -->
             <div class="form-group">
-                <label for="user-id">학교 이메일</label>
-                <input type="text" id="user-id" placeholder="이메일 입력 (@korea.ac.kr 제외)" required>
+                <label>학교 이메일</label>
+                <div class="email-input-group" style="display: flex; gap: 10px; margin-bottom: 5px;">
+                    <input type="text" id="user-id" placeholder="이메일 아이디" required>
+                    <select id="email-domain" onchange="toggleDomainInput()">
+                        <option value="korea.ac.kr">@ korea.ac.kr</option>
+                        <option value="gmail.com">@ gmail.com</option>
+                        <option value="naver.com">@ naver.com</option>
+                        <option value="kakao.com">@ kakao.com</option>
+                        <option value="direct">직접 입력</option>
+                    </select>
+                </div>
+                <!-- 직접 입력 선택 시 나타나는 입력창 (기본 숨김) -->
+                <input type="text" id="custom-domain" placeholder="예: univ.ac.kr" style="display: none; margin-bottom: 10px;">
             </div>
 
             <div class="form-group">
@@ -151,7 +163,6 @@
                 <input type="password" id="user-pw" placeholder="비밀번호 입력" required>
             </div>
             
-            <!-- ✅ onclick 함수명을 아래 script와 동일하게 loginToServer()로 수정했습니다. -->
             <button type="button" class="btn" onclick="loginToServer()">로그인</button>
         </form>
 
@@ -164,17 +175,37 @@
     </div>
 
     <script>
-        async function loginToServer() {
-            const emailId = document.getElementById('user-id').value;
-            const password = document.getElementById('user-pw').value;
+        // 직접 입력 선택 시 입력창을 보여주거나 숨기는 함수
+        function toggleDomainInput() {
+            const domainSelect = document.getElementById('email-domain').value;
+            const customDomainInput = document.getElementById('custom-domain');
             
-            // 회원가입 시 저장된 이메일 형식에 맞춰 @korea.ac.kr를 붙입니다.
-            const fullEmail = `${emailId}@korea.ac.kr`; 
+            if (domainSelect === 'direct') {
+                customDomainInput.style.display = 'block';
+            } else {
+                customDomainInput.style.display = 'none';
+                customDomainInput.value = ''; // 숨길 때 기존 입력값 초기화
+            }
+        }
 
-            if (!emailId || !password) {
-                alert("아이디와 비밀번호를 입력해주세요.");
+        async function loginToServer() {
+            const emailId = document.getElementById('user-id').value.trim();
+            const password = document.getElementById('user-pw').value.trim();
+            
+            // 선택된 도메인 가져오기 (직접 입력인 경우 해당 input 값을 가져옴)
+            let emailDomain = document.getElementById('email-domain').value;
+            if (emailDomain === 'direct') {
+                emailDomain = document.getElementById('custom-domain').value.trim();
+            }
+
+            // 빈 값 체크
+            if (!emailId || !emailDomain || !password) {
+                alert("이메일과 비밀번호를 모두 입력해주세요.");
                 return;
             }
+
+            // 입력된 아이디와 도메인을 합쳐서 전체 이메일 생성
+            const fullEmail = `${emailId}@${emailDomain}`; 
 
             try {
                 // 🚀 백엔드 서버(auth.js)와 통신
