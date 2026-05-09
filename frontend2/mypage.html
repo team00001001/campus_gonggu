@@ -205,13 +205,28 @@
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="top-stats">
-            <div class="stat-card"><span class="stat-label">올린 공고</span><span class="stat-value">5 건</span></div>
-            <div class="stat-card"><span class="stat-label">참여 중</span><span class="stat-value">2 건</span></div>
-            <div class="stat-card"><span class="stat-label">성공 공구</span><span class="stat-value">12 건</span></div>
-            <div class="stat-card"><span class="stat-label">매너 칭찬</span><span class="stat-value">24 개</span></div>
-        </div>
+  <div class="main-content">
+   <div class="top-stats">
+    <div class="stat-card" onclick="location.href='my_products.html'">
+        <span class="stat-label">올린 공고</span>
+        <span class="stat-value" id="my-post-count">0 건</span>
+    </div>
+
+    <div class="stat-card" onclick="location.href='joined_products.html'">
+        <span class="stat-label">참여 중</span>
+        <span class="stat-value" id="joined-count">0 건</span>
+    </div>
+
+    <div class="stat-card" onclick="location.href='success_products.html'">
+        <span class="stat-label">성공 공구</span>
+        <span class="stat-value" id="success-count">0 건</span>
+    </div>
+
+    <div class="stat-card" onclick="location.href='manner.html'">
+        <span class="stat-label">매너 칭찬</span>
+        <span class="stat-value" id="manner-count">24 개</span>
+    </div>
+</div>
 
         <div class="section-title">최근 참여 내역 <span style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">전체보기 〉</span></div>
         <div class="gonggu-grid">
@@ -310,6 +325,25 @@
     });
 
     updateProfileCard();
+    const userId = localStorage.getItem('userId');
+
+fetch(`http://localhost:3000/products/my/${userId}`)
+    .then(res => res.json())
+    .then(products => {
+        document.getElementById('my-post-count').innerText = `${products.length} 건`;
+    })
+    .catch(err => console.error(err));
+
+const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+document.getElementById('joined-count').innerText = `${joinedGroups.length} 건`;
+
+fetch('http://localhost:3000/products')
+    .then(res => res.json())
+    .then(products => {
+        const successProducts = products.filter(p => p.currentCount >= p.targetCount);
+        document.getElementById('success-count').innerText = `${successProducts.length} 건`;
+    })
+    .catch(err => console.error(err));
 </script>
 
 </body>
