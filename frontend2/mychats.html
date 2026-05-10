@@ -279,60 +279,58 @@
             }
         });
 
-        // 3. 채팅방 리스트 렌더링 로직
         document.addEventListener('DOMContentLoaded', async () => {
-            const listContainer = document.getElementById('chat-list');
-            const emptyView = document.getElementById('empty-view');
-            const countBadge = document.getElementById('count-badge');
+    const listContainer = document.getElementById('chat-list');
+    const emptyView = document.getElementById('empty-view');
+    const countBadge = document.getElementById('count-badge');
 
-            // 참여한 상품 ID 목록 가져오기 (localStorage)
-            const joinedIds = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+    const userId = localStorage.getItem('userId');
 
-            if (joinedIds.length === 0) {
-                emptyView.style.display = 'block';
-                return;
-            }
+    if (!userId) {
+        alert('로그인이 필요합니다.');
+        location.href = 'login.html';
+        return;
+    }
 
-            try {
-                // (선택 사항) 만약 mypage.html처럼 json server를 사용 중이라면 
-                // 아래 URL을 'http://localhost:3000/products'로 변경하셔도 됩니다.
-                const response = await fetch('products.json'); 
-                const allProducts = await response.json();
+    try {
+        const response = await fetch(`http://localhost:3000/chats/my/${userId}`);
+        const myChats = await response.json();
 
-                // 내가 참여한 상품만 필터링
-                const myProducts = allProducts.filter(p => joinedIds.includes(p.id.toString()) || joinedIds.includes(p.id));
-                
-                countBadge.innerText = myProducts.length;
+        countBadge.innerText = myChats.length;
 
-                if (myProducts.length === 0) {
-                    emptyView.style.display = 'block';
-                    return;
-                }
+        if (myChats.length === 0) {
+            emptyView.style.display = 'block';
+            return;
+        }
 
-                // 화면에 리스트 그리기
-                myProducts.forEach(product => {
-                    const card = document.createElement('div');
-                    card.className = 'chat-card';
-                    card.innerHTML = `
-                        <img src="${product.imageUrl || 'https://via.placeholder.com/80'}" alt="상품" class="product-img">
-                        <div class="chat-info">
-                            <div class="chat-category">${product.category}</div>
-                            <div class="chat-name">${product.title}</div>
-                            <div class="chat-meta">
-                                <span>💰 ${product.price.toLocaleString()}원</span>
-                                <span>📍 ${product.location}</span>
-                            </div>
-                        </div>
-                        <a href="chat.html?id=${product.id}" class="enter-btn">채팅방 입장</a>
-                    `;
-                    listContainer.appendChild(card);
-                });
+        listContainer.innerHTML = '';
 
-            } catch (error) {
-                console.error('데이터 로드 실패:', error);
-                alert('목록을 불러오는 중 오류가 발생했습니다.');
-            }
+        myChats.forEach(chat => {
+            const card = document.createElement('div');
+            card.className = 'chat-card';
+
+            card.innerHTML = `
+                <img src="${chat.imageUrl || 'images/default-etc.png'}" alt="상품" class="product-img">
+                <div class="chat-info">
+                    <div class="chat-category">${chat.category || '기타'}</div>
+                    <div class="chat-name">${chat.title}</div>
+                    <div class="chat-meta">
+                        <span>💰 ${Number(chat.price).toLocaleString()}원</span>
+                        <span>📍 ${chat.location || '교내'}</span>
+                        <span>👥 ${chat.currentCount}/${chat.targetCount}</span>
+                    </div>
+                </div>
+                <a href="direct_chattings.html?id=${chat.product_id}" class="enter-btn">채팅방 입장</a>
+            `;
+
+            listContainer.appendChild(card);
         });
+
+    } catch (error) {
+        console.error('채팅방 목록 로드 실패:', error);
+        alert('채팅방 목록을 불러오지 못했습니다.');
+    }
+});
     </script>
 </body>
 </html>
