@@ -8,13 +8,15 @@ router.get('/my/:userId', async (req, res) => {
         const [rows] = await pool.promise().query(
             `
             SELECT
-                p.id AS product_id,
-                p.title,
-                p.category,
-                p.location,
-                p.currentCount,
-                p.targetCount,
-                pp.created_at AS joined_at
+    p.id AS product_id,
+    p.title,
+    p.category,
+    p.location,
+    p.price,
+    p.imageUrl,
+    p.currentCount,
+    p.targetCount,
+    pp.created_at AS joined_at
             FROM product_participants pp
             JOIN products p ON pp.product_id = p.id
             WHERE pp.user_id = ?

@@ -307,66 +307,72 @@ fetch('http://localhost:3000/products')
         document.getElementById('my-post-count').innerText = `${myProducts.length} 건`;
     })
     .catch(err => console.error('내 공고 개수 로드 실패:', err));
-
-const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-
-// 백엔드에서 실제 존재하는 상품만 걸러서 정확한 개수 세기
-fetch('http://localhost:3000/products')
+fetch(`http://localhost:3000/chats/my/${userId}`)
     .then(res => res.json())
-    .then(allProducts => {
-        // 수정된 부분: || p.user_id == userId 조건 추가
-        const validJoinedProducts = allProducts.filter(p => 
-            joinedGroups.includes(String(p.id)) || joinedGroups.includes(p.id) || p.user_id == userId
-        );
-        document.getElementById('joined-count').innerText = `${validJoinedProducts.length} 건`;
+    .then(chats => {
+        document.getElementById('joined-count').innerText = `${chats.length} 건`;
     })
     .catch(err => console.error('참여 공구 개수 로드 실패:', err));
 
 fetch('http://localhost:3000/products')
     .then(res => res.json())
     .then(products => {
-        const successProducts = products.filter(p => p.currentCount >= p.targetCount);
-        document.getElementById('success-count').innerText = `${successProducts.length} 건`;
+        const successProducts = products.filter(
+            p => p.currentCount >= p.targetCount
+        );
+
+        document.getElementById('success-count').innerText =
+            `${successProducts.length} 건`;
     })
     .catch(err => console.error(err));
-    
-    async function loadRecentParticipations() {
+
+async function loadRecentParticipations() {
     const grid = document.getElementById('recent-participation-grid');
-    const joinedIds = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-    const userId = localStorage.getItem('userId'); // userId 가져오기 추가
 
     grid.innerHTML = '';
 
-    // 내가 올린 공고도 표시해야 하므로, 바로 return 하지 않고 아래 데이터 페칭으로 넘어갑니다.
-    // if (joinedIds.length === 0) { ... } 부분은 삭제하거나 주석 처리합니다.
-
     try {
-        const response = await fetch('http://localhost:3000/products');
-        const products = await response.json();
-
-        // 수정된 부분: || product.user_id == userId 조건 추가
-        const joinedProducts = products.filter(product =>
-            joinedIds.includes(String(product.id)) || product.user_id == userId
+        const response = await fetch(
+            `http://localhost:3000/chats/my/${userId}`
         );
 
+        const joinedProducts = await response.json();
+
         if (joinedProducts.length === 0) {
-            grid.innerHTML = '<p style="color:#888;">최근 참여 내역이 없습니다.</p>';
+            grid.innerHTML =
+                '<p style="color:#888;">최근 참여 내역이 없습니다.</p>';
             return;
         }
 
-        // 이후 코드는 기존과 동일하게 유지
         joinedProducts.slice(0, 2).forEach(product => {
-            const isClosed = product.currentCount >= product.targetCount;
-            const badgeClass = isClosed ? 'success' : 'recruiting';
-            const badgeText = isClosed ? '배송 완료' : '모집중';
+            const isClosed =
+                product.currentCount >= product.targetCount;
+
+            const badgeClass =
+                isClosed ? 'success' : 'recruiting';
+
+            const badgeText =
+                isClosed ? '배송 완료' : '모집중';
 
             grid.insertAdjacentHTML('beforeend', `
-                <div class="gonggu-card" onclick="location.href='product.html?id=${product.id}'" style="cursor:pointer;">
-                    <span class="badge ${badgeClass}">${badgeText}</span>
-                    <span class="gonggu-title">${product.title}</span>
+                <div class="gonggu-card"
+                     onclick="location.href='product.html?id=${product.product_id}'"
+                     style="cursor:pointer;">
+
+                    <span class="badge ${badgeClass}">
+                        ${badgeText}
+                    </span>
+
+                    <span class="gonggu-title">
+                        ${product.title}
+                    </span>
+
                     <div class="gonggu-info">
-                        <span>👑 ${product.writer || '@익명'}</span>
-                        <span>👥 ${product.currentCount} / ${product.targetCount} 명</span>
+                        <span>📍 ${product.location || '교내'}</span>
+                        <span>
+                            👥 ${product.currentCount}
+                            / ${product.targetCount} 명
+                        </span>
                     </div>
                 </div>
             `);
@@ -374,59 +380,14 @@ fetch('http://localhost:3000/products')
 
     } catch (error) {
         console.error(error);
-        grid.innerHTML = '<p style="color:#888;">참여 내역을 불러오지 못했습니다.</p>';
+
+        grid.innerHTML =
+            '<p style="color:#888;">참여 내역을 불러오지 못했습니다.</p>';
     }
 }
 
 loadRecentParticipations();
-async function loadLikedProducts() {
-    const grid = document.getElementById('liked-products-grid');
 
-    // localStorage에서 찜 목록 가져오기
-    const likedIds = JSON.parse(localStorage.getItem('likedProducts') || '[]');
-
-    grid.innerHTML = '';
-
-    if (likedIds.length === 0) {
-        grid.innerHTML = '<p style="color:#888;">찜한 공구가 없습니다.</p>';
-        return;
-    }
-
-    try {
-        const response = await fetch('http://localhost:3000/products');
-        const products = await response.json();
-
-        const likedProducts = products.filter(product =>
-            likedIds.includes(String(product.id))
-        );
-
-        if (likedProducts.length === 0) {
-            grid.innerHTML = '<p style="color:#888;">찜한 공구가 없습니다.</p>';
-            return;
-        }
-
-        likedProducts.slice(0, 2).forEach(product => {
-            const isClosed = product.currentCount >= product.targetCount;
-            const badgeClass = isClosed ? 'success' : 'recruiting';
-            const badgeText = isClosed ? '배송 완료' : '모집중';
-
-            grid.insertAdjacentHTML('beforeend', `
-                <div class="gonggu-card" onclick="location.href='product.html?id=${product.id}'" style="cursor:pointer;">
-                    <span class="badge ${badgeClass}">${badgeText}</span>
-                    <span class="gonggu-title">${product.title}</span>
-                    <div class="gonggu-info">
-                        <span>👑 ${product.writer || '@익명'}</span>
-                        <span>👥 ${product.currentCount} / ${product.targetCount} 명</span>
-                    </div>
-                </div>
-            `);
-        });
-
-    } catch (error) {
-        console.error(error);
-        grid.innerHTML = '<p style="color:#888;">찜 목록을 불러오지 못했습니다.</p>';
-    }
-}
 loadLikedProducts();
 </script>
 
