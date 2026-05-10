@@ -1241,73 +1241,161 @@ async function markStatus(participantId, userId, status) {
     }
 }
 
+// ==========================================
+// ⚙️ 환경 설정: 백엔드 API 주소
+// ==========================================
+// 전체 테스트 중인 로컬 서버 주소로 고정합니다.
+const API_BASE_URL = 'http://localhost:3000'; 
+
+// ==========================================
+// 1. 페이지 로드 시 자동 실행 (배송 정보 초기화)
+// ==========================================
+document.addEventListener('DOMContentLoaded', async () => {
+    const productId = getProductIdFromURL(); 
+    // 실제 로그인 시 저장된 유저 ID 불러오기 (없으면 테스트용 1 적용)
+    const userId = localStorage.getItem('userId') || 1; 
+
+    if (!productId || !userId) {
+        hideDeliverySection();
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/delivery/info/${productId}?userId=${userId}`);
+        const dbData = await response.json();
+
+        // 외부인(참여자가 아님)인 경우 배송 섹션 숨김
+        if (!dbData.isParticipant) {
+            hideDeliverySection();
+            return;
+        }
+
+        // 참여자이고 등록된 운송장이 있는 경우 자동 렌더링
+        if (dbData.exists) {
+            document.querySelector('.tracking-input-container').style.display = 'none';
+            const { carrier_id, tracking_number } = dbData.data;
+            await autoFetchTrackingInfo(carrier_id, tracking_number);
+        }
+    } catch (error) {
+        console.error('배송 정보 초기 로딩 에러:', error);
+    }
+});
+
+function hideDeliverySection() {
+    const deliverySection = document.querySelector('.delivery-section');
+    if (deliverySection) deliverySection.style.display = 'none';
+}
+
+// ==========================================
+// 2. [자동] 배송 정보 조회 (타임라인 렌더링)
+// ==========================================
+async function autoFetchTrackingInfo(carrierId, trackingNumber) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
+        const data = await response.json();
+        
+        if (data.status === false || data.code) {
+            console.log('운송장은 등록되었으나 아직 택배사 이동 내역이 없습니다.');
+            return;
+        }
+
+        const trackingDetails = data.trackingDetails || [];
+        const formattedData = trackingDetails.map(detail => ({
+            time: detail.timeString,
+            location: detail.where,
+            status: detail.kind,
+            details: detail.telno ? `연락처: ${detail.telno}` : '' 
+        }));
+
+        const carrierName = getCarrierName(carrierId); 
+        renderTimeline(carrierName, trackingNumber, formattedData);
+
+    } catch (error) {
+        console.error('자동 배송 조회 에러:', error);
+    }
+}
+
+// ==========================================
+// 3. [수동] 배송 정보 등록 및 조회 (주최자용)
+// ==========================================
 async function fetchTrackingInfo() {
     const carrierId = document.getElementById('carrier-id').value;
     const trackingNumber = document.getElementById('tracking-number').value.replace(/[^0-9]/g, ''); 
+    const productId = getProductIdFromURL(); 
 
-    if (!carrierId) {
-        alert('택배사를 선택해주세요.');
-        return;
-    }
-    if (!trackingNumber) {
-        alert('운송장 번호를 입력해주세요.');
+    if (!carrierId || !trackingNumber || !productId) {
+        alert('택배사, 운송장 번호, 또는 상품 정보를 확인할 수 없습니다.');
         return;
     }
 
     const carrierName = document.getElementById('carrier-id').options[document.getElementById('carrier-id').selectedIndex].text;
 
     try {
-        // 1. 방금 server.js에 연결한 우리 백엔드 주소(/delivery/tracking)로 요청을 보냅니다!
-        // 프론트엔드와 백엔드 서버(포트 3000)가 분리되어 실행 중이라면 아래처럼 전체 주소를 적어주세요.
-        const response = await fetch(`http://localhost:3000/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
+        // 백엔드 DB에 운송장 정보 저장 요청
+        const saveResponse = await fetch(`${API_BASE_URL}/delivery/${productId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                carrierId: carrierId,
+                trackingNumber: trackingNumber
+            })
+        });
+
+        const saveResult = await saveResponse.json();
+        
+        if (!saveResponse.ok) {
+            alert('DB 저장에 실패했습니다: ' + saveResult.message);
+            return; 
+        }
+
+        // 저장 성공 시 폼 숨기기
+        document.querySelector('.tracking-input-container').style.display = 'none';
+
+        // 스마트택배 API 조회
+        const response = await fetch(`${API_BASE_URL}/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
         const data = await response.json();
         
-        // 2. 스마트택배 API에서 에러를 보냈을 경우 (예: 잘못된 송장번호, 없는 택배사)
         if (data.status === false || data.code) {
             alert(data.msg || '조회할 수 없는 운송장 번호이거나 잘못된 택배사입니다.');
             return;
         }
 
-        // 3. 스마트택배 응답(data.trackingDetails)을 우리 UI 타임라인 형식에 맞게 변환합니다.
-        // 만약 배송 내역이 아직 없다면 빈 배열 처리
         const trackingDetails = data.trackingDetails || [];
-        
         if (trackingDetails.length === 0) {
-            alert('아직 배송 내역이 등록되지 않았습니다.');
+            alert('운송장이 등록되었으나 아직 택배사에서 이동 내역을 제공하지 않습니다.');
             return;
         }
 
-        const formattedData = trackingDetails.map(detail => {
-            return {
-                time: detail.timeString, // 예: "2026-05-10 14:30:00"
-                location: detail.where,  // 예: "동남권HUB"
-                status: detail.kind,     // 예: "간선상차", "배송출발" 등
-                details: detail.telno ? `영업소/기사님 연락처: ${detail.telno}` : '' 
-            };
-        });
+        const formattedData = trackingDetails.map(detail => ({
+            time: detail.timeString,
+            location: detail.where,  
+            status: detail.kind,     
+            details: detail.telno ? `영업소/기사님 연락처: ${detail.telno}` : '' 
+        }));
 
-        // 4. 변환된 데이터를 바탕으로 화면을 그립니다.
         renderTimeline(carrierName, trackingNumber, formattedData);
 
     } catch (error) {
-        console.error('배송 조회 프론트엔드 에러:', error);
-        alert('서버와 통신하는 데 실패했습니다. 백엔드 서버가 켜져 있는지 확인해주세요.');
+        console.error('배송 조회 및 등록 에러:', error);
+        alert('서버와 통신하는 데 실패했습니다.');
     }
 }
 
+// ==========================================
+// 4. 화면에 타임라인 UI 그리기
+// ==========================================
 function renderTimeline(carrierName, trackingNumber, dataList) {
     const resultContainer = document.getElementById('tracking-result');
     const infoText = document.getElementById('delivery-info-text');
     const timelineList = document.getElementById('timeline-list');
 
-    // 상단 정보 업데이트
     infoText.innerText = `${carrierName} [${trackingNumber}]`;
-    timelineList.innerHTML = ''; // 기존 내역 초기화
+    timelineList.innerHTML = ''; 
 
-    // 데이터가 역순(최신이 먼저)으로 오는지, 정순으로 오는지에 따라 배열 순서를 맞춰줍니다.
-    // 여기서는 정순(과거->최신) 배열이라고 가정하고 화면에 그립니다.
     dataList.forEach((item, index) => {
-        const isLastItem = (index === dataList.length - 1); // 가장 마지막 단계인지 확인
+        const isLastItem = (index === dataList.length - 1); 
         
         const li = document.createElement('li');
         li.className = `timeline-item ${isLastItem ? 'active' : ''}`;
@@ -1321,13 +1409,25 @@ function renderTimeline(carrierName, trackingNumber, dataList) {
             </div>
         `;
         
-        // 최신 내역이 위로 올라오게 하려면 prepend, 아래로 내려가게 하려면 append 사용
         timelineList.prepend(li); 
     });
 
-    // 결과 컨테이너 보여주기
     resultContainer.style.display = 'block';
 }
+
+// ==========================================
+// 5. 헬퍼 함수 모음
+// ==========================================
+function getProductIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('productId'); 
+}
+
+function getCarrierName(code) {
+    const carriers = { '04': 'CJ대한통운', '01': '우체국택배', '05': '한진택배', '08': '롯데택배', '06': '로젠택배' };
+    return carriers[code] || '알 수 없는 택배사';
+}
+
 </script>
 </body>
 </html>
