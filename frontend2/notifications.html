@@ -330,9 +330,21 @@ async function loadNotifications() {
         notifications = await response.json();
 
         renderNotifications();
+        updateNotificationBadge();
     } catch (error) {
         console.error('알림 불러오기 실패:', error);
     }
+}
+function updateNotificationBadge() {
+    const badge = document.querySelector('.noti-badge');
+
+    if (!badge) return;
+
+    const hasUnread = notifications.some(
+        n => Number(n.is_read) === 0
+    );
+
+    badge.style.display = hasUnread ? 'block' : 'none';
 }
         // 3. 알림 화면 렌더링 함수
         function renderNotifications() {
@@ -390,12 +402,15 @@ notifications.forEach(noti => {
     method: 'PATCH'
 });
             // 해당 ID의 알림을 읽음 처리
-            notifications = notifications.map(n => {
-                return n.id === id ? { ...n, isRead: true } : n;
-            });
-            
-            // UI 다시 그리기 (혹은 페이지 바로 이동)
+       notifications = notifications.map(n => {
+    return n.id === id
+        ? { ...n, is_read: 1 }
+        : n;
+});
             renderNotifications();
+
+updateNotificationBadge();
+            // UI 다시 그리기 (혹은 페이지 바로 이동)
             
             // 지정된 링크로 이동
             if(link !== '#') location.href = link;
@@ -403,14 +418,20 @@ notifications.forEach(noti => {
 
         // 5. 모두 읽음 처리
         function markAllAsRead() {
-            notifications = notifications.map(n => ({ ...n, isRead: true }));
-            renderNotifications();
-            
-            // 헤더의 빨간 점도 없애주는 로직 (header.html이 불러와진 후)
-            const headerBadge = document.querySelector('.noti-badge');
-            if(headerBadge) headerBadge.style.display = 'none';
-        }
 
+    notifications = notifications.map(n => ({
+        ...n,
+        is_read: 1
+    }));
+
+    renderNotifications();
+    updateNotificationBadge();
+
+    const headerBadge = document.querySelector('.noti-badge');
+
+    if(headerBadge)
+        headerBadge.style.display = 'none';
+}
         // 페이지 로드 시 렌더링 실행
 document.addEventListener('DOMContentLoaded', loadNotifications);
     </script>

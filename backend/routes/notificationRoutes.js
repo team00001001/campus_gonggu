@@ -1,6 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+
+// 특정 유저 알림 모두 읽음 처리
+router.patch('/user/:userId/read-all', (req, res) => {
+    const { userId } = req.params;
+
+    const sql = `
+        UPDATE notifications
+        SET is_read = 1
+        WHERE user_id = ?
+    `;
+
+    db.query(sql, [userId], (err) => {
+        if (err) {
+            console.error('모두 읽음 처리 에러:', err);
+            return res.status(500).json({ message: '모두 읽음 처리 실패' });
+        }
+
+        res.json({ message: '모두 읽음 처리 완료' });
+    });
+});
+
 // 내 알림 목록 조회
 router.get('/:userId', (req, res) => {
     const { userId } = req.params;
