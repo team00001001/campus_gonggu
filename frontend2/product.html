@@ -1243,7 +1243,7 @@ async function markStatus(participantId, userId, status) {
 
 async function fetchTrackingInfo() {
     const carrierId = document.getElementById('carrier-id').value;
-    const trackingNumber = document.getElementById('tracking-number').value.replace(/[^0-9]/g, ''); // 숫자만 추출
+    const trackingNumber = document.getElementById('tracking-number').value.replace(/[^0-9]/g, ''); 
 
     if (!carrierId) {
         alert('택배사를 선택해주세요.');
@@ -1257,19 +1257,41 @@ async function fetchTrackingInfo() {
     const carrierName = document.getElementById('carrier-id').options[document.getElementById('carrier-id').selectedIndex].text;
 
     try {
+        // 1. 방금 server.js에 연결한 우리 백엔드 주소(/delivery/tracking)로 요청을 보냅니다!
+        // 프론트엔드와 백엔드 서버(포트 3000)가 분리되어 실행 중이라면 아래처럼 전체 주소를 적어주세요.
+        const response = await fetch(`http://localhost:3000/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
+        const data = await response.json();
         
-        const mockData = [
-            { time: "2026-05-09 14:32", location: "동남권HUB", status: "집하완료", details: "보내시는 고객님으로부터 상품을 인수받았습니다." },
-            { time: "2026-05-09 22:15", location: "동남권HUB", status: "간선상차", details: "배송지로 상품이 이동중입니다." },
-            { time: "2026-05-10 07:40", location: "성북구대리점", status: "간선하차", details: "고객님의 동네로 상품이 도착했습니다." },
-            { time: "2026-05-10 10:10", location: "성북구대리점", status: "배송출발", details: "배송기사님이 배송을 시작했습니다. (14시~16시 도착 예정)" }
-        ];
+        // 2. 스마트택배 API에서 에러를 보냈을 경우 (예: 잘못된 송장번호, 없는 택배사)
+        if (data.status === false || data.code) {
+            alert(data.msg || '조회할 수 없는 운송장 번호이거나 잘못된 택배사입니다.');
+            return;
+        }
 
-        renderTimeline(carrierName, trackingNumber, mockData);
+        // 3. 스마트택배 응답(data.trackingDetails)을 우리 UI 타임라인 형식에 맞게 변환합니다.
+        // 만약 배송 내역이 아직 없다면 빈 배열 처리
+        const trackingDetails = data.trackingDetails || [];
+        
+        if (trackingDetails.length === 0) {
+            alert('아직 배송 내역이 등록되지 않았습니다.');
+            return;
+        }
+
+        const formattedData = trackingDetails.map(detail => {
+            return {
+                time: detail.timeString, // 예: "2026-05-10 14:30:00"
+                location: detail.where,  // 예: "동남권HUB"
+                status: detail.kind,     // 예: "간선상차", "배송출발" 등
+                details: detail.telno ? `영업소/기사님 연락처: ${detail.telno}` : '' 
+            };
+        });
+
+        // 4. 변환된 데이터를 바탕으로 화면을 그립니다.
+        renderTimeline(carrierName, trackingNumber, formattedData);
 
     } catch (error) {
-        console.error('배송 조회 에러:', error);
-        alert('배송 정보를 불러오는 데 실패했습니다.');
+        console.error('배송 조회 프론트엔드 에러:', error);
+        alert('서버와 통신하는 데 실패했습니다. 백엔드 서버가 켜져 있는지 확인해주세요.');
     }
 }
 
