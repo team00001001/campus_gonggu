@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="stylesheet" href="mobile.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알림 | KU GONGGU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 기존 페이지들과 통일된 컬러 테마 */
+            --ku-crimson: #8A1538;
+            --bg-color: #F7F8FA;
+            --surface-color: #FFFFFF;
+            --text-dark: #222222;
+            --text-gray: #777777;
+            --text-light: #A0A0A0;
+            --border-light: #EAECEF;
+            --unread-bg: #FFF5F7; /* 안 읽은 알림 배경색 (연한 버건디 톤) */
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding-top: 100px; /* 헤더 공간 */
+            min-height: 100vh;
+        }
+
+        /* ==========================================
+           공통 헤더 CSS (main_login.html 참고)
+           ========================================== */
+        header {
+            background-color: var(--ku-crimson);
+            backdrop-filter: blur(8px);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a.menu-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        nav a.menu-link:hover { color: var(--text-dark); }
+
+        .btn-login-nav {
+            background: var(--ku-crimson);
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(138, 21, 56, 0.3);
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(138, 21, 56, 0.4);
+        }
+
+        /* 알림 버튼 (헤더) */
+        .notification-wrapper { position: relative; display: flex; align-items: center; }
+        .btn-noti { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .btn-noti:hover { opacity: 0.7; }
+        .noti-badge { position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background-color: #FF3B30; border-radius: 50%; border: 2px solid var(--ku-crimson); }
+
+        /* ==========================================
+           알림 메인 컨텐츠
+           ========================================== */
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .btn-read-all {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-read-all:hover {
+            color: var(--text-dark);
+        }
+
+        /* 알림 리스트 */
+        .noti-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .noti-item {
+            background: var(--surface-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .noti-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+        }
+
+        /* 안 읽은 알림 스타일 */
+        .noti-item.unread {
+            background-color: var(--unread-bg);
+            border-color: rgba(138, 21, 56, 0.1);
+        }
+
+        .noti-item.unread .noti-dot {
+            display: block;
+        }
+
+        /* 알림 아이콘 */
+        .noti-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .icon-chat { background-color: #E3F2FD; color: #1565C0; } /* 파스텔 블루 */
+        .icon-success { background-color: #E8F5E9; color: #2E7D32; } /* 파스텔 그린 */
+        .icon-notice { background-color: #FFF3E0; color: #EF6C00; } /* 파스텔 오렌지 */
+
+        .noti-content {
+            flex: 1;
+            position: relative;
+        }
+
+        .noti-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            align-items: center;
+        }
+
+        .noti-title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .noti-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .noti-desc {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .noti-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--ku-crimson);
+            border-radius: 50%;
+            position: absolute;
+            top: 6px;
+            right: -10px;
+            display: none;
+        }
+
+        /* 빈 화면 (알림 없음) */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-gray);
+            display: none;
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">알림</h1>
+            <button class="btn-read-all" onclick="markAllAsRead()">모두 읽음 처리</button>
+        </div>
+
+        <div class="noti-list" id="noti-list">
+            </div>
+
+        <div class="empty-state" id="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <p>새로운 알림이 없습니다.</p>
+        </div>
+    </div>
+
+    <script>
+        // 1. 헤더 로드
+        fetch('header.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                updateHeader();
+            });
+
+        function updateHeader() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authButtons = document.querySelectorAll('.auth-only');
+            const guestButtons = document.querySelectorAll('.guest-only');
+
+            if (isLoggedIn) {
+                authButtons.forEach(btn => btn.style.display = 'inline-block');
+                guestButtons.forEach(btn => btn.style.display = 'none');
+            } else {
+                authButtons.forEach(btn => btn.style.display = 'none');
+                guestButtons.forEach(btn => btn.style.display = 'inline-block');
+                
+                // 로그인 안되어있으면 로그인 페이지로 튕겨내기
+                alert('로그인이 필요한 서비스입니다.');
+                location.href = 'login.html';
+            }
+        }
+
+        // 로그아웃 이벤트
+        document.addEventListener('click', function(e) {
+            if(e.target && e.target.id === 'logout-btn') {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userNickname');
+                localStorage.removeItem('userId');
+                alert('로그아웃 되었습니다.');
+                location.href = 'main_login.html'; 
+            }
+        });
+
+        // 2. 가상 알림 데이터 (추후 백엔드 API로 대체)
+        let dummyNotifications = [
+            {
+                id: 1,
+                type: 'chat', // chat, success, notice
+                title: '[햇반 24개입] 채팅방',
+                desc: '새로운 메시지가 도착했습니다: "오늘 오후 6시에 정경대 후문에서 뵐게요!"',
+                time: '10분 전',
+                isRead: false,
+                link: 'direct_chattings.html?id=1' // 해당 공구 채팅방으로 이동
+            },
+            {
+                id: 2,
+                type: 'success',
+                title: '공동구매 모집 완료!',
+                desc: '참여하신 [제로콜라 1박스] 공구의 목표 인원이 모두 모였습니다. 채팅방에서 수령 일정을 확인하세요.',
+                time: '1시간 전',
+                isRead: false,
+                link: 'product.html?id=2' // 해당 상품 상세로 이동
+            },
+            {
+                id: 3,
+                type: 'notice',
+                title: 'KU GONGGU 업데이트 안내',
+                desc: '안전한 거래를 위해 크림슨 지수 시스템이 업데이트 되었습니다.',
+                time: '1일 전',
+                isRead: true,
+                link: '#'
+            }
+        ];
+
+        // 3. 알림 화면 렌더링 함수
+        function renderNotifications() {
+            const listContainer = document.getElementById('noti-list');
+            const emptyState = document.getElementById('empty-state');
+            
+            listContainer.innerHTML = ''; // 초기화
+
+            if (dummyNotifications.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            dummyNotifications.forEach(noti => {
+                // 타입별 아이콘 설정
+                let iconClass = '';
+                let iconEmoji = '';
+                
+                if (noti.type === 'chat') { iconClass = 'icon-chat'; iconEmoji = '💬'; }
+                else if (noti.type === 'success') { iconClass = 'icon-success'; iconEmoji = '🎉'; }
+                else { iconClass = 'icon-notice'; iconEmoji = '📢'; }
+
+                const notiHTML = `
+                    <div class="noti-item ${noti.isRead ? '' : 'unread'}" onclick="readAndGo(${noti.id}, '${noti.link}')">
+                        <div class="noti-icon ${iconClass}">${iconEmoji}</div>
+                        <div class="noti-content">
+                            <div class="noti-header">
+                                <span class="noti-title">${noti.title}</span>
+                                <span class="noti-time">${noti.time}</span>
+                            </div>
+                            <div class="noti-desc">${noti.desc}</div>
+                            ${noti.isRead ? '' : '<div class="noti-dot"></div>'}
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', notiHTML);
+            });
+        }
+
+        // 4. 클릭 시 읽음 처리 후 이동
+        function readAndGo(id, link) {
+            // 해당 ID의 알림을 읽음 처리
+            dummyNotifications = dummyNotifications.map(n => 
+                n.id === id ? { ...n, isRead: true } : n
+            );
+            
+            // UI 다시 그리기 (혹은 페이지 바로 이동)
+            renderNotifications();
+            
+            // 지정된 링크로 이동
+            if(link !== '#') location.href = link;
+        }
+
+        // 5. 모두 읽음 처리
+        function markAllAsRead() {
+            dummyNotifications = dummyNotifications.map(n => ({ ...n, isRead: true }));
+            renderNotifications();
+            
+            // 헤더의 빨간 점도 없애주는 로직 (header.html이 불러와진 후)
+            const headerBadge = document.querySelector('.noti-badge');
+            if(headerBadge) headerBadge.style.display = 'none';
+        }
+
+        // 페이지 로드 시 렌더링 실행
+        document.addEventListener('DOMContentLoaded', renderNotifications);
+
+    </script>
+</body>
+</html>

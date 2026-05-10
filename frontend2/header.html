@@ -4,24 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KU GONGGU | 고대공구</title>
-    <!-- 트렌디하고 깔끔한 본고딕(Pretendard) 중심 사용 -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 활기차고 트렌디한 컬러 팔레트 */
             --ku-crimson: #8A1538;
             --ku-crimson-gradient: linear-gradient(135deg, #8A1538 0%, #D32F2F 100%);
-            --bg-color: #F7F8FA; /* 시원하고 깔끔한 배경색 */
+            --bg-color: #F7F8FA;
             --surface-color: #FFFFFF;
             --text-dark: #222222;
             --text-gray: #777777;
             --border-light: #F0F0F0;
-            
-            /* 카테고리 파스텔 톤 */
-            --color-food: #FFF3E0;
-            --color-living: #E3F2FD;
-            --color-study: #E8F5E9;
-            --color-etc: #F3E5F5;
         }
 
         * {
@@ -31,16 +23,6 @@
             font-family: 'Pretendard', sans-serif;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* ==========================================
-        1. 메인 화면 상단바 (Header) - 모던 앱 스타일
-       ========================================== */
         header {
             background-color: var(--ku-crimson);
             backdrop-filter: blur(8px);
@@ -65,7 +47,7 @@
         }
 
         .logo {
-            color:white;
+            color: white;
             font-size: 1.6rem;
             font-weight: 800;
             text-decoration: none;
@@ -108,9 +90,39 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(138, 21, 56, 0.4);
         }
-        /* ==========================================
-           6. 로그인 모달 (앱 스타일의 부드러운 팝업)
-           ========================================== */
+
+        /* 알림 버튼 스타일 */
+        .notification-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-noti {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+
+        .btn-noti:hover { opacity: 0.7; }
+
+        .noti-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background-color: #FF3B30;
+            border-radius: 50%;
+            border: 2px solid var(--ku-crimson);
+        }
+
+        /* 로그인 모달 관련 스타일 유지 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -125,126 +137,33 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .login-card {
-            background: var(--surface-color);
-            padding: 50px 40px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-            transform: translateY(30px) scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal-overlay.active .login-card {
-            transform: translateY(0) scale(1);
-        }
-
-        .btn-close-modal {
-            position: absolute;
-            top: 20px; right: 20px;
-            background: #F5F5F5;
-            border: none;
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #777;
-            transition: background 0.2s;
-        }
-
-        .btn-close-modal:hover {
-            background: #E0E0E0;
-            color: var(--text-dark);
-        }
-
-        .login-logo {
-            color: var(--ku-crimson);
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .login-desc {
-            color: var(--text-gray);
-            font-size: 0.95rem;
-            margin-bottom: 30px;
-            font-weight: 500;
-        }
-
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-light);
-            background: #FAFAFA;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .input-group input:focus {
-            border-color: var(--ku-crimson);
-            background: var(--surface-color);
-            box-shadow: 0 0 0 4px rgba(138, 21, 56, 0.1);
-        }
-
-        .btn-login-submit {
-            width: 100%;
-            background: var(--ku-crimson-gradient);
-            color: white;
-            border: none;
-            padding: 16px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(138, 21, 56, 0.3);
-        }
-
-        .btn-login-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(138, 21, 56, 0.4);
-        }
-
+        .modal-overlay.active { opacity: 1; visibility: visible; }
     </style>
 </head>
 <body>
 
-    <!-- 1. 상단바 -->
     <header>
-<div class="nav-inner">
-    <a href="main_login.html" class="logo">KU GONGGU</a>
-    <nav>
-        <!-- [로그인 전] 기본적으로 보여야 함 -->
-        <button id="login-btn" class="btn-login-nav guest-only" onclick="location.href='login.html'">로그인</button>
+        <div class="nav-inner">
+            <a href="main_login.html" class="logo">KU GONGGU</a>
+            <nav>
+                <button id="login-btn" class="btn-login-nav guest-only" onclick="location.href='login.html'">로그인</button>
 
-        <!-- [로그인 후] 기본적으로 숨겨야 함 (display: none 추가!) -->
-        <a href="mypage.html" class="menu-link auth-only" style="display: none;">마이페이지</a>
-        <a href="product_list.html" class="menu-link auth-only" style="display: none;">검색창</a>
-        <button id="logout-btn" class="btn-login-nav auth-only" style="display: none;">로그아웃</button>
-    </nav>
-</div>
+                <div class="notification-wrapper auth-only" style="display: none;">
+                    <button class="btn-noti" onclick="location.href='notifications.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="noti-badge"></span>
+                    </button>
+                </div>
+
+                <a href="mypage.html" class="menu-link auth-only" style="display: none;">마이페이지</a>
+                <a href="product_list.html" class="menu-link auth-only" style="display: none;">검색창</a>
+                <button id="logout-btn" class="btn-login-nav auth-only" style="display: none;">로그아웃</button>
+            </nav>
+        </div>
     </header>
-
 
 </body>
 </html>
