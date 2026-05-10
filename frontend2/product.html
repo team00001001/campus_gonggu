@@ -568,8 +568,8 @@
         }
     </style>
 </head>
-<body>
 
+<body>
     <div id="header-placeholder"></div>
 
     <div class="container">
@@ -703,7 +703,6 @@
         });
 
 
-           
     async function joinGroupBuy() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const userId = localStorage.getItem('userId');
@@ -850,15 +849,37 @@ if (product.imageUrl && product.imageUrl !== 'none') {
                 document.getElementById('progress-percent').innerText = `${percent}%`;
 
                 // 마감일(duration) 업데이트
-                document.getElementById('deadline-text').innerHTML = `<span>⏳</span> 남은 기간: ${product.duration}`;
+                const deadlineElement = document.getElementById('deadline-text');
+
+if (deadlineElement && product.duration) {
+    const timerId = setInterval(() => {
+        // [수정] formatDynamic 함수를 사용합니다.
+        const timeText = formatDynamic(product.duration); 
+        
+        deadlineElement.innerHTML = `<span>⏳</span> 남은 기간: <strong style="color: ${timeText.includes('초') ? '#b11226' : 'inherit'}">${timeText}</strong>`;
+
+        if (timeText === "모집 마감") {
+            clearInterval(timerId);
+            const joinBtn = document.querySelector('.join-btn');
+            if(joinBtn) {
+                joinBtn.disabled = true;
+                joinBtn.style.backgroundColor = "#ccc";
+                joinBtn.textContent = "모집 마감";
+            }
+        }
+    }, 1000);
+}
 
                 // 상세 설명 (Location과 Description 결합)
-                const descHtml = `
-                    📌 <strong>수령 장소</strong>: ${product.location}<br>
-                    📌 <strong>남은 기간</strong>: ${product.duration}<br><br>
-                    ${product.description.replace(/\n/g, '<br>')}
-                `;
-                document.getElementById('product-description').innerHTML = descHtml;
+// [수정] product.duration 대신 formatStatic(product.duration)을 사용합니다.
+const staticDate = formatStatic(product.duration);
+
+const descHtml = `
+    📌 <strong>수령 장소</strong>: ${product.location}<br>
+    📌 <strong>마감 일시</strong>: ${staticDate}<br><br>
+    ${product.description.replace(/\n/g, '<br>')}
+`;
+document.getElementById('product-description').innerHTML = descHtml;
 
             } catch (error) {
                 console.error('상품 데이터를 불러오는 중 오류 발생:', error);
@@ -867,7 +888,39 @@ if (product.imageUrl && product.imageUrl !== 'none') {
             }
         });
     </script>
+
     <script>
+    // [1] 동적 타이머용: "3분 5초 남음" 처럼 계산해주는 함수
+function formatDynamic(expireAt) {
+    const expire = Number(expireAt);
+    const now = Math.floor(Date.now() / 1000);
+    const diff = expire - now;
+
+    if (isNaN(expire) || diff <= 0) return "모집 마감";
+
+    const d = Math.floor(diff / 86400);
+    const h = Math.floor((diff % 86400) / 3600);
+    const m = Math.floor((diff % 3600) / 60);
+    const s = diff % 60;
+
+    if (d > 0) return `${d}일 ${h}시간 남음`;
+    if (h > 0) return `${h}시간 ${m}분 남음`;
+    return `${m}분 ${s}초 남음`;
+}
+
+// [2] 고정 날짜용: "5월 15일 18:30" 처럼 바꿔주는 함수
+function formatStatic(expireAt) {
+    const expire = Number(expireAt);
+    const date = new Date(expire * 1000);
+    if (isNaN(date.getTime())) return "정보 없음";
+
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${month}월 ${day}일 ${hours}:${minutes}까지`;
+}
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. 초기 설정 및 유저 정보 가져오기
     const urlParams = new URLSearchParams(window.location.search);
@@ -985,7 +1038,7 @@ function renderCompletionSection(product) {
                 `<button id="complete-btn" class="join-btn" onclick="confirmCompletion('${product.id}', ${product.currentCount})">거래 완료 확인</button>` : 
                 
                 `<button id="complete-btn" class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>기한 마감 후 인증 가능</button>
-                 <p style="font-size:11px; color:#ce152d; margin-top:5px;">⏳ 마감 기한(${product.deadline})이 지나야 버튼이 활성화됩니다.</p>`
+                <p style="font-size:11px; color:#ce152d; margin-top:5px;">⏳ 마감 기한(${product.deadline})이 지나야 버튼이 활성화됩니다.</p>`
             }
         </div>
     `;
@@ -1016,23 +1069,6 @@ async function confirmCompletion(productId, totalCurrentCount) {
 
     if (tempConfirmedCount >= successThreshold) {
         alert(`🎉 과반수 이상(${tempConfirmedCount}명)이 확인하여 공구가 성공했습니다!`);
-        
-        // ---------------------------------------------------------
-        // 🚀 [주석: 나중에 데이터베이스 연결할 부분]
-        // ---------------------------------------------------------
-        /*
-        // 1. 서버에 이 유저의 완료 상태를 PATCH 요청
-        // await fetch(`/api/products/${productId}/confirm`, { method: 'PATCH', ... });
-
-        // 2. 서버에서 해당 공구가 성공했는지 판단 후 응답을 주면
-        // 3. 성공 시 마이페이지에 +1 하기 위한 API 호출
-        // await fetch('/api/users/update-success', {
-        //     method: 'POST',
-        //     body: JSON.stringify({ userId: localStorage.getItem('userId'), productId: productId })
-        // });
-        
-        console.log("마이페이지에 성공 횟수 반영 요청됨");
-        */
     } else {
         alert(`확인되었습니다. (성공까지 ${successThreshold - tempConfirmedCount}명 남음)`);
     }
@@ -1040,16 +1076,27 @@ async function confirmCompletion(productId, totalCurrentCount) {
 
 // [방장 전용 화면]
 function renderHostUI(infoArea, detailArea, product) {
-    // 1. 참여하기 버튼을 관리 버튼으로 교체
+    // 1. 참여하기 버튼을 [채팅방 / 삭제 / 수정] 버튼 세트로 교체
     const joinBtn = infoArea.querySelector('.join-btn');
+    
+    // 방장 전용 UI: 채팅방 버튼을 크게 상단에 배치하고, 삭제/수정은 하단에 작게 배치
     joinBtn.outerHTML = `
-        <div style="display:flex; gap:10px;">
-            <button class="join-btn" style="background:#444;" onclick="deleteProduct('${product.id}')">공구방 삭제</button>
-            <button class="join-btn" onclick="location.href='edit.html?id=${product.id}'">수정하기</button>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="join-btn" style="background-color: #ce152d;" 
+                onclick="location.href='direct_chattings.html?id=${product.id}'">
+                💬 채팅방 들어가기 (관리자)
+            </button>
+            
+            <div style="display:flex; gap:10px;">
+                <button class="join-btn" style="background:#444; flex:1; font-size: 14px;" 
+                    onclick="deleteProduct('${product.id}')">공구방 삭제</button>
+                <button class="join-btn" style="background:#666; flex:1; font-size: 14px;" 
+                    onclick="location.href='edit.html?id=${product.id}'">내용 수정</button>
+            </div>
         </div>
     `;
 
-    // 2. 참여자 명단 및 노쇼 체크 리스트 추가
+    // 2. 참여자 명단 및 노쇼 체크 리스트 추가 (기존 로직 유지)
     const memberSection = `
         <div class="member-list card" style="margin-top:20px; padding:20px;">
             <h3>👥 참여자 관리 (방장 전용)</h3>
@@ -1058,9 +1105,10 @@ function renderHostUI(infoArea, detailArea, product) {
                     <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
                         <span>${m.nickname} 학우</span>
                         <div>
-                            <!-- 백엔드 데이터에 맞춰 m.participant_id 와 m.user_id 를 넘겨줍니다 -->
-                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'success')" style="color:blue; border:none; background:none; cursor:pointer;">확인</button>
-                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" style="color:red; border:none; background:none; margin-left:10px; cursor:pointer;">노쇼</button>
+                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'success')" 
+                                style="color:blue; border:none; background:none; cursor:pointer;">확인</button>
+                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" 
+                                style="color:red; border:none; background:none; margin-left:10px; cursor:pointer;">노쇼</button>
                         </div>
                     </div>
                 `).join('') : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
@@ -1209,12 +1257,7 @@ async function fetchTrackingInfo() {
     const carrierName = document.getElementById('carrier-id').options[document.getElementById('carrier-id').selectedIndex].text;
 
     try {
-        // [백엔드 연동 시 주석 해제할 부분]
-        // Express 서버로 요청을 보냅니다 (예: /api/delivery?carrier=04&trackId=1234)
-        // const response = await fetch(`/api/delivery?carrier=${carrierId}&trackId=${trackingNumber}`);
-        // const data = await response.json();
         
-        // 프론트엔드 UI 테스트용 모크(Mock) 데이터 (스윗트래커 API 응답 형태를 간소화함)
         const mockData = [
             { time: "2026-05-09 14:32", location: "동남권HUB", status: "집하완료", details: "보내시는 고객님으로부터 상품을 인수받았습니다." },
             { time: "2026-05-09 22:15", location: "동남권HUB", status: "간선상차", details: "배송지로 상품이 이동중입니다." },

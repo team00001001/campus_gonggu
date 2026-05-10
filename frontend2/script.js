@@ -64,7 +64,7 @@ function renderGrid() {
     
     toShow.forEach(product => {
     const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
-    const isClosed = product.currentCount >= product.targetCount;
+    const isClosed = product.isClosed || (product.currentCount >= product.targetCount);
 
     const defaultImages = {
         '식재료 / 배달': 'images/default-food.png',
@@ -84,21 +84,11 @@ const imageSrc = hasValidImage
     ? product.imageUrl
     : fallbackImage;
 
-   const cardHTML = `
-    <div class="product-card" onclick="location.href='product.html?id=${product.id}'" style="cursor:pointer;">
-
-        <div class="img-area">
-            <img 
-                src="${imageSrc}"
-                class="product-thumbnail"
-                onerror="
-                    this.src='${fallbackImage}';
-                    const overlay = this.nextElementSibling;
-                    if (overlay) overlay.style.display='flex';
-                "
-            >
-
-            <div class="no-image-overlay" style="display:${hasValidImage ? 'none' : 'flex'};">
+const cardHTML = `
+    <div class="product-card" onclick="location.href='product.html?id=${product.id}'" 
+    style="cursor:pointer; ${isClosed ? 'opacity: 0.8;' : ''}"> <div class="img-area">
+            <img src="${imageSrc}" class="product-thumbnail" 
+            style="${isClosed ? 'filter: grayscale(0.5);' : ''}"> <div class="no-image-overlay" style="display:${hasValidImage ? 'none' : 'flex'};">
                 등록된 사진이 없습니다
             </div>
         </div>
@@ -113,11 +103,11 @@ const imageSrc = hasValidImage
             </div>
 
             <div class="progress-container" style="background:#eee; height:8px; border-radius:4px; margin-bottom:10px;">
-                <div class="progress-fill" style="width:${percent}%; background:var(--main-burgundy); height:100%; border-radius:4px;"></div>
+                <div class="progress-fill" style="width:${percent}%; background:${isClosed ? '#aaa' : 'var(--main-burgundy)'}; height:100%; border-radius:4px;"></div>
             </div>
 
             <div class="card-footer" style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="price" style="font-weight:800; font-size:1.1rem;">
+                <div class="price" style="font-weight:800; font-size:1.1rem; color:${isClosed ? '#888' : '#000'}">
                     ${Number(product.price).toLocaleString()}원
                 </div>
 

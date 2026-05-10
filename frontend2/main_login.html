@@ -632,51 +632,65 @@ function checkAccess(targetUrl) {
 </script>
 <script>
     async function loadRecentProducts() {
-        const roomGrid = document.getElementById('recent-room-grid');
+    const roomGrid = document.getElementById('recent-room-grid');
 
-        try {
-            const response = await fetch('http://localhost:3000/products');
-            const products = await response.json();
+    try {
+        const response = await fetch('http://localhost:3000/products');
+        const products = await response.json();
 
-            const recentProducts = products.slice(0, 3);
+        // [중요 수정] 마감되지 않은(시간 여유가 있고 인원이 남은) 공구만 필터링
+        const openProducts = products.filter(product => {
+            // 백엔드에서 준 시간 마감 여부(isClosed)가 false이고,
+            // 현재 인원이 목표 인원보다 적어야 함
+            return !product.isClosed && (product.currentCount < product.targetCount);
+        });
 
-            roomGrid.innerHTML = '';
+        // 필터링된 "모집 중" 상품들 중에서 최신 3개만 선택
+        const recentProducts = openProducts.slice(0, 3);
 
-            recentProducts.forEach(product => {
-                const percent = Math.min(
-                    Math.round((product.currentCount / product.targetCount) * 100),
-                    100
-                );
+        roomGrid.innerHTML = '';
 
-                const cardHTML = `
-                    <div class="room-item" onclick="if(checkAccess()) location.href='product.html?id=${product.id}'">
-                        <div class="room-content">
-                            <div class="tag-group">
-                                <span class="room-tag tag-study">${product.category}</span>
-                            </div>
-                            <h3 class="room-title">${product.title}</h3>
-                            <div class="room-progress-bar">
-                                <div class="progress-fill" style="width: ${percent}%;"></div>
-                            </div>
-                            <div class="room-footer">
-                                <span class="count-info">
-                                    모집 <span>${product.currentCount}명</span> / ${product.targetCount}명
-                                </span>
-                            </div>
+        // 만약 참여 가능한 공구가 하나도 없다면 안내 문구 출력
+        if (recentProducts.length === 0) {
+            roomGrid.innerHTML = '<p style="text-align:center; width:100%; padding:20px;">현재 참여 가능한 최근 공구가 없습니다.</p>';
+            return;
+        }
+
+        recentProducts.forEach(product => {
+            const percent = Math.min(
+                Math.round((product.currentCount / product.targetCount) * 100),
+                100
+            );
+
+            const cardHTML = `
+                <div class="room-item" onclick="if(checkAccess()) location.href='product.html?id=${product.id}'">
+                    <div class="room-content">
+                        <div class="tag-group">
+                            <span class="room-tag tag-study">${product.category}</span>
+                        </div>
+                        <h3 class="room-title">${product.title}</h3>
+                        <div class="room-progress-bar">
+                            <div class="progress-fill" style="width: ${percent}%;"></div>
+                        </div>
+                        <div class="room-footer">
+                            <span class="count-info">
+                                모집 <span>${product.currentCount}명</span> / ${product.targetCount}명
+                            </span>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
 
-                roomGrid.insertAdjacentHTML('beforeend', cardHTML);
-            });
+            roomGrid.insertAdjacentHTML('beforeend', cardHTML);
+        });
 
-        } catch (error) {
-            console.error(error);
-            roomGrid.innerHTML = '<p>최근 공구방을 불러오지 못했습니다.</p>';
-        }
+    } catch (error) {
+        console.error(error);
+        roomGrid.innerHTML = '<p>최근 공구방을 불러오지 못했습니다.</p>';
     }
+}
 
-    loadRecentProducts();
+loadRecentProducts();
 </script>
 <script>
     const mainSearch = document.getElementById('main-search');

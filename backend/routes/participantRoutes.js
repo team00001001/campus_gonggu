@@ -178,7 +178,7 @@ router.get('/', async (req, res) => {
             FROM product_participants pp
             JOIN users u ON pp.user_id = u.id
             WHERE pp.product_id = ?
-              AND pp.status = 'joined'
+            AND pp.status = 'joined'
             ORDER BY pp.created_at ASC
             `,
             [productId]

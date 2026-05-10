@@ -249,20 +249,36 @@
                 etc: '기타 물품'
             };
 
-            const periodValue = document.getElementById('periodValue').value;
-            const periodUnit = document.getElementById('periodUnit').selectedOptions[0].textContent.split(' ')[0];
+        const pValue = Number(document.getElementById('periodValue').value); // 입력한 숫자
+        const pUnit = document.getElementById('periodUnit').value;           // 선택한 단위 (minute, hour, day, month)
+
+        // 1. 현재 시각 (초 단위)
+        const now = Math.floor(Date.now() / 1000); 
+        let secondsToAdd = 0;
+
+        // 2. 단위에 따라 더할 초(sec) 계산
+        if (pUnit === 'minute') secondsToAdd = pValue * 60;
+        else if (pUnit === 'hour') secondsToAdd = pValue * 3600;
+        else if (pUnit === 'day') secondsToAdd = pValue * 86400;
+        else if (pUnit === 'month') secondsToAdd = pValue * 86400 * 30;
+
+        // 3. 최종 마감 시각 (타임스탬프)
+        const expireAt = now + secondsToAdd;
 
             const productData = {
-                title: document.getElementById('productName').value,
-                category: categoryMap[document.getElementById('category').value],
-                targetCount: Number(document.getElementById('people').value),
-                price: Number(document.getElementById('price').value),
-                duration: `${periodValue}${periodUnit}`,
-                location: document.getElementById('location').value,
-                imageUrl: document.getElementById('imageUrl').value,
-                description: document.getElementById('description').value,
-                user_id: localStorage.getItem('userId')
-            };
+    title: document.getElementById('productName').value,
+    category: categoryMap[document.getElementById('category').value],
+    targetCount: Number(document.getElementById('people').value),
+    price: Number(document.getElementById('price').value),
+    
+    // [수정 포인트!] 계산해둔 'expireAt'을 여기에 넣어야 합니다.
+    duration: expireAt, 
+    
+    location: document.getElementById('location').value,
+    imageUrl: document.getElementById('imageUrl').value,
+    description: document.getElementById('description').value,
+    user_id: localStorage.getItem('userId')
+};
 
             try {
                 const response = await fetch('http://localhost:3000/products', {
