@@ -223,23 +223,17 @@
             <span>채팅방에 입장하셨습니다. 매너 있는 대화를 나눠주세요!</span>
         </div>
 
-       <div class="chat-container" id="chat-container">
-    <div class="msg-system">
-        <span>채팅방에 입장하셨습니다. 매너 있는 대화를 나눠주세요!</span>
-    </div>
-</div>
+   
+
     </div>
 
     <div class="input-area">
         <input type="text" id="message-input" class="input-box" placeholder="메시지를 입력하세요..." autocomplete="off">
         <button id="send-btn" class="send-btn">전송</button>
     </div>
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
 
-<script>
-const socket = io('http://localhost:3000');
-
-const urlParams = new URLSearchParams(window.location.search);
+    <script>
+     const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
 const userId = localStorage.getItem('userId');
 
@@ -248,35 +242,99 @@ const chatContainer = document.getElementById('chat-container');
 const messageInput = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 
-socket.emit('joinRoom', productId);
+async function loadProductTitle() {
+    try {
+        const response = await fetch(`http://localhost:3000/products/${productId}`);
+        const product = await response.json();
+        roomTitle.innerText = `${product.title} 채팅방`;
+    } catch (error) {
+        roomTitle.innerText = '공구 채팅방';
+    }
+}
 
-sendBtn.addEventListener('click', () => {
-    const message = messageInput.value.trim();
-    if (!message) return;
+function formatTime(dateString) {
+    const date = new Date(dateString);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
 
-    socket.emit('sendMessage', {
-        productId,
-        userId,
-        message
-    });
+function scrollToBottom() {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
-    messageInput.value = '';
-});
+function renderMessage(msg) {
+    const isMine = String(msg.user_id) === String(userId);
+    const firstLetter = msg.nickname ? msg.nickname[0] : '익';
 
-socket.on('newMessage', (msg) => {
-    chatContainer.insertAdjacentHTML('beforeend', `
-        <div class="msg-row ${String(msg.user_id) === String(userId) ? 'msg-sent' : 'msg-received'}">
+    return `
+        <div class="msg-row ${isMine ? 'msg-sent' : 'msg-received'}">
+            ${isMine ? '' : `<div class="profile-pic">${firstLetter}</div>`}
             <div class="msg-content">
+                ${isMine ? '' : `<div class="sender-name">${msg.nickname || '익명 학우'}</div>`}
                 <div class="msg-body">
                     <div class="bubble">${msg.message}</div>
-                    <span class="time">방금</span>
+                    <span class="time">${formatTime(msg.created_at)}</span>
                 </div>
             </div>
         </div>
-    `);
+    `;
+}
 
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+async function loadMessages() {
+    const response = await fetch(`http://localhost:3000/chats/${productId}`);
+    const messages = await response.json();
+
+    chatContainer.innerHTML = `
+        <div class="msg-system">
+            <span>채팅방에 입장하셨습니다. 매너 있는 대화를 나눠주세요!</span>
+        </div>
+    `;
+
+    messages.forEach(msg => {
+        chatContainer.insertAdjacentHTML('beforeend', renderMessage(msg));
+    });
+
+    scrollToBottom();
+}
+
+async function sendMessage() {
+    const message = messageInput.value.trim();
+
+    if (!userId) {
+        alert('로그인이 필요합니다.');
+        location.href = 'login.html';
+        return;
+    }
+
+    if (!message) return;
+
+    const response = await fetch('http://localhost:3000/chats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, userId, message })
+    });
+
+    if (!response.ok) {
+        alert('메시지 전송 실패');
+        return;
+    }
+
+    messageInput.value = '';
+    loadMessages();
+}
+
+sendBtn.addEventListener('click', sendMessage);
+
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
 });
-</script>
+
+loadProductTitle();
+loadMessages();
+setInterval(loadMessages, 3000);
+    </script>
 </body>
 </html>

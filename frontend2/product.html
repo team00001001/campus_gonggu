@@ -911,7 +911,7 @@ function renderGuestUI(infoArea, product, currentUserId) {
     if (isAlreadyJoined) {
         joinBtn.innerText = "참여 완료 (채팅방 가기)";
         joinBtn.style.background = "#ce152d"; // 고대색
-        joinBtn.onclick = () => location.href = `chat.html?id=${product.id}`;
+        joinBtn.onclick = () => location.href = `direct_chattings.html?id=${product.id}`;
 
         // 취소 및 신고 버튼 추가
         infoArea.insertAdjacentHTML('beforeend', `
