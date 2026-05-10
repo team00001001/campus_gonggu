@@ -296,20 +296,36 @@ if (product.imageUrl && product.imageUrl !== 'none') {
 
 if (deadlineElement && product.duration) {
     const timerId = setInterval(() => {
-        // [수정] formatDynamic 함수를 사용합니다.
         const timeText = formatDynamic(product.duration); 
-        
         deadlineElement.innerHTML = `<span>⏳</span> 남은 기간: <strong style="color: ${timeText.includes('초') ? '#b11226' : 'inherit'}">${timeText}</strong>`;
 
-        if (timeText === "모집 마감") {
-            clearInterval(timerId);
-            const joinBtn = document.querySelector('.join-btn');
-            if(joinBtn) {
-                joinBtn.disabled = true;
-                joinBtn.style.backgroundColor = "#ccc";
-                joinBtn.textContent = "모집 마감";
-            }
+// [수정] 마감 시 버튼 처리 로직 (product.html 하단 setInterval 내부)
+if (timeText === "모집 마감") {
+    clearInterval(timerId);
+    
+    const allBtns = document.querySelectorAll('.join-btn');
+    
+    allBtns.forEach(btn => {
+        const text = btn.textContent.trim();
+        
+        // 1. 참여 버튼 비활성화
+        if (text === "이 공구에 참여하기") {
+            btn.disabled = true;
+            btn.style.backgroundColor = "#ccc";
+            btn.textContent = "모집 마감";
         }
+        
+        // 2. [추가] 방장용 삭제 버튼 비활성화
+        if (text.includes("공구방 삭제")) {
+            btn.disabled = true;
+            btn.style.backgroundColor = "#ccc";
+            btn.style.cursor = "not-allowed";
+            btn.textContent = "삭제 불가";
+        }
+
+        // ※ '내용 수정'이나 '채팅방 가기'는 마감 후에도 필요할 수 있으니 그대로 둡니다.
+    });
+}
     }, 1000);
 }
 
@@ -460,8 +476,10 @@ function renderCompletionSection(product) {
     const target = parseInt(product.targetCount, 10);
     const isFull = current >= target;
 
+    const now = Math.floor(Date.now() / 1000);
+    const isExpired = Number(product.duration) <= now;
     // 2. 꽉 차지 않았다면 인증창을 띄우지 않음
-    if (!isFull) {
+    if (!isFull && !isExpired) {
         console.log(`현재 모집중: ${current}/${target} (아직 꽉 차지 않아 인증창 숨김)`);
         return; 
     }
@@ -607,25 +625,36 @@ function renderHostUI(infoArea, detailArea, product) {
         </div>
     `;
 
-    const memberSection = `
-        <div class="member-list card" style="margin-top:20px; padding:20px;">
-            <h3>👥 참여자 관리 (방장 전용)</h3>
-            <div id="member-items">
-                ${(product.members && product.members.length > 0) ? product.members.map(m => `
-                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
-                        <span>${m.nickname} 학우</span>
-                        <div>
-                            <!-- 👉 이 부분의 success가 confirmed로 수정됨 -->
-                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" 
-                                style="color:blue; border:none; background:none; cursor:pointer; font-weight:bold;">확인</button>
-                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" 
-                                style="color:red; border:none; background:none; margin-left:10px; cursor:pointer; font-weight:bold;">노쇼</button>
-                        </div>
-                    </div>
-                `).join('') : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
-            </div>
+    // renderHostUI 함수 내부의 memberSection 수정
+const memberSection = `
+    <div class="member-list card" style="margin-top:20px; padding:20px;">
+        <h3>👥 참여자 관리 (방장 전용)</h3>
+        <div id="member-items">
+            ${(product.members && product.members.length > 0) 
+                ? product.members
+                    .filter(m => m.status !== 'noshow') // 🔥 노쇼인 사람은 목록에서 제외
+                    .map(m => {
+                        // 이미 확인 완료된 유저는 버튼 대신 '확인됨' 텍스트 표시
+                        const isConfirmed = m.status === 'confirmed';
+                        return `
+                            <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+                                <span>${m.nickname} 학우</span>
+                                <div>
+                                    ${isConfirmed ? 
+                                        '<span style="color:gray; font-weight:bold;">✅ 확인 완료</span>' : 
+                                        `<button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" 
+                                            style="color:blue; border:none; background:none; cursor:pointer; font-weight:bold;">확인</button>
+                                         <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" 
+                                            style="color:red; border:none; background:none; margin-left:10px; cursor:pointer; font-weight:bold;">노쇼</button>`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    }).join('') 
+                : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
         </div>
-    `;
+    </div>
+`;
     detailArea.insertAdjacentHTML('beforeend', memberSection);
 }
 
