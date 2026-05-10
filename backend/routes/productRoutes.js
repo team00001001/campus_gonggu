@@ -82,7 +82,7 @@ router.post('/', (req, res) => {
     } = req.body;
 
     
-  let durationNum = null;
+let durationNum = null;
 
 if (
     duration !== undefined &&

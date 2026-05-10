@@ -5,583 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 | KU GONGGU</title>
+    
+    <link rel="stylesheet" href="product.css" media="(min-width: 769px)">
+<link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
+    
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* 메인 컬러 */
-            --ku-crimson: #8A1538;
-            --ku-crimson-light: #FDF2F4; 
-            
-            /* UI 컬러 */
-            --bg-color: #F8F9FA; 
-            --surface-color: #FFFFFF; 
-            --border-color: #EAECEF; 
-            
-            /* 텍스트 컬러 */
-            --text-primary: #1A1A1A; 
-            --text-secondary: #4A5056; 
-            --text-tertiary: #818991; 
-            --text-dark: #222222; 
-            
-            /* 카테고리 파스텔 톤 */
-            --color-food: #FFF3E0;
-            --color-living: #E3F2FD;
-            --color-study: #E8F5E9;
-            --color-etc: #F3E5F5;
-            
-            /* 그림자 */
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 16px rgba(138, 21, 56, 0.06); 
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Pretendard', sans-serif;
-            -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            overflow-x: hidden;
-            padding-top: 100px; 
-        }
-
-        /* ==========================================
-           헤더 CSS
-           ========================================== */
-        header {
-            background-color: var(--ku-crimson);
-            backdrop-filter: blur(8px);
-            height: 70px;
-            display: flex;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        }
-
-        .nav-inner {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 800;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        nav {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        nav a.menu-link {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-        }
-
-        nav a.menu-link:hover {
-            color: var(--text-dark);
-        }
-
-        .btn-login-nav {
-            background: var(--ku-crimson);
-            color: white !important;
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(138, 21, 56, 0.3);
-            border: 2px solid white;
-            cursor: pointer;
-        }
-
-        .btn-login-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(138, 21, 56, 0.4);
-        }
-.detail-no-image-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(120, 120, 120, 0.45);
-    backdrop-filter: blur(3px);
-
-    display: none;
-    justify-content: center;
-    align-items: center;
-
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 800;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.35);
-    z-index: 3;
-}
-        .container {
-            max-width: 940px; 
-            margin: 0 auto;
-            padding: 0px 20px 100px; 
-        }
-
-        .card {
-            background: var(--surface-color);
-            border-radius: 24px; 
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(0,0,0,0.03); 
-        }
-
-        /* ==========================================
-           상품 상단 요약
-           ========================================== */
-        .product-hero {
-            display: flex;
-            gap: 40px; 
-            padding: 40px;
-            margin-bottom: 30px;
-            align-items: flex-start;
-        }
-
-        .product-image-container {
-            flex: 0 0 360px; 
-            width: 360px;
-            height: 360px;
-            border-radius: 16px;
-            overflow: hidden;
-            background-color: #F1F3F5;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-tertiary);
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .product-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0; left: 0;
-        }
-        
-        .product-image[src="none"], .product-image[src=""] {
-            display: none; 
-        }
-
-        .product-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding-top: 8px;
-        }
-
-        .badge-group {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .category-badge {
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: -0.2px;
-        }
-
-        .tag-hot { background-color: #FFF0F0; color: #FF4B4B; }
-        .tag-official { background-color: #E8F2FF; color: #007AFF; }
-        .tag-study { background-color: var(--color-study); color: #2E7D32; }
-        .tag-food { background-color: #FFF8E1; color: #F57F17; }
-        .tag-living { background-color: var(--color-living); color: #1565C0; }
-        .tag-etc { background-color: var(--color-etc); color: #6A1B9A; }
-
-        .title {
-            font-size: 1.75rem; 
-            font-weight: 700;
-            line-height: 1.3;
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
-        }
-
-        .price-box {
-            margin-bottom: 24px;
-            padding: 20px;
-            background-color: var(--bg-color); 
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .original-price-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .n-pay-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-        }
-
-        .n-pay-label {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
-
-        .n-pay-price {
-            font-size: 1.8rem; 
-            font-weight: 800;
-            color: var(--ku-crimson);
-            letter-spacing: -0.5px;
-        }
-
-        .n-pay-price span {
-            font-size: 0.95rem;
-            color: var(--text-tertiary);
-            font-weight: 400;
-            margin-left: 2px;
-        }
-
-        .progress-section {
-            margin-bottom: 28px;
-        }
-
-        .status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .status-label {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
-
-        .status-count {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        .status-count strong {
-            color: var(--ku-crimson);
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .progress-bar-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .progress-bar-bg {
-            flex: 1;
-            height: 10px; 
-            background-color: var(--border-color);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--ku-crimson); 
-            border-radius: 5px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 0%; /* 초기값 */
-        }
-        
-        .progress-percent {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--ku-crimson);
-            width: 35px;
-            text-align: right;
-        }
-
-        .deadline-text {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: var(--text-tertiary);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .join-btn {
-            margin-top: auto;
-            width: 100%;
-            background: var(--ku-crimson); 
-            color: white;
-            border: none;
-            padding: 18px; 
-            font-size: 1.05rem; 
-            font-weight: 700;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(138, 21, 56, 0.2);
-        }
-
-        .join-btn:hover {
-            background-color: #72112e; 
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(138, 21, 56, 0.25);
-        }
-
-        /* ==========================================
-           호스트 정보 및 상세 설명
-           ========================================== */
-        .details-section {
-            padding: 40px;
-        }
-
-        .host-info-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 20px;
-            background: var(--bg-color);
-            border-radius: 14px;
-            margin-bottom: 32px;
-            border: 1px solid var(--border-color);
-        }
-
-        .host-avatar {
-            width: 48px;
-            height: 48px;
-            background-color: #EAECEF; 
-            color: var(--text-secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .host-details {
-            flex: 1;
-        }
-
-        .host-name-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .host-name {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: var(--text-primary);
-        }
-        
-        .host-dept {
-            font-size: 0.85rem;
-            color: var(--text-tertiary);
-        }
-
-        .host-trust-bar {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-            color: #83485a;
-            font-weight: 600;
-        }
-
-        .content-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 18px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
-            letter-spacing: -0.3px;
-        }
-
-        .content-body {
-            font-size: 0.98rem; 
-            line-height: 1.8; 
-            color: var(--text-secondary);
-            white-space: pre-line;
-            letter-spacing: -0.1px;
-        }
-
-        /* 배송 조회 섹션 전체 카드 (공구 상세 내용과 간격 띄우기) */
-        .delivery-section {
-            margin-top: 30px;
-            padding: 20px;
-        }
-
-        /* 배송 조회 입력 폼 스타일 (겉 박스보다 작게 가운데 정렬) */
-        .tracking-input-container {
-            display: flex;
-            gap: 10px;
-            margin: 0 auto 25px auto;
-            padding: 15px 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            width: 85%;
-            max-width: 600px;
-            box-sizing: border-box;
-        }
-
-        .carrier-select, .tracking-input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .carrier-select {
-            width: 30%;
-        }
-
-        .tracking-input {
-            flex-grow: 1;
-        }
-
-        .track-btn {
-            padding: 10px 20px;
-            background-color: #8b0029; /* 크림슨 컬러 포인트 */
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.2s;
-            white-space: nowrap; /* 버튼 글씨 줄바꿈 방지 */
-        }
-
-        .track-btn:hover {
-            background-color: #6a001f;
-        }
-
-        /* 배송 현황 타임라인 스타일 */
-        .tracking-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .delivery-badge {
-            background-color: #e3f2fd;
-            color: #1976d2;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .delivery-info {
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        /* 세로 타임라인 그리기 */
-        .timeline-container {
-            padding: 10px 20px;
-        }
-
-        .timeline {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            position: relative;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 15px;
-            width: 2px;
-            background-color: #e0e0e0;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-left: 45px;
-            margin-bottom: 25px;
-        }
-
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: 11px;
-            top: 5px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #bdbdbd;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 2px #e0e0e0;
-        }
-
-        /* 가장 최근(마지막) 배송 상태는 색상을 다르게 강조 */
-        .timeline-item.active .timeline-dot {
-            background-color: #8b0029;
-            box-shadow: 0 0 0 2px #f4d3db;
-        }
-
-        .timeline-item.active .timeline-content strong {
-            color: #8b0029;
-        }
-
-        .timeline-time {
-            font-size: 12px;
-            color: #757575;
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .timeline-content {
-            background-color: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-    </style>
 </head>
 
 <body>
@@ -590,13 +18,10 @@
     <div class="container">
         <section class="product-hero card">
             <div class="product-image-container">
-    <span>이미지 준비중</span>
-    <img src="" alt="상품 이미지" class="product-image" id="product-img">
-
-    <div class="detail-no-image-overlay" id="detail-no-image-overlay">
-        등록된 사진이 없습니다
-    </div>
-</div>
+                <span>이미지 준비중</span>
+                <img src="" alt="상품 이미지" class="product-image" id="product-img">
+            </div>
+            
             <div class="product-info">
                 <div class="badge-group">
                     <span class="category-badge tag-hot" id="badge-hot" style="display:none;">🔥 마감임박</span>
@@ -815,27 +240,20 @@
 const fallbackImage =
     defaultImages[product.category] || 'images/default-etc.png';
 const imgEl = document.getElementById('product-img');
-const overlayEl = document.getElementById('detail-no-image-overlay');
-
-const hasValidImage =
-    product.imageUrl &&
-    product.imageUrl !== 'none' &&
-    product.imageUrl.trim() !== '' &&
-    !product.imageUrl.includes('example.com');
-
-if (hasValidImage) {
+if (product.imageUrl && product.imageUrl !== 'none') {
     imgEl.src = product.imageUrl;
-    overlayEl.style.display = 'none';
 
+    // 링크 깨졌을 때 기본 이미지
     imgEl.onerror = () => {
         imgEl.src = fallbackImage;
-        overlayEl.style.display = 'flex';
     };
+
 } else {
+    // 이미지 없을 때 기본 이미지
     imgEl.src = fallbackImage;
-    overlayEl.style.display = 'flex';
 }
-            // 카테고리 태그 및 색상 설정
+
+                // 카테고리 태그 및 색상 설정
                 const categoryEl = document.getElementById('product-category');
                 categoryEl.innerText = product.category;
                 categoryEl.className = 'category-badge'; // 기본 클래스 초기화
@@ -1027,84 +445,152 @@ function renderProductInfo(product) {
     renderCompletionSection(product); 
 }
 
-// 2. 공구 완료 인증 섹션 함수
+//=========================================================
+// [수정된 함수 1] 공구 완료 인증 섹션 함수 (모집 완료 시에만 노출)
+// =========================================================
+// =========================================================
+// [수정] 공구 완료 인증 섹션 (숫자 강제 변환 및 노출 조건 강화)
+// =========================================================
 function renderCompletionSection(product) {
     const detailArea = document.querySelector('.details-section');
     if (!detailArea) return;
 
-    // --- [추가] 참여 여부 및 권한 체크 ---
+    // 1. 숫자형으로 확실하게 변환해서 꽉 찼는지 확인
+    const current = parseInt(product.currentCount, 10);
+    const target = parseInt(product.targetCount, 10);
+    const isFull = current >= target;
+
+    // 2. 꽉 차지 않았다면 인증창을 띄우지 않음
+    if (!isFull) {
+        console.log(`현재 모집중: ${current}/${target} (아직 꽉 차지 않아 인증창 숨김)`);
+        return; 
+    }
+
+    console.log("모집 완료! 인증창 렌더링 시작");
+
     const currentUserId = localStorage.getItem('userId');
-    const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+    const isHost = String(product.user_id) === String(currentUserId);
     
-    const isJoined = joinedGroups.includes(String(product.id)); // 내가 참여했는가?
-    const isHost = String(product.user_id) === String(currentUserId); // 내가 방장인가?
+    // 내 참여 정보 찾기
+    const myParticipantInfo = product.members ? product.members.find(m => String(m.user_id) === String(currentUserId)) : null;
+    const isGuest = myParticipantInfo !== null && myParticipantInfo !== undefined;
 
-    // 참여자도 아니고 방장도 아니면 아예 화면에 그리지 않고 종료!
-    if (!isJoined && !isHost) return; 
+    // 방장도 아니고 참여자도 아니면 안 보여줌
+    if (!isHost && !isGuest) return; 
 
-    // --- [기존] 기한 체크 로직 ---
-    const deadlineDate = new Date(product.deadline);
-    const now = new Date();
-    const isExpired = now > deadlineDate; 
+    // 수령 완료 확인 누른 사람 수 계산
+    const confirmedCount = product.members ? product.members.filter(m => m.is_received === 1 || m.is_received === true).length : 0;
+    
+    // 아직 '확인'/'노쇼' 처리가 안 된 참여자 찾기
+    const hasUncheckedMembers = product.members ? product.members.some(m => m.status === 'joined') : false;
+    
+    let btnHtml = '';
+
+    if (isHost) {
+        // 방장 화면
+        if (hasUncheckedMembers) {
+            btnHtml = `<button class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>⚠️ 참여자의 '확인' 또는 '노쇼' 평가를 모두 완료해주세요</button>`;
+        } else {
+            btnHtml = `<button class="join-btn" onclick="hostCloseProduct('${product.id}')">공구 최종 완료 및 방 닫기 (방장)</button>`;
+        }
+    } else {
+        // 참여자 화면
+        if (myParticipantInfo && myParticipantInfo.status === 'noshow') {
+            btnHtml = `<button class="join-btn" style="background-color: #ccc; color: #fff;" disabled>방장에 의해 노쇼 처리되었습니다</button>`;
+        } else if (myParticipantInfo && (myParticipantInfo.is_received === 1 || myParticipantInfo.is_received === true)) {
+            btnHtml = `<button class="join-btn" style="background-color: #ccc;" disabled>✅ 수령 확인 완료</button>`;
+        } else {
+            btnHtml = `<button class="join-btn" onclick="guestReceiveItem('${product.id}', ${myParticipantInfo.participant_id})">📦 물건 수령 확인</button>`;
+        }
+    }
 
     const completionHtml = `
         <div class="completion-card" style="margin-top:20px; border: 2px solid #ce152d; padding:20px; border-radius:10px; background-color: #fff;">
-            <h4 style="color:#ce152d; margin-top:0;">✅ 최종 공구 완료 인증</h4>
-            <p style="font-size:13px; color:#666;">
-                인원수가 4명 이상인 경우, <strong>과반수 이상</strong>이 완료를 누르면 공구 성공으로 인정됩니다!
-            </p>
-            
-            <div id="confirmed-status" style="margin: 10px 0; font-weight: bold; font-size: 1.1rem;">
-                현재 확인 현황: <span id="confirmed-count" style="color:#ce152d;">${tempConfirmedCount}</span> / ${product.currentCount}명
+            <h4 style="color:#ce152d; margin-top:0;">✅ 수령 및 거래 완료 인증</h4>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">모집 인원이 모두 차서 거래 인증 단계가 활성화되었습니다.</p>
+            <div style="margin: 10px 0; font-weight: bold; font-size: 1.1rem;">
+                현재 수령 확인 인원: <span style="color:#ce152d;">${confirmedCount}</span> / ${current}명
             </div>
-            
-            ${isExpired ? 
-                // 👉 수정포인트: targetCount가 아니라 currentCount를 넘겨야 실제 참여 인원 기준으로 계산됩니다!
-                `<button id="complete-btn" class="join-btn" onclick="confirmCompletion('${product.id}', ${product.currentCount})">거래 완료 확인</button>` : 
-                
-                `<button id="complete-btn" class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>기한 마감 후 인증 가능</button>
-                <p style="font-size:11px; color:#ce152d; margin-top:5px;">⏳ 마감 기한(${product.deadline})이 지나야 버튼이 활성화됩니다.</p>`
-            }
+            ${btnHtml}
         </div>
     `;
     
     detailArea.insertAdjacentHTML('beforeend', completionHtml);
 }
 
-// 3. 거래 완료 확인 버튼 클릭 시 실행되는 함수 (나중에 수정)
-let tempConfirmedCount = 0; // DB가 없으므로 임시로 카운트하는 변수
+// =========================================================
+// [2] 참여자가 "물건 수령 확인" 버튼을 누를 때 실행되는 함수
+// =========================================================
+// =========================================================
+// [수정 완료] 참여자가 "물건 수령 확인" 버튼을 누를 때
+// =========================================================
+async function guestReceiveItem(productId, participantId) {
+    if (!confirm("물건을 확실히 수령하셨나요? (확인 후 취소 불가)")) return;
 
-async function confirmCompletion(productId, totalCurrentCount) {
-    if (!confirm("실제로 물건을 수령하셨나요? 확인 후에는 취소가 불가능합니다.")) return;
+    // ⭐️ 추가된 부분: 백엔드가 요구하는 내 유저 ID 가져오기
+    const userId = localStorage.getItem('userId'); 
 
-    // [임시 프론트 로직] 카운트 증가
-    tempConfirmedCount++;
-    document.getElementById('confirmed-count').innerText = tempConfirmedCount;
-    document.getElementById('complete-btn').disabled = true;
-    document.getElementById('complete-btn').innerText = "확인 완료";
+    try {
+        const response = await fetch('http://localhost:3000/participants/receive', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                productId: productId, 
+                userId: userId // ⭐️ participantId 대신 userId를 보냅니다.
+            })
+        });
 
-    // 👉 과반수 성공 조건 계산
-    // 4명 이상일 때는 과반수(절반 초과), 그 미만은 전원 동의 시 성공
-    let successThreshold;
-    if (totalCurrentCount >= 4) {
-        successThreshold = Math.floor(totalCurrentCount / 2) + 1; // 과반수
-    } else {
-        successThreshold = totalCurrentCount; // 3명 이하는 전원 동의
-    }
-
-    if (tempConfirmedCount >= successThreshold) {
-        alert(`🎉 과반수 이상(${tempConfirmedCount}명)이 확인하여 공구가 성공했습니다!`);
-    } else {
-        alert(`확인되었습니다. (성공까지 ${successThreshold - tempConfirmedCount}명 남음)`);
+        if (response.ok) {
+            const result = await response.json();
+            
+            // 백엔드가 계산한 성공/실패 여부를 활용해 알림을 다르게 띄웁니다.
+            if (result.isSuccess) {
+                alert(`🎉 수령 확인이 완료되었습니다! 과반수(${result.threshold}명)가 충족되어 방장과 참여자의 신뢰도가 상승했습니다.`);
+            } else {
+                alert(`✅ 수령 확인이 완료되었습니다! (목표 달성까지 ${result.threshold - result.received}명 남음)`);
+            }
+            location.reload(); 
+        } else {
+            const err = await response.json();
+            alert(err.message || '인증 처리 중 오류가 발생했습니다.');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('서버 연결 실패');
     }
 }
 
-// [방장 전용 화면]
+// =========================================================
+// [3] 방장이 "공구 최종 완료" 버튼을 누를 때 실행되는 함수
+// =========================================================
+async function hostCloseProduct(productId) {
+    if (!confirm("모든 참여자의 수령이 완료되었습니까? 공구방을 최종 마감합니다.")) return;
+
+    try {
+        const response = await fetch('http://localhost:3000/products/close', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                productId: productId 
+            })
+        });
+
+        if (response.ok) {
+            alert('공구방이 성공적으로 마감되었습니다!');
+            location.href = 'main_login.html'; // 마감 후 메인 페이지로 이동 (원하시면 location.reload()로 변경 가능)
+        } else {
+            const err = await response.json();
+            alert(err.message || '마감 처리 중 오류가 발생했습니다.');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('서버 연결 실패');
+    }
+}
+
 function renderHostUI(infoArea, detailArea, product) {
-    // 1. 참여하기 버튼을 [채팅방 / 삭제 / 수정] 버튼 세트로 교체
     const joinBtn = infoArea.querySelector('.join-btn');
     
-    // 방장 전용 UI: 채팅방 버튼을 크게 상단에 배치하고, 삭제/수정은 하단에 작게 배치
     joinBtn.outerHTML = `
         <div style="display:flex; flex-direction:column; gap:10px;">
             <button class="join-btn" style="background-color: #ce152d;" 
@@ -1121,7 +607,6 @@ function renderHostUI(infoArea, detailArea, product) {
         </div>
     `;
 
-    // 2. 참여자 명단 및 노쇼 체크 리스트 추가 (기존 로직 유지)
     const memberSection = `
         <div class="member-list card" style="margin-top:20px; padding:20px;">
             <h3>👥 참여자 관리 (방장 전용)</h3>
@@ -1130,10 +615,11 @@ function renderHostUI(infoArea, detailArea, product) {
                     <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
                         <span>${m.nickname} 학우</span>
                         <div>
-                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'success')" 
-                                style="color:blue; border:none; background:none; cursor:pointer;">확인</button>
+                            <!-- 👉 이 부분의 success가 confirmed로 수정됨 -->
+                            <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" 
+                                style="color:blue; border:none; background:none; cursor:pointer; font-weight:bold;">확인</button>
                             <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" 
-                                style="color:red; border:none; background:none; margin-left:10px; cursor:pointer;">노쇼</button>
+                                style="color:red; border:none; background:none; margin-left:10px; cursor:pointer; font-weight:bold;">노쇼</button>
                         </div>
                     </div>
                 `).join('') : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
@@ -1228,44 +714,44 @@ async function leaveGroup(id) {
     }
 }
 
-// 참여자 확인 및 노쇼 처리 함수
+// =========================================================
+// 방장의 참여자 확인 및 노쇼 처리 함수
+// =========================================================
 async function markStatus(participantId, userId, status) {
-    // 상태에 따라 확인 메시지 다르게 출력
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
     const msg = status === 'noshow' 
-        ? "노쇼로 등록하시겠습니까? (해당 학우의 신뢰도 점수가 하락합니다)" 
-        : "참여 확인 처리하시겠습니까? (해당 학우의 신뢰도 점수가 상승합니다)";
+        ? "노쇼로 등록하시겠습니까? (인원수가 1명 줄어들며, 다시 모집이 시작될 수 있습니다.)" 
+        : "참여 확인 처리하시겠습니까?";
         
-    if (!confirm(msg)) {
-        return; // 취소 누르면 아무 일도 안 일어남
-    }
+    if (!confirm(msg)) return;
 
     try {
-        // 백엔드 API로 데이터 전송
         const response = await fetch('http://localhost:3000/participants/status', {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 participantId: participantId,
                 userId: userId,
-                status: status
+                status: status,
+                productId: productId
             })
         });
 
         if (response.ok) {
-            alert("정상적으로 처리되었습니다.");
-            location.reload(); // 새로고침해서 변경된 상태를 화면에 바로 반영
+            alert("처리가 완료되었습니다.");
+            // ⭐️ 이 줄이 있어야 DB에서 바뀐 인원수(3명 -> 2명 등)를 다시 그려줍니다!
+            window.location.reload(); 
         } else {
             const errorData = await response.json();
-            alert(errorData.message || "처리 중 오류가 발생했습니다.");
+            alert(errorData.message || "처리 중 오류 발생");
         }
     } catch (error) {
-        console.error('상태 업데이트 에러:', error);
-        alert("서버 연결에 실패했습니다.");
+        console.error('에러:', error);
+        alert("서버 연결 실패");
     }
 }
-
 // ==========================================
 // ⚙️ 환경 설정: 백엔드 API 주소
 // ==========================================
@@ -1451,6 +937,40 @@ function getProductIdFromURL() {
 function getCarrierName(code) {
     const carriers = { '04': 'CJ대한통운', '01': '우체국택배', '05': '한진택배', '08': '롯데택배', '06': '로젠택배' };
     return carriers[code] || '알 수 없는 택배사';
+}
+
+// =========================================================
+// [추가됨] 방장 신고 기능
+// =========================================================
+async function reportHost() {
+    const productId = getProductIdFromURL();
+    const reporterId = localStorage.getItem('userId');
+
+    if (!confirm('방장을 신고하시겠습니까? (허위 신고 시 불이익이 있을 수 있습니다)')) return;
+
+    try {
+        const response = await fetch('http://localhost:3000/reports', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                reporterId: reporterId, 
+                productId: productId 
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.message);
+            return;
+        }
+
+        alert('신고가 정상적으로 접수되었습니다. 신고 누적 시 방장의 신뢰도가 대폭 차감됩니다.');
+        
+    } catch (err) {
+        console.error('신고 오류:', err);
+        alert('서버 오류로 신고에 실패했습니다.');
+    }
 }
 
 </script>

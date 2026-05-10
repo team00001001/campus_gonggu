@@ -214,6 +214,7 @@ router.patch('/cancel', async (req, res) => {
         conn.release();
     }
 });
+
 router.get('/', async (req, res) => {
     const { productId } = req.query;
 
@@ -238,7 +239,7 @@ router.get('/', async (req, res) => {
             FROM product_participants pp
             JOIN users u ON pp.user_id = u.id
             WHERE pp.product_id = ?
-            AND pp.status = 'joined'
+            AND pp.status != 'cancelled'
             ORDER BY pp.created_at ASC
             `,
             [productId]
@@ -255,14 +256,9 @@ router.get('/', async (req, res) => {
 });
 
 // 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
+// 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
 router.patch('/status', async (req, res) => {
-    // 💡 req.body에서 productId를 추가로 받아옵니다.
     const { participantId, userId, status, productId } = req.body; 
-
-    // productId가 누락되었을 경우를 대비한 방어 로직 (선택 사항)
-    if (!productId && status === 'noshow') {
-        return res.status(400).json({ message: '노쇼 처리 시 productId가 필요합니다.' });
-    }
 
     const conn = await pool.promise().getConnection();
     try {
@@ -275,38 +271,54 @@ router.patch('/status', async (req, res) => {
                 [participantId]
             );
             
-            // 2. 신뢰도 10점 차감 (기존에 만들어둔 공통 함수 활용)
+            // 2. 신뢰도 10점 차감
             await updateTrustScore(userId, -10, conn);
             
-            // 3. [추가된 로직] 공구방 현재 인원 1명 빼기 (빈자리 만들기 = 강퇴 효과)
-            await conn.query(
-                `UPDATE products SET currentCount = GREATEST(currentCount - 1, 0) WHERE id = ?`, 
-                [productId]
-            );
+            // 3. ⭐️ 확실한 인원수 -1 감소 처리 ⭐️
+            let targetProductId = productId;
+            if (!targetProductId) {
+                const [rows] = await conn.query(
+                    `SELECT product_id FROM product_participants WHERE id = ?`,
+                    [participantId]
+                );
+                if (rows.length > 0) {
+                    targetProductId = rows[0].product_id;
+                }
+            }
+
+            if (targetProductId) {
+                // GREATEST 대신 직관적인 조건문 쿼리 사용
+                await conn.query(
+                    `UPDATE products 
+                     SET currentCount = currentCount - 1 
+                     WHERE id = ? AND currentCount > 0`, 
+                    [targetProductId]
+                );
+            }
+            
         } else {
-            // 노쇼가 아닐 때 (예: 'confirmed' 등)의 기존 로직 유지
+            // 확인(confirmed) 버튼 눌렀을 때
             await conn.query(
                 `UPDATE product_participants SET status = ? WHERE id = ?`,
                 [status, participantId]
             );
-            
-            // 성공(confirmed)이면 +3점 부여 (기존 로직 유지)
+            // 성공 시 +3점 부여
             await updateTrustScore(userId, 3, conn);
         }
 
         await conn.commit();
-        res.json({ message: '상태 업데이트 및 점수 반영 완료' });
+        res.json({ message: '상태 업데이트 및 인원수 반영 완료' });
 
     } catch (error) {
         await conn.rollback();
-        console.error(error);
+        console.error("상태 업데이트 에러:", error);
         res.status(500).json({ message: '상태 업데이트 실패' });
     } finally {
         conn.release();
     }
 });
 
-// [API] 참여자 -> 수령 완료 확인 (과반수 체크 및 방장/참여자 점수 보상)
+// [API] 참여자 -> 수령 완료 확인
 router.patch('/receive', async (req, res) => {
     const { productId, userId } = req.body;
     const conn = await pool.promise().getConnection();
@@ -382,4 +394,4 @@ router.patch('/receive', async (req, res) => {
     }
 });
 
-module.exports = router; //이 줄은 파일의 가장 마지막에 있어야 함
+module.exports = router;
