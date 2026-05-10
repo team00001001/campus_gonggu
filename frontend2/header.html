@@ -156,7 +156,7 @@
                         </svg>
                         <span class="noti-badge" style="display:none;"></span>
                     </button>
-                </div>
+                </div> 
 
                 <a href="mypage.html" class="menu-link auth-only" style="display: none;">마이페이지</a>
                 <a href="product_list.html" class="menu-link auth-only" style="display: none;">검색창</a>
@@ -198,6 +198,28 @@ document.addEventListener(
     'DOMContentLoaded',
     updateHeaderNotificationBadge
 );
+</script>
+<script>
+async function updateHeaderNotificationBadge() {
+    const userId = localStorage.getItem('userId');
+    const badge = document.querySelector('.noti-badge');
+
+    if (!badge || !userId) return;
+
+    try {
+        const res = await fetch(`http://localhost:3000/notifications/${userId}`);
+        const notifications = await res.json();
+
+        const hasUnread = notifications.some(n => Number(n.is_read) === 0);
+
+        badge.style.display = hasUnread ? 'block' : 'none';
+    } catch (err) {
+        console.error('헤더 알림 배지 확인 실패:', err);
+        badge.style.display = 'none';
+    }
+}
+
+updateHeaderNotificationBadge();
 </script>
 </body>
 </html>

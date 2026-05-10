@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <link rel="stylesheet" href="mobile.css">
     <meta charset="UTF-8">
@@ -12,12 +13,13 @@
             /* 활기차고 트렌디한 컬러 팔레트 */
             --ku-crimson: #8A1538;
             --ku-crimson-gradient: linear-gradient(135deg, #8A1538 0%, #D32F2F 100%);
-            --bg-color: #F7F8FA; /* 시원하고 깔끔한 배경색 */
+            --bg-color: #F7F8FA;
+            /* 시원하고 깔끔한 배경색 */
             --surface-color: #FFFFFF;
             --text-dark: #222222;
             --text-gray: #777777;
             --border-light: #F0F0F0;
-            
+
             /* 카테고리 파스텔 톤 */
             --color-food: #FFF3E0;
             --color-living: #E3F2FD;
@@ -66,7 +68,7 @@
         }
 
         .logo {
-            color:white;
+            color: white;
             font-size: 1.6rem;
             font-weight: 800;
             text-decoration: none;
@@ -199,7 +201,7 @@
             background-image: none;
             background-size: cover;
             background-position: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
         /* ==========================================
@@ -227,7 +229,7 @@
             text-align: center;
             cursor: pointer;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
             border: none;
         }
 
@@ -248,10 +250,21 @@
         }
 
         /* 각 카드별 배경색 */
-        .cat-1 { background-color: var(--color-food); }
-        .cat-2 { background-color: var(--color-living); }
-        .cat-3 { background-color: var(--color-study); }
-        .cat-4 { background-color: var(--color-etc); }
+        .cat-1 {
+            background-color: var(--color-food);
+        }
+
+        .cat-2 {
+            background-color: var(--color-living);
+        }
+
+        .cat-3 {
+            background-color: var(--color-study);
+        }
+
+        .cat-4 {
+            background-color: var(--color-etc);
+        }
 
         /* ==========================================
            4. 공구방 리스트 (실제 이미지 + 화려한 태그)
@@ -266,7 +279,7 @@
             background: var(--surface-color);
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
             border: 1px solid var(--border-light);
@@ -274,7 +287,7 @@
 
         .room-item:hover {
             transform: translateY(-6px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
         }
 
         .room-image {
@@ -300,12 +313,35 @@
             border-radius: 12px;
         }
 
-        .tag-hot { background-color: #FFF0F0; color: #FF4B4B; }
-        .tag-official { background-color: #F0F7FF; color: #007AFF; }
-        .tag-food { background-color: #FFF8E1; color: #FFB300; }
-        .tag-study { background-color: var(--color-study); color: #2E7D32; }
-        .tag-living { background-color: var(--color-living); color: #1565C0; }
-        .tag-etc { background-color: var(--color-etc); color: #6A1B9A; } 
+        .tag-hot {
+            background-color: #FFF0F0;
+            color: #FF4B4B;
+        }
+
+        .tag-official {
+            background-color: #F0F7FF;
+            color: #007AFF;
+        }
+
+        .tag-food {
+            background-color: #FFF8E1;
+            color: #FFB300;
+        }
+
+        .tag-study {
+            background-color: var(--color-study);
+            color: #2E7D32;
+        }
+
+        .tag-living {
+            background-color: var(--color-living);
+            color: #1565C0;
+        }
+
+        .tag-etc {
+            background-color: var(--color-etc);
+            color: #6A1B9A;
+        }
 
         .room-title {
             font-size: 1.2rem;
@@ -341,7 +377,7 @@
             font-weight: 600;
             color: var(--text-gray);
         }
-        
+
         .count-info span {
             color: var(--ku-crimson);
         }
@@ -375,8 +411,10 @@
            ========================================== */
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
             display: flex;
@@ -412,10 +450,12 @@
 
         .btn-close-modal {
             position: absolute;
-            top: 20px; right: 20px;
+            top: 20px;
+            right: 20px;
             background: #F5F5F5;
             border: none;
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -486,87 +526,119 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(138, 21, 56, 0.4);
         }
-
     </style>
 </head>
+
 <body>
 
     <!-- 1. 상단바 -->
-   <!-- index.html 상단 -->
-<div id="header-placeholder"></div>
+    <!-- index.html 상단 -->
+    <div id="header-placeholder"></div>
 
-<script>
-    // 1. 페이지 열리자마자 헤더 가져오기
-    fetch('header.html')
-        .then(res => {
-            if (!res.ok) throw new Error('header.html 파일을 찾을 수 없습니다.');
-            return res.text();
-        })
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-            
-            // 2. 헤더 조립 끝나자마자 버튼 상태 확인
-            updateHeader();
-        })
-        .catch(err => console.error(err));
+    <script>
+        async function updateHeaderNotificationBadge() {
 
-    // 1. 헤더 업데이트 (로그인/로그아웃 버튼 스위칭)
-function updateHeader() {
-    // 기준 통일: 'isLoggedIn' 키 하나만 사용
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    
-    const authButtons = document.querySelectorAll('.auth-only');
-    const guestButtons = document.querySelectorAll('.guest-only');
+            const userId = localStorage.getItem('userId');
+            const badge = document.querySelector('.noti-badge');
 
-    if (isLoggedIn) {
-        authButtons.forEach(btn => btn.style.display = 'inline-block');
-        guestButtons.forEach(btn => btn.style.display = 'none');
-    } else {
-        authButtons.forEach(btn => btn.style.display = 'none');
-        guestButtons.forEach(btn => btn.style.display = 'inline-block');
-    }
-}
+            if (!badge || !userId) return;
 
-// 2. 접근 권한 체크 (클릭 차단용)
-function checkAccess(targetUrl) {
-    // 위와 동일하게 'isLoggedIn'으로 체크
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            try {
 
-    if (!isLoggedIn) {
-        alert("로그인이 필요한 서비스입니다! 로그인 페이지로 갈까요?");
-        location.href = "login.html"; 
-        return false;
-    }
+                const response =
+                    await fetch(`http://localhost:3000/notifications/${userId}`);
 
-    if (targetUrl) {
-        location.href = targetUrl;
-    }
-    return true;
-}
+                const notifications = await response.json();
 
-    // 3. 로그아웃 기능 (버튼 클릭 감시)
-    document.addEventListener('click', function(e) {
-        // id가 logout-btn인 요소를 클릭했을 때만 실행
-        if(e.target && e.target.id === 'logout-btn') {
-            localStorage.removeItem('isLoggedIn'); // 기록 삭제
-            alert('로그아웃 되었습니다.');
-            location.href = 'main_login.html'; // 
+                const hasUnread = notifications.some(
+                    n => Number(n.is_read) === 0
+                );
+
+                badge.style.display = hasUnread ? 'block' : 'none';
+
+            } catch (error) {
+
+                console.error('알림 배지 업데이트 실패:', error);
+            }
         }
-    });
-</script>
+        // 1. 페이지 열리자마자 헤더 가져오기
+       fetch('header.html')
+    .then(res => {
+
+        if (!res.ok) {
+            throw new Error('header.html 파일을 찾을 수 없습니다.');
+        }
+
+        return res.text();
+    })
+    .then(data => {
+
+        document.getElementById('header-placeholder').innerHTML = data;
+
+        updateHeader();
+
+        updateHeaderNotificationBadge();
+    })
+    .catch(err => console.error(err));
+
+        // 1. 헤더 업데이트 (로그인/로그아웃 버튼 스위칭)
+        function updateHeader() {
+            // 기준 통일: 'isLoggedIn' 키 하나만 사용
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+            const authButtons = document.querySelectorAll('.auth-only');
+            const guestButtons = document.querySelectorAll('.guest-only');
+
+            if (isLoggedIn) {
+                authButtons.forEach(btn => btn.style.display = 'inline-block');
+                guestButtons.forEach(btn => btn.style.display = 'none');
+            } else {
+                authButtons.forEach(btn => btn.style.display = 'none');
+                guestButtons.forEach(btn => btn.style.display = 'inline-block');
+            }
+        }
+
+        // 2. 접근 권한 체크 (클릭 차단용)
+        function checkAccess(targetUrl) {
+            // 위와 동일하게 'isLoggedIn'으로 체크
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+            if (!isLoggedIn) {
+                alert("로그인이 필요한 서비스입니다! 로그인 페이지로 갈까요?");
+                location.href = "login.html";
+                return false;
+            }
+
+            if (targetUrl) {
+                location.href = targetUrl;
+            }
+            return true;
+        }
+
+        // 3. 로그아웃 기능 (버튼 클릭 감시)
+        document.addEventListener('click', function (e) {
+            // id가 logout-btn인 요소를 클릭했을 때만 실행
+            if (e.target && e.target.id === 'logout-btn') {
+                localStorage.removeItem('isLoggedIn'); // 기록 삭제
+                alert('로그아웃 되었습니다.');
+                location.href = 'main_login.html'; // 
+            }
+        });
+    </script>
+
     <!-- 2. 메인 컨텐츠 영역 -->
     <main>
         <!-- 다이나믹 히어로 섹션 -->
         <section class="hero-section">
             <div class="hero-text-area">
                 <span class="hero-badge">🔥 실시간 트렌드</span>
-                
+
                 <h2 class="hero-main-text">
                     필요한 물건,<br>
                     고대생끼리 <span>스마트하게.</span>
                 </h2>
                 <p class="hero-sub-text">배달비 절약부터 대량구매 할인까지. 학우들과 함께하세요!</p>
-                
+
                 <div class="search-input-box">
                     <input type="text" placeholder="반가워요😊" id="main-search">
                 </div>
@@ -596,73 +668,74 @@ function checkAccess(targetUrl) {
         </section>
 
         <script>
-        function filterCategory(categoryName) {
-    // 카테고리 이름을 URL 파라미터로 담아서 이동
-        location.href = `product_list.html?category=${encodeURIComponent(categoryName)}`;
-    }
+            function filterCategory(categoryName) {
+                // 카테고리 이름을 URL 파라미터로 담아서 이동
+                location.href = `product_list.html?category=${encodeURIComponent(categoryName)}`;
+            }
         </script>
 
         <!-- 공구방 리스트 -->
         <div class="section-title">⚡최근 올라온 공구방</div>
         <section class="room-grid" id="recent-room-grid">
         </section>
-    </main>   
-        <!-- 3. 플로팅 게시글 작성 버튼 (Pen Icon) -->
-        <!-- style="display: none;"을 추가해 기본적으로 숨겨둡니다 -->
-<a href="writefront.html" id="write-fab" class="write-fab" title="공구방 만들기" style="display: none;">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 20h9"></path>
-        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-    </svg>
-</a>
-<script>
-    window.onload = function() {
-        // 1. 로그인 상태 확인 (예: 로컬 스토리지에 'isLoggedIn'이 'true'로 저장되어 있다고 가정)
-        // 실제 프로젝트에서는 로그인 성공 시 localStorage.setItem('isLoggedIn', 'true')를 실행해줘야 합니다.
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        const fabButton = document.getElementById('write-fab');
+    </main>
+    <!-- 3. 플로팅 게시글 작성 버튼 (Pen Icon) -->
+    <!-- style="display: none;"을 추가해 기본적으로 숨겨둡니다 -->
+    <a href="writefront.html" id="write-fab" class="write-fab" title="공구방 만들기" style="display: none;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+    </a>
+    <script>
+        window.onload = function () {
+            // 1. 로그인 상태 확인 (예: 로컬 스토리지에 'isLoggedIn'이 'true'로 저장되어 있다고 가정)
+            // 실제 프로젝트에서는 로그인 성공 시 localStorage.setItem('isLoggedIn', 'true')를 실행해줘야 합니다.
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const fabButton = document.getElementById('write-fab');
 
-        // 2. 로그인 상태라면 버튼을 보여줌
-        if (isLoggedIn === 'true') {
-            fabButton.style.display = 'flex'; // 혹은 'block'
-        } else {
-            fabButton.style.display = 'none';
-        }
-    };
-</script>
-<script>
-    async function loadRecentProducts() {
-    const roomGrid = document.getElementById('recent-room-grid');
+            // 2. 로그인 상태라면 버튼을 보여줌
+            if (isLoggedIn === 'true') {
+                fabButton.style.display = 'flex'; // 혹은 'block'
+            } else {
+                fabButton.style.display = 'none';
+            }
+        };
+    </script>
+    <script>
+        async function loadRecentProducts() {
+            const roomGrid = document.getElementById('recent-room-grid');
 
-    try {
-        const response = await fetch('http://localhost:3000/products');
-        const products = await response.json();
+            try {
+                const response = await fetch('http://localhost:3000/products');
+                const products = await response.json();
 
-        // [중요 수정] 마감되지 않은(시간 여유가 있고 인원이 남은) 공구만 필터링
-        const openProducts = products.filter(product => {
-            // 백엔드에서 준 시간 마감 여부(isClosed)가 false이고,
-            // 현재 인원이 목표 인원보다 적어야 함
-            return !product.isClosed && (product.currentCount < product.targetCount);
-        });
+                // [중요 수정] 마감되지 않은(시간 여유가 있고 인원이 남은) 공구만 필터링
+                const openProducts = products.filter(product => {
+                    // 백엔드에서 준 시간 마감 여부(isClosed)가 false이고,
+                    // 현재 인원이 목표 인원보다 적어야 함
+                    return !product.isClosed && (product.currentCount < product.targetCount);
+                });
 
-        // 필터링된 "모집 중" 상품들 중에서 최신 3개만 선택
-        const recentProducts = openProducts.slice(0, 3);
+                // 필터링된 "모집 중" 상품들 중에서 최신 3개만 선택
+                const recentProducts = openProducts.slice(0, 3);
 
-        roomGrid.innerHTML = '';
+                roomGrid.innerHTML = '';
 
-        // 만약 참여 가능한 공구가 하나도 없다면 안내 문구 출력
-        if (recentProducts.length === 0) {
-            roomGrid.innerHTML = '<p style="text-align:center; width:100%; padding:20px;">현재 참여 가능한 최근 공구가 없습니다.</p>';
-            return;
-        }
+                // 만약 참여 가능한 공구가 하나도 없다면 안내 문구 출력
+                if (recentProducts.length === 0) {
+                    roomGrid.innerHTML = '<p style="text-align:center; width:100%; padding:20px;">현재 참여 가능한 최근 공구가 없습니다.</p>';
+                    return;
+                }
 
-        recentProducts.forEach(product => {
-            const percent = Math.min(
-                Math.round((product.currentCount / product.targetCount) * 100),
-                100
-            );
+                recentProducts.forEach(product => {
+                    const percent = Math.min(
+                        Math.round((product.currentCount / product.targetCount) * 100),
+                        100
+                    );
 
-            const cardHTML = `
+                    const cardHTML = `
                 <div class="room-item" onclick="if(checkAccess()) location.href='product.html?id=${product.id}'">
                     <div class="room-content">
                         <div class="tag-group">
@@ -681,32 +754,33 @@ function checkAccess(targetUrl) {
                 </div>
             `;
 
-            roomGrid.insertAdjacentHTML('beforeend', cardHTML);
-        });
+                    roomGrid.insertAdjacentHTML('beforeend', cardHTML);
+                });
 
-    } catch (error) {
-        console.error(error);
-        roomGrid.innerHTML = '<p>최근 공구방을 불러오지 못했습니다.</p>';
-    }
-}
-
-loadRecentProducts();
-</script>
-<script>
-    const mainSearch = document.getElementById('main-search');
-
-    mainSearch.addEventListener('keydown', (e) => {
-
-        if (e.key === 'Enter') {
-
-            const keyword = mainSearch.value.trim();
-
-            if (!keyword) return;
-
-            location.href =
-                `product_list.html?search=${encodeURIComponent(keyword)}`;
+            } catch (error) {
+                console.error(error);
+                roomGrid.innerHTML = '<p>최근 공구방을 불러오지 못했습니다.</p>';
+            }
         }
-    });
-</script>
+
+        loadRecentProducts();
+    </script>
+    <script>
+        const mainSearch = document.getElementById('main-search');
+
+        mainSearch.addEventListener('keydown', (e) => {
+
+            if (e.key === 'Enter') {
+
+                const keyword = mainSearch.value.trim();
+
+                if (!keyword) return;
+
+                location.href =
+                    `product_list.html?search=${encodeURIComponent(keyword)}`;
+            }
+        });
+    </script>
 </body>
+
 </html>

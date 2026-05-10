@@ -24,9 +24,10 @@ const io = new Server(server, {
 });
 const notificationRoutes = require('./routes/notificationRoutes');
 
-app.use('/notifications', notificationRoutes);
 app.use(cors());
 app.use(express.json());
+
+app.use('/notifications', notificationRoutes);
 
 app.use('/products', productRoutes);
 app.use('/users', userRoutes);

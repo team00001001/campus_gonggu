@@ -1,3 +1,4 @@
+const createNotification = require('../utils/createNotification');
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
@@ -68,33 +69,82 @@ router.post('/join', async (req, res) => {
                     `,
                     [productId, userId]
                 );
+    await conn.query(
+        'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
+        [productId]
+    );
+            
+                // 공구 정보 조회
+const [[productInfo]] = await conn.query(
+    `
+    SELECT title, user_id
+    FROM products
+    WHERE id = ?
+    `,
+    [productId]
+);
 
-                await conn.query(
-                    'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
-                    [productId]
-                );
+await conn.commit();
 
-                await conn.commit();
-                return res.status(200).json({ message: '공구 재참여 완료' });
+// 자기 공구 제외
+if (
+    productInfo &&
+    String(productInfo.user_id) !== String(userId)
+) {
+    createNotification(
+        productInfo.user_id,
+        '참여자가 다시 들어왔습니다',
+        `"${productInfo.title}" 공구에 참여자가 다시 들어왔습니다.`,
+        'success'
+    );
+}
+
+return res.status(200).json({ message: '공구 재참여 완료' });
             }
         }
 
-        await conn.query(
-            `
-            INSERT INTO product_participants (product_id, user_id, status)
-            VALUES (?, ?, 'joined')
-            `,
-            [productId, userId]
-        );
+     
+const [insertResult] = await conn.query(
+    `
+    INSERT INTO product_participants (product_id, user_id, status)
+    VALUES (?, ?, 'joined')
+    `,
+    [productId, userId]
+);
 
-        await conn.query(
-            'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
-            [productId]
-        );
 
-        await conn.commit();
+const [updateResult] = await conn.query(
+    'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
+    [productId]
+);
 
-        res.status(201).json({ message: '공구 참여 완료' });
+console.log('currentCount UPDATE 결과:', updateResult);
+// 공구 정보 조회
+const [[productInfo]] = await conn.query(
+    `
+    SELECT title, user_id
+    FROM products
+    WHERE id = ?
+    `,
+    [productId]
+);
+
+await conn.commit();
+
+// 자기 공구 참여는 제외
+if (
+    productInfo &&
+    String(productInfo.user_id) !== String(userId)
+) {console.log('알림 생성 시도:', productInfo.user_id, productInfo.title);
+    createNotification(
+        productInfo.user_id,
+        '새 참여자가 생겼습니다',
+        `"${productInfo.title}" 공구에 새로운 참여자가 들어왔습니다.`,
+        'success'
+    );
+}
+
+res.status(201).json({ message: '공구 참여 완료' });
 
     } catch (error) {
         await conn.rollback();
