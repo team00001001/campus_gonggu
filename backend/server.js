@@ -11,6 +11,7 @@ const participantRoutes = require('./routes/participantRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const deliveryRoutes = require('./routes/deliveryRoutes'); 
 const pool = require('./db');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -33,6 +34,7 @@ app.use('/api', authRoutes);
 app.use('/participants', participantRoutes);
 app.use('/chats', chatRoutes);
 app.use('/delivery', deliveryRoutes);
+app.use('/reports', reportRoutes);
 
 io.on('connection', (socket) => {
     console.log('채팅 접속:', socket.id);
