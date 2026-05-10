@@ -1,9 +1,36 @@
+const getNow = () => Math.floor(Date.now() / 1000);
+
+function parseDuration(duration) {
+    if (!duration) return null;
+
+    if (!isNaN(Number(duration))) {
+        return Number(duration);
+    }
+
+    const num = parseInt(duration);
+    if (Number.isNaN(num)) return null;
+
+    if (duration.includes('분')) {
+        return getNow() + num * 60;
+    }
+
+    if (duration.includes('시간')) {
+        return getNow() + num * 3600;
+    }
+
+    if (duration.includes('일')) {
+        return getNow() + num * 86400;
+    }
+
+    if (duration.includes('개월')) {
+        return getNow() + num * 30 * 86400;
+    }
+
+    return null;
+}
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-
-// 현재 시간을 초 단위로 (Unix Timestamp)
-const getNow = () => Math.floor(Date.now() / 1000);
 
 // 1. 상품 목록 조회
 router.get('/', (req, res) => {
@@ -51,21 +78,35 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
     const {
         title, category, targetCount, price, duration,
-        location, imageUrl, chatUrl, description, user_id
+        location, imageUrl, description, user_id
     } = req.body;
 
-    // [수정] 프론트에서 이미 계산된 마감 시각(숫자)을 보내주므로 
-    // 백엔드에서는 숫자형으로 변환만 해서 바로 저장합니다.
-    const durationNum = Number(duration);
+    
+  let durationNum = null;
+
+if (
+    duration !== undefined &&
+    duration !== null &&
+    duration !== '' &&
+    duration !== 'NaN'
+) {
+    durationNum = parseDuration(duration);
+}
+
+if (durationNum !== null && Number.isNaN(durationNum)) {
+    return res.status(400).json({
+        error: 'duration 값이 올바르지 않습니다.'
+    });
+}
 
     const sql = `
         INSERT INTO products
-        (title, category, targetCount, price, duration, location, imageUrl, chatUrl, description, user_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, category, targetCount, price, duration, location, imageUrl, description, user_id)
+        VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(sql, 
-        [title, category, targetCount, price, durationNum, location, imageUrl, chatUrl, description, user_id], 
+        [title, category, targetCount, price, durationNum, location, imageUrl, description, user_id], 
         (err, result) => {
             if (err) {
                 console.error(err);
@@ -79,27 +120,69 @@ router.post('/', (req, res) => {
 // 4. 상품 수정
 router.put('/:id', (req, res) => {
     const productId = req.params.id;
-    const { title, category, targetCount, price, duration, location, imageUrl, chatUrl, description } = req.body;
 
-    // 수정 시에도 duration을 숫자로 변환
-    const durationNum = Number(duration);
+    const {
+        title,
+        category,
+        targetCount,
+        price,
+        duration,
+        location,
+        imageUrl,
+        description
+    } = req.body;
+
+    let durationNum = null;
+
+    if (
+        duration !== undefined &&
+        duration !== null &&
+        duration !== '' &&
+        duration !== 'NaN'
+    ) {
+durationNum = parseDuration(duration);
+    }
 
     const sql = `
         UPDATE products 
-        SET title = ?, category = ?, targetCount = ?, price = ?, duration = ?, 
-            location = ?, imageUrl = ?, chatUrl = ?, description = ? 
+        SET title = ?,
+            category = ?,
+            targetCount = ?,    
+            price = ?,
+            duration = ?,
+            location = ?,
+            imageUrl = ?,
+            description = ?
         WHERE id = ?
     `;
 
-    db.query(sql, 
-        [title, category, targetCount, price, durationNum, location, imageUrl, chatUrl, description, productId], 
+    db.query(
+        sql,
+        [
+            title,
+            category,
+            targetCount,
+            price,
+            durationNum,
+            location,
+            imageUrl,
+            description,
+            productId
+        ],
         (err, result) => {
-            if (err) return res.status(500).json({ error: '수정 실패' });
+            if (err) {
+                console.error('상품 수정 SQL 에러:', err);
+
+                return res.status(500).json({
+                    error: '수정 실패',
+                    detail: err.message
+                });
+            }
+
             res.json({ message: '상품 수정 성공' });
         }
     );
 });
-
 // 5. 상품 삭제 (promise 지원 안 할 경우를 대비해 일반 쿼리 권장)
 router.delete('/:id', (req, res) => {
     const { id } = req.params;

@@ -277,15 +277,15 @@
 
                 // 모집 기간 매핑 (예: "3일" -> 3과 'day'로 분리)
                 if (product.duration) {
-                    const match = product.duration.match(/(\d+)(분|시간|일|개월)/);
-                    if (match) {
-                        document.getElementById('periodValue').value = match[1]; // 숫자 부분
-                        
-                        const unitReverseMap = { '분': 'minute', '시간': 'hour', '일': 'day', '개월': 'month' };
-                        document.getElementById('periodUnit').value = unitReverseMap[match[2]]; // 단위 부분
-                    }
-                }
+    const now = Math.floor(Date.now() / 1000);
+    const diff = Number(product.duration) - now;
 
+    if (diff > 0) {
+        const days = Math.ceil(diff / 86400);
+        document.getElementById('periodValue').value = days;
+        document.getElementById('periodUnit').value = 'day';
+    }
+}
             } catch (error) {
                 console.error(error);
                 alert('서버 연결 실패. 백엔드 서버가 켜져 있는지 확인해주세요.');
