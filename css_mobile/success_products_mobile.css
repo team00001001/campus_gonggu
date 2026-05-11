@@ -1,0 +1,47 @@
+/* =========================================
+   📱 모바일 반응형 (Media Query)
+   ========================================= */
+@media screen and (max-width: 768px) {
+    /* 1. 전체 컨테이너 여백 축소 */
+    .container {
+        padding: 15px; 
+    }
+
+    /* 2. 타이틀 크기 미세 조정 */
+    .page-title {
+        font-size: 1.35rem; 
+    }
+
+    /* 3. 상품 카드 레이아웃 변경 (핵심!) */
+    .product-card {
+        padding: 16px;
+        gap: 15px;
+        flex-wrap: wrap; /* 내부 요소의 가로 길이가 길어지면 아래 줄로 넘어가게 함 */
+    }
+
+    /* 4. 이미지 크기를 모바일에 맞게 살짝 축소 */
+    .product-img {
+        width: 80px;  
+        height: 80px;
+    }
+
+    .product-info {
+        /* 이미지 옆에서 남은 공간을 다 차지하되, 너무 좁아지지 않게 방어 */
+        min-width: 150px; 
+    }
+
+    /* 5. 우측에 세로로 있던 버튼들을 맨 아래 가로 배치로 변경 */
+    .manage-btns {
+        flex-direction: row; /* 가로 정렬로 변경 */
+        width: 100%;         /* 카드의 가로 폭을 100% 차지하게 해서 아래 줄로 강제로 떨어뜨림 */
+        margin-top: 5px;     /* 위쪽 텍스트 영역과의 간격 */
+        gap: 10px;
+    }
+
+    /* 6. 개별 버튼들이 동일한 비율로 꽉 차게 팽창 */
+    .btn-manage {
+        flex: 1; 
+        padding: 12px; /* 모바일에서는 손가락으로 누르기 편하게 높이를 살짝 키움 */
+        font-size: 0.9rem;
+    }
+}

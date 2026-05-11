@@ -1,0 +1,182 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* 둥근 글씨체 적용 */
+    font-family: 'NanumSquareRound', sans-serif;
+    background-color: #fff5f5; /* 연한 빨강 배경 */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 상단 헤더 */
+header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #8A1538;
+    border-bottom: 1px solid #ffeded;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.back-btn {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    transition: color 0.2s;
+}
+
+.back-btn:hover {
+    color: #4e0404;
+}
+
+.header-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+/* 메인 폼 영역 */
+main {
+    padding: 2rem 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.write-form {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 25px; /* 전체적으로 둥글게 */
+    box-shadow: 0 8px 20px rgba(220, 20, 60, 0.05);
+    border: 1px solid #ffeded;
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+/* 개별 입력 그룹 */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.input-group label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.required::after {
+    content: " *";
+    color: #8A1538;
+}
+
+/* 입력칸 (Input, Textarea, Select) 공통 스타일 */
+.input-group input,
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 1.5px solid #eee;
+    border-radius: 15px; /* 입력창도 둥글게 */
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    background-color: #fafafa;
+}
+
+/* 드롭다운(Select) 화살표 스타일링을 위해 기본 브라우저 스타일 제거 후 커스텀 */
+.input-group select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #8A1538;
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.1);
+}
+
+.short-input input {
+    width: 60%;
+}
+
+/* 등록하기 버튼 */
+.submit-btn {
+    margin-top: 1rem;
+    padding: 1.1rem;
+    background-color: #8A1538;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.2);
+}
+
+.submit-btn:hover {
+    background-color: #8A1538;
+    transform: translateY(-2px);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+   📱 모바일 반응형 (Media Query) 추가
+   ========================================= */
+@media screen and (max-width: 768px) {
+    /* 모바일에서는 좌우 여백을 줄여 공간 확보 */
+    header {
+        padding: 1rem; 
+    }
+
+    main {
+        padding: 1.5rem 1rem;
+    }
+
+    /* 폼 내부 여백을 줄이고, 모서리 둥글기를 살짝 완화 */
+    .write-form {
+        padding: 1.5rem 1rem;
+        border-radius: 20px;
+        gap: 1.5rem; /* 요소 간 간격 축소 */
+    }
+
+    /* 모바일에서는 짧은 입력칸도 100%로 꽉 채워서 터치하기 편하게 변경 */
+    .short-input input {
+        width: 100%;
+    }
+
+    /* 버튼 크기와 폰트 사이즈 미세 조정 */
+    .submit-btn {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+}
