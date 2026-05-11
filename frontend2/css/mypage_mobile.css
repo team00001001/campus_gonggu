@@ -1,0 +1,177 @@
+/* =========================
+   마이페이지 모바일
+========================= */
+@media screen and (max-width: 768px) {
+
+  html,
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* 헤더 */
+  header {
+    height: 64px;
+  }
+
+  .nav-inner {
+    padding: 0 16px;
+  }
+
+  nav {
+    gap: 14px;
+  }
+
+  nav a.menu-link {
+    font-size: 0.8rem;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  .btn-login-nav {
+    padding: 8px 14px;
+    font-size: 0.78rem;
+  }
+
+  /* 전체 컨테이너 */
+  .container {
+    flex-direction: column;
+    margin-top: 90px;
+    padding: 0 14px 30px;
+    gap: 18px;
+  }
+
+  /* 사이드바 */
+  .sidebar {
+    width: 100%;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .profile-circle {
+    width: 72px;
+    height: 72px;
+    font-size: 1.4rem;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+
+  .user-handle {
+    font-size: 0.78rem;
+  }
+
+  /* 메뉴 */
+  .menu-item {
+    padding: 14px 0;
+    font-size: 0.9rem;
+  }
+
+  /* 프로필 수정 버튼 */
+  .profile-card button {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+
+  /* 메인 컨텐츠 */
+  .main-content {
+    width: 100%;
+  }
+
+  /* 통계 카드 */
+  .top-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  /* 섹션 타이틀 */
+  .section-title {
+    font-size: 0.95rem;
+    margin: 24px 0 12px;
+  }
+
+  .section-title span {
+    font-size: 0.72rem !important;
+  }
+
+  /* 공구 카드 */
+  .gonggu-grid,
+  .jjim-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .gonggu-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .gonggu-title {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .gonggu-info {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+  }
+
+  /* 배지 */
+  .badge {
+    font-size: 0.65rem;
+    padding: 4px 8px;
+  }
+
+ header {
+    height: 56px !important;
+  }
+
+  .nav-inner {
+    padding: 0 10px !important;
+  }
+
+  .logo {
+    font-size: 15px !important;
+    white-space: nowrap !important;
+  }
+
+  nav {
+    gap: 8px !important;
+  }
+
+  nav a.menu-link,
+  nav button,
+  .logout-btn {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+}
+}
