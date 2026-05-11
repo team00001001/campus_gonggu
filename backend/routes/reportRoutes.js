@@ -13,7 +13,7 @@ async function updateTrustScore(userId, delta, conn) {
 
 // [API] 방장 신고 접수
 router.post('/', async (req, res) => {
-    const { reporterId, productId } = req.body;
+    const { reporterId, productId} = req.body;
     const conn = await pool.promise().getConnection();
 
     try {
@@ -44,12 +44,15 @@ router.post('/', async (req, res) => {
 
         const participantCount = countRow.cnt;
         const reportCount = reportRow.cnt;
-        const threshold = participantCount <= 3 ? 1 : 2;
+        
+        // [수정된 부분] 페널티 적용을 위한 신고 누적 기준 (threshold) 설정
+        // - 기준 1: 참여자 수가 3명 미만(1~2명)일 때는 1명만 신고해도 바로 페널티 적용
+        // - 기준 2: 그 외(참여자가 3명 이상)일 때는 2명 이상이 신고해야 페널티 적용
+        const threshold = participantCount < 3 ? 1 : 2;
 
-        // 3. 신고 기준 충족 시 점수 차감
+        // 3. 신고 기준 충족 시 점수 차감 (상태 변경 코드 삭제 완료)
         if (reportCount >= threshold) {
             await updateTrustScore(hostId, -20, conn);
-            await conn.query(`UPDATE products SET status = 'reported' WHERE id = ?`, [productId]);
         }
 
         await conn.commit();
