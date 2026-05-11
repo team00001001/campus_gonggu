@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const createNotification = require('../utils/createNotification');
 router.get('/my/:userId', async (req, res) => {
     const { userId } = req.params;
 
@@ -70,19 +71,71 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        await pool.promise().query(
+        const [result] = await pool.promise().query(
             `
-            INSERT INTO chat_messages (product_id, user_id, message)
-            VALUES (?, ?, ?)
-            `,
+    INSERT INTO chat_messages (product_id, user_id, message)
+    VALUES (?, ?, ?)
+    `,
             [productId, userId, message]
         );
 
+
+  
+        // 공구 제목 + 방장 조회
+        const [[product]] = await pool.promise().query(
+            `
+    SELECT title, user_id AS owner_id
+    FROM products
+    WHERE id = ?
+    `,
+            [productId]
+        );
+
+        // 참여자 조회
+        const [participants] = await pool.promise().query(
+            `
+    SELECT user_id
+    FROM product_participants
+    WHERE product_id = ?
+    AND status = 'joined'
+    AND user_id != ?
+    `,
+            [productId, userId]
+        );
+
+        // 알림 받을 사람 목록
+        const receiverIds = new Set();
+
+        // 참여자 추가
+        participants.forEach(p => {
+            receiverIds.add(Number(p.user_id));
+        });
+
+        // 방장 추가 (보낸 사람 제외)
+        if (
+            product &&
+            Number(product.owner_id) !== Number(userId)
+        ) {
+            receiverIds.add(Number(product.owner_id));
+        }
+
+        // 알림 생성
+        receiverIds.forEach(receiverId => {
+            createNotification(
+                receiverId,
+                '새 채팅 메시지',
+                `"${product.title}" 채팅방에 새 메시지가 도착했습니다.`,
+                'chat'
+            );
+        });
+
         res.status(201).json({ message: '메시지 전송 완료' });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: '메시지 전송 실패' });
     }
 });
+
 
 module.exports = router;
