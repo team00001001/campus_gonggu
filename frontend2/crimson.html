@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KU GONGGU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ku-crimson: #8A1538;
+            --text-dark: #222222;
+            --bg-color: #F7F8FA;
+            --border-light: #EAECEF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            padding-top: 70px; /* 헤더 고정 높이만큼 여백 */
+        }
+
+        /* 헤더 디자인 (외부 파일을 불러와도 CSS는 부모에 있어야 적용됨) */
+        header {
+            background-color: var(--ku-crimson);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-inner {
+            width: 100%; max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 24px;
+        }
+
+        .logo { color: white; font-size: 1.6rem; font-weight: 800; text-decoration: none; }
+
+        nav { display: flex; gap: 30px; align-items: center; }
+
+        nav a.menu-link { color: #ffffff; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+
+        .btn-login-nav {
+            background: var(--ku-crimson); color: white !important;
+            padding: 10px 24px; border-radius: 30px; font-weight: 700;
+            border: 2px solid white; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더가 들어갈 빈 바구니 -->
+    <div id="header-placeholder"></div>
+
+    <script>
+        // 1. 헤더 불러오기 (fetch)
+        fetch('header.html')
+            .then(res => {
+                if (!res.ok) throw new Error('header.html 파일을 찾을 수 없습니다.');
+                return res.text();
+            })
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                updateHeader(); // 불러온 직후 로그인 상태 체크
+            })
+            .catch(err => console.error(err));
+
+        // 2. 로그인 상태 업데이트 함수
+        function updateHeader() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authElements = document.querySelectorAll('.auth-only');
+            const guestElements = document.querySelectorAll('.guest-only');
+
+            if (isLoggedIn) {
+                authElements.forEach(el => el.style.display = 'flex');
+                guestElements.forEach(el => el.style.display = 'none');
+            } else {
+                authElements.forEach(el => el.style.display = 'none');
+                guestElements.forEach(el => el.style.display = 'block');
+            }
+        }
+
+        // 3. 로그아웃 (이벤트 위임)
+        document.addEventListener('click', function(e) {
+            if(e.target && e.target.id === 'logout-btn') {
+                localStorage.clear(); // 모든 정보 삭제
+                alert('로그아웃 되었습니다.');
+                location.href = 'main_login.html'; 
+            }
+        });
+    </script>
+</body>
+</html>
