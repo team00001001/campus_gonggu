@@ -1,412 +1,136 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>KU GONGGU - 검색 결과</title>
-    <link rel="stylesheet" href="css/product_list.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-<<<<<<< HEAD
-            /* 카테고리 버튼 색상 */
-            --color-food: #FFF3E0;
-            --color-living: #E3F2FD;
-            --color-study: #E8F5E9;
-            --color-etc: #F3E5F5;
-            
-            /* 헤더용 변수 추가 */
-            --ku-crimson: #8A1538;
-            --text-dark: #222222;
-        }
+    <link rel="stylesheet" href="./css/product_list.css">
 
-        body {
-            font-family: 'Pretendard', sans-serif;
-            margin: 0 auto;
-            background-color: var(--bg-light-gray);
-            color: #333;
-            line-height: 1.6;
-        }
-
-        /* ==========================================
-        ✅ 마이페이지와 완벽히 동일한 헤더 CSS 추가
-           ========================================== */
-        header {
-            background-color: var(--ku-crimson);
-            backdrop-filter: blur(8px);
-            height: 70px;
-            display: flex;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        }
-
-        .nav-inner {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 800;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        nav {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        nav a.menu-link {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-        }
-
-        nav a.menu-link:hover {
-            color: var(--text-dark);
-        }
-
-        .btn-login-nav {
-            background: var(--ku-crimson);
-            color: white !important;
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(138, 21, 56, 0.3);
-            border: 2px solid white;
-            cursor: pointer;
-        }
-
-        .btn-login-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(138, 21, 56, 0.4);
-        }
-        /* ========================================== */
-
-        /* 대형 검색창 섹션 */
-        .search-hero {
-            background-color: var(--bg-light-gray);
-            /* 고정 헤더 70px를 고려하여 상단 패딩 늘림 */
-            padding: 120px 60px 80px; 
-            text-align: center;
-        }
-
-        .search-box-wrapper {
-            max-width: 700px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .search-box-wrapper input {
-            width: 100%;
-            padding: 22px 35px;
-            font-size: 18px;
-            border: none;
-            border-radius: 40px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        .search-box-wrapper input:focus {
-            box-shadow: 0 4px 25px rgba(138, 21, 56, 0.15);
-        }
-
-        /* 카테고리 필터 버튼 영역 */
-        .category-filter-row {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap; 
-        }
-
-        .filter-btn {
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: none;
-            font-size: 15px;
-            font-weight: 500; 
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #333;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-
-        .filter-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-        }
-
-        .btn-food { background-color: var(--color-food); }
-        .btn-living { background-color: var(--color-living); }
-        .btn-study { background-color: var(--color-study); }
-        .btn-etc { background-color: var(--color-etc); }
-
-        /* 메인 콘텐츠 컨테이너 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .result-info {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 30px;
-            letter-spacing: -0.5px;
-        }
-
-        .result-info span {
-            color: var(--main-burgundy);
-        }
-
-        /* 상품 그리드 레이아웃 */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        /* 상품 카드 디자인 */
-        .product-card {
-            background: #fff;
-            border-radius: 24px; 
-            border: 1px solid #f0f0f0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-card:hover {
-            transform: translateY(-12px);
-            box-shadow: var(--card-shadow);
-            border-color: var(--main-burgundy);
-        }
-
-        .img-area {
-    position: relative;
-    overflow: hidden;
-}
-
-.product-thumbnail {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 15px;
-}
-
-.no-image-overlay {
-    position: absolute;
-    inset: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(0, 0, 0, 0.28);
-    color: white;
-
-    font-size: 0.95rem;
-    font-weight: 700;
-
-    backdrop-filter: blur(2px);
-
-    border-radius: 15px;
-
-    letter-spacing: -0.2px;
-}
-
-        .card-body {
-            padding: 25px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .category-tag {
-            font-size: 14px;
-            font-weight: 700;
-            color: #999;
-            margin-bottom: 10px;
-        }
-
-        .product-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #222;
-            word-break: keep-all;
-        }
-
-        .card-footer {
-            margin-top: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 15px;
-            border-top: 1px solid #f9f9f9;
-        }
-
-        .price {
-            font-size: 20px;
-            font-weight: 900;
-            color: #000;
-        }
-
-        .badge {
-            background-color: #FFF0F3;
-            color: var(--main-burgundy);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-    </style>
-<link rel="stylesheet" href="css_mobile/product_list_mobile.css" media="(max-width: 768px)">
-=======
-    <link rel="stylesheet" href="css_mobile/product_list_mobile.css" media="(max-width: 768px)">
->>>>>>> 358dd08f1f4daac1efe0b0b93401e00601bde252
+    <link rel="stylesheet" href="../css_mobile/product_list_mobile.css" media="(max-width: 768px)">
 </head>
+
 <body>
 
-<div id="header-placeholder"></div>
+    <div id="header-placeholder"></div>
 
-<section class="search-hero">
-    <div class="search-box-wrapper">
-        <input type="text" id="main-search" placeholder="어떤 물품을 찾고 계신가요?">
-    </div>
-    
-    <div class="category-filter-row" id="category-buttons">
-        <button class="filter-btn btn-food" onclick="filterCategory('식재료 / 배달')">🍊 식재료 / 배달</button>
-        <button class="filter-btn btn-living" onclick="filterCategory('자취 / 생필품')">🧴 자취 / 생필품</button>
-        <button class="filter-btn btn-study" onclick="filterCategory('전공 / 문구')">📚 전공 / 문구</button>
-        <button class="filter-btn btn-etc" onclick="filterCategory('기타 물품')">📦 기타 물품</button>
-        <button class="filter-btn" onclick="clearCategory()" style="background-color: #eee;">🏠 전체</button>
-        <!-- 추가하느라.. -->
-    </div>
-</section>
+    <section class="search-hero">
+        <div class="search-box-wrapper">
+            <input type="text" id="main-search" placeholder="어떤 물품을 찾고 계신가요?">
+        </div>
 
-<main class="container">
-    <!-- 검색 결과 문구 영역 -->
-    <div id="resultText" class="result-info" style="display: none; margin-bottom: 20px"></div>
-    
-    <!-- 3. 공구방 카드 리스트 영역 -->
-    <div id="roomGrid" class="product-grid"></div>
+        <div class="category-filter-row" id="category-buttons">
+            <button class="filter-btn btn-food" onclick="filterCategory('식재료 / 배달')">🍊 식재료 / 배달</button>
+            <button class="filter-btn btn-living" onclick="filterCategory('자취 / 생필품')">🧴 자취 / 생필품</button>
+            <button class="filter-btn btn-study" onclick="filterCategory('전공 / 문구')">📚 전공 / 문구</button>
+            <button class="filter-btn btn-etc" onclick="filterCategory('기타 물품')">📦 기타 물품</button>
+            <button class="filter-btn" onclick="clearCategory()" style="background-color: #eee;">🏠 전체</button>
+            <!-- 추가하느라.. -->
+        </div>
+    </section>
 
-    <!-- 4. 더보기 버튼 영역 -->
-    <div id="loadMoreArea" style="text-align: center; margin-top: 40px; display: none;">
-        <button id="loadMoreBtn" style="padding: 12px 40px; border-radius: 30px; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: 700; transition: all 0.2s;">
-            더보기 ▾
-        </button>
-    </div>
-</main>
+    <main class="container">
+        <!-- 검색 결과 문구 영역 -->
+        <div id="resultText" class="result-info" style="display: none; margin-bottom: 20px"></div>
 
-<script>
-    // [함수] 카테고리 및 검색 해제 (전체보기)
-    function clearCategory() {
-        location.href = 'product_list.html';
-    }
+        <!-- 3. 공구방 카드 리스트 영역 -->
+        <div id="roomGrid" class="product-grid"></div>
 
-    // [함수] 특정 카테고리로 필터링 이동
-    function filterCategory(categoryName) {
-        location.href = `product_list.html?category=${encodeURIComponent(categoryName)}`;
-    }
+        <!-- 4. 더보기 버튼 영역 -->
+        <div id="loadMoreArea" style="text-align: center; margin-top: 40px; display: none;">
+            <button id="loadMoreBtn"
+                style="padding: 12px 40px; border-radius: 30px; border: 1px solid #ccc; background: white; cursor: pointer; font-weight: 700; transition: all 0.2s;">
+                더보기 ▾
+            </button>
+        </div>
+    </main>
 
-    // [함수] 로그인 상태에 따른 헤더 버튼 제어
-    function updateHeader() {
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        const authElements = document.querySelectorAll('.auth-only');
-        const guestElements = document.querySelectorAll('.guest-only');
-
-        if (isLoggedIn) {
-            authElements.forEach(el => el.style.display = 'inline-block');
-            guestElements.forEach(el => el.style.display = 'none');
-        } else {
-            authElements.forEach(el => el.style.display = 'none');
-            guestElements.forEach(el => el.style.display = 'inline-block');
+    <script>
+        // [함수] 카테고리 및 검색 해제 (전체보기)
+        function clearCategory() {
+            location.href = 'product_list.html';
         }
-    }
 
-    // [로직] 페이지 초기 로드 처리
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. 헤더 불러오기
-        fetch('header.html')
-            .then(res => {
-                if (!res.ok) throw new Error('header.html 파일을 찾을 수 없습니다.');
-                return res.text();
-            })
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-                updateHeader(); 
-            })
-            .catch(err => console.error('헤더 로딩 에러:', err));
-
-        // 2. URL 파라미터에 따른 검색창 Placeholder 변경
-        const urlParams = new URLSearchParams(window.location.search);
-        const category = urlParams.get('category');
-        const searchInput = document.getElementById('main-search');
-
-        if (category && searchInput) {
-            searchInput.placeholder = `"${category}" 내에서 검색...`;
+        // [함수] 특정 카테고리로 필터링 이동
+        function filterCategory(categoryName) {
+            location.href = `product_list.html?category=${encodeURIComponent(categoryName)}`;
         }
-    });
 
-    // [로직] 검색창 엔터키 (카테고리 정보 유지)
-    const searchInput = document.getElementById('main-search');
-    if(searchInput) {
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const keyword = searchInput.value.trim();
-                const urlParams = new URLSearchParams(window.location.search);
-                const currentCat = urlParams.get('category');
+        // [함수] 로그인 상태에 따른 헤더 버튼 제어
+        function updateHeader() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authElements = document.querySelectorAll('.auth-only');
+            const guestElements = document.querySelectorAll('.guest-only');
 
-                let targetUrl = `product_list.html?search=${encodeURIComponent(keyword)}`;
-                if (currentCat) {
-                    targetUrl += `&category=${encodeURIComponent(currentCat)}`;
-                }
-                location.href = targetUrl;
+            if (isLoggedIn) {
+                authElements.forEach(el => el.style.display = 'inline-block');
+                guestElements.forEach(el => el.style.display = 'none');
+            } else {
+                authElements.forEach(el => el.style.display = 'none');
+                guestElements.forEach(el => el.style.display = 'inline-block');
+            }
+        }
+
+        // [로직] 페이지 초기 로드 처리
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 헤더 불러오기
+            fetch('header.html')
+                .then(res => {
+                    if (!res.ok) throw new Error('header.html 파일을 찾을 수 없습니다.');
+                    return res.text();
+                })
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                    updateHeader();
+                })
+                .catch(err => console.error('헤더 로딩 에러:', err));
+
+            // 2. URL 파라미터에 따른 검색창 Placeholder 변경
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            const searchInput = document.getElementById('main-search');
+
+            if (category && searchInput) {
+                searchInput.placeholder = `"${category}" 내에서 검색...`;
             }
         });
-    }
 
-    // [로직] 로그아웃 버튼 클릭 처리
-    document.addEventListener('click', function(e) {
-        const logoutBtn = e.target.closest('#logout-btn');
-        if(logoutBtn) {
-            localStorage.removeItem('isLoggedIn');
-            alert('로그아웃 되었습니다.');
-            location.href = 'main_login.html'; 
+        // [로직] 검색창 엔터키 (카테고리 정보 유지)
+        const searchInput = document.getElementById('main-search');
+        if (searchInput) {
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const keyword = searchInput.value.trim();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const currentCat = urlParams.get('category');
+
+                    let targetUrl = `product_list.html?search=${encodeURIComponent(keyword)}`;
+                    if (currentCat) {
+                        targetUrl += `&category=${encodeURIComponent(currentCat)}`;
+                    }
+                    location.href = targetUrl;
+                }
+            });
         }
-    });
-</script>
 
-<!-- 5. 모든 비즈니스 로직이 담긴 외부 JS 파일 연결 -->
-<script src="script.js"></script>
+        // [로직] 로그아웃 버튼 클릭 처리
+        document.addEventListener('click', function (e) {
+            const logoutBtn = e.target.closest('#logout-btn');
+            if (logoutBtn) {
+                localStorage.removeItem('isLoggedIn');
+                alert('로그아웃 되었습니다.');
+                location.href = 'main_login.html';
+            }
+        });
+    </script>
+
+    <!-- 5. 모든 비즈니스 로직이 담긴 외부 JS 파일 연결 -->
+    <script src="script.js"></script>
 
 </body>
-</html>
 
+</html>
