@@ -128,14 +128,44 @@
         .user-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
         .user-handle { color: var(--text-sub); font-size: 0.85rem; margin-bottom: 20px; }
 
+        /* ==========================================
+           크림슨 지수 UI CSS 수정 (방향 및 색상 제어)
+           ========================================== */
         .crimson-index-section {
             border-top: 1px solid #f0f0f0;
             padding-top: 20px;
             text-align: left;
         }
         .index-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .index-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
-        .index-fill { height: 100%; background: var(--crimson); width: 86%; }
+        
+        /* index-bar에 flex 적용 */
+        .index-bar { 
+            height: 6px; 
+            background: #eee; 
+            border-radius: 3px; 
+            display: flex; 
+            width: 100%;
+        }
+        
+        .index-fill { 
+            height: 100%; 
+            border-radius: 3px; 
+            transition: width 0.3s ease, background-color 0.3s ease; 
+        }
+
+        /* 양수일 때: 왼쪽부터 렌더링, 크림슨 색상 */
+        .fill-positive {
+            background: var(--crimson);
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        /* 음수일 때: 오른쪽부터 렌더링, 파란 색상 */
+        .fill-negative {
+            background: #007AFF;
+            margin-left: auto;
+            margin-right: 0;
+        }
 
         .menu-list { list-style: none; padding: 0; margin: 0; }
         .menu-item {
@@ -154,18 +184,16 @@
         .stat-card {
             background: white; padding: 20px; border-radius: 12px; text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
+        .stat-card:hover { background: #f9f9f9; }
         .stat-label { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px; display: block; }
         .stat-value { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
 
         .section-title { font-size: 1rem; font-weight: 700; margin: 30px 0 15px; display: flex; justify-content: space-between; }
         
         .gonggu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .jjim-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
+        .jjim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .gonggu-card {
             background: white; padding: 20px; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative;
@@ -195,9 +223,9 @@
             <div class="crimson-index-section">
                 <div class="index-header">
                     <span style="font-size: 0.8rem; font-weight: bold;">크림슨 지수</span>
-                    <span style="font-size: 0.8rem; font-weight: bold; color: var(--crimson);">86</span>
+                    <span id="crimson-index-value" style="font-size: 0.8rem; font-weight: bold; color: var(--crimson);">0</span>
                 </div>
-                <div class="index-bar"><div class="index-fill"></div></div>
+                <div class="index-bar"><div id="index-fill" class="index-fill fill-positive" style="width: 0%;"></div></div>
             </div>
             
             <button onclick="location.href='changeProfile.html'" style="width: 100%; margin-top: 20px; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">프로필 수정</button>
@@ -211,36 +239,35 @@
     </div>
 
     <div class="main-content">
-    <div class="top-stats">
-    <div class="stat-card" onclick="location.href='my_products.html'">
-        <span class="stat-label">올린 공고</span>
-        <span class="stat-value" id="my-post-count">0 건</span>
-    </div>
+        <div class="top-stats">
+            <div class="stat-card" onclick="location.href='my_products.html'">
+                <span class="stat-label">올린 공고</span>
+                <span class="stat-value" id="my-post-count">0 건</span>
+            </div>
 
-    <div class="stat-card" onclick="location.href='joined_products.html'">
-        <span class="stat-label">참여 중</span>
-        <span class="stat-value" id="joined-count">0 건</span>
-    </div>
+            <div class="stat-card" onclick="location.href='joined_products.html'">
+                <span class="stat-label">참여 중</span>
+                <span class="stat-value" id="joined-count">0 건</span>
+            </div>
 
-    <div class="stat-card" onclick="location.href='success_products.html'">
-        <span class="stat-label">성공 공구</span>
-        <span class="stat-value" id="success-count">0 건</span>
-    </div>
-</div>
+            <div class="stat-card" onclick="location.href='success_products.html'">
+                <span class="stat-label">성공 공구</span>
+                <span class="stat-value" id="success-count">0 건</span>
+            </div>
+        </div>
 
         <div class="section-title">최근 참여 내역 
-<span onclick="location.href='joined_products.html'" style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">
-    전체보기 〉
-</span></div>
+            <span onclick="location.href='joined_products.html'" style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">전체보기 〉</span>
+        </div>
         
-        <div class="gonggu-grid" id="recent-participation-grid">
-</div>
+        <div class="gonggu-grid" id="recent-participation-grid"></div>
 
         <div class="section-title">방금 찜한 공구 
-<span onclick="location.href='liked_products.html'" style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">
-    더보기 〉
-</span></div>
-      <div class="jjim-grid" id="liked-products-grid">
+            <span onclick="location.href='liked_products.html'" style="font-size: 0.8rem; color: #aaa; font-weight: normal; cursor: pointer;">더보기 〉</span>
+        </div>
+        
+        <div class="jjim-grid" id="liked-products-grid"></div>
+    </div>
 </div>
 
 <script>
@@ -252,8 +279,6 @@
         })
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
-            
-        // 2. 헤더 조립 끝나자마자 버튼 상태 확인
             updateHeader();
         })
         .catch(err => console.error(err));
@@ -261,7 +286,6 @@
     function updateHeader() {
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         
-        // 헤더 안의 버튼 뭉치들 찾기
         const authButtons = document.querySelectorAll('.auth-only');
         const guestButtons = document.querySelectorAll('.guest-only');
 
@@ -294,15 +318,40 @@
         profileCircle.textContent = nickname[0] ? nickname[0].toUpperCase() : emailId[0].toUpperCase();
     }
 
-    // 3. 로그아웃 기능 (버튼 클릭 감시)
+    // ==========================================
+    // 크림슨 지수 동적 렌더링 함수
+    // ==========================================
+    function updateCrimsonIndexUI(score) {
+        const indexValueText = document.getElementById('crimson-index-value');
+        const indexFill = document.getElementById('index-fill');
+
+        // 텍스트 업데이트
+        indexValueText.innerText = score;
+
+        // 길이를 위한 절대값 계산 (최대 100%)
+        const absScore = Math.abs(score);
+        const percent = Math.min(absScore, 100); 
+
+        indexFill.style.width = `${percent}%`;
+
+        if (score >= 0) {
+            // 양수: 크림슨 색상, 왼쪽부터 채워짐
+            indexValueText.style.color = 'var(--crimson)';
+            indexFill.className = 'index-fill fill-positive';
+        } else {
+            // 음수: 파란색 색상, 오른쪽부터 채워짐
+            indexValueText.style.color = '#003876'; // yonsei-blue
+            indexFill.className = 'index-fill fill-negative';
+        }
+    }
+
+    // 3. 로그아웃 기능
     document.addEventListener('click', function(e) {
         if(e.target && e.target.id === 'logout-btn') {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userNickname');
             localStorage.removeItem('userEmail');
             alert('로그아웃 되었습니다.');
-            
-            // 메인 초기화면으로 이동 (파일명이 다를 경우 수정)
             location.href = 'main_login.html'; 
         }
     });
@@ -310,130 +359,139 @@
     updateProfileCard();
     const userId = localStorage.getItem('userId');
 
-// 전체 상품을 불러온 뒤, 내 userId와 일치하는 상품만 걸러내어 개수 세기
-fetch('http://localhost:3000/products')
-    .then(res => res.json())
-    .then(allProducts => {
-        const myProducts = allProducts.filter(p => p.user_id == userId);
-        document.getElementById('my-post-count').innerText = `${myProducts.length} 건`;
-    })
-    .catch(err => console.error('내 공고 개수 로드 실패:', err));
-// 참여 중 건수 (참여한 공구 + 내가 올린 공고)
-Promise.all([
-    fetch(`http://localhost:3000/chats/my/${userId}`).then(res => res.json()),
-    fetch('http://localhost:3000/products').then(res => res.json())
-]).then(([chats, allProducts]) => {
-    const myCreatedProducts = allProducts.filter(p => String(p.user_id) === String(userId));
-    const joinedProductIds = chats.map(c => String(c.product_id));
-
-    // 내가 참여한 공구 수에다가
-    let uniqueCount = chats.length;
-    
-    // 내가 올린 공구 중 아직 참여 목록에 없는 것만 더하기
-    myCreatedProducts.forEach(p => {
-        if (!joinedProductIds.includes(String(p.id))) {
-            uniqueCount++;
+    // 유저 정보를 불러와 크림슨 지수 업데이트 (API 엔드포인트가 있다면 연동)
+    async function fetchUserTrustScore() {
+        try {
+            // 백엔드에서 사용자 정보를 가져온다고 가정 (실제 API 주소에 맞게 수정 가능)
+            const res = await fetch(`http://localhost:3000/users/${userId}`);
+            if (res.ok) {
+                const user = await res.json();
+                updateCrimsonIndexUI(user.trust_score || 0);
+            } else {
+                updateCrimsonIndexUI(86); // 실패 시 임시 기본값 86 (테스트 시 -30 등으로 바꿔보세요)
+            }
+        } catch (e) {
+            updateCrimsonIndexUI(86); // 임시 양수 테스트
+            // updateCrimsonIndexUI(-20); // 음수 테스트를 원하시면 이 줄의 주석을 해제하세요
         }
-    });
-    
-    document.getElementById('joined-count').innerText = `${uniqueCount} 건`;
-}).catch(err => console.error('참여 공구 개수 로드 실패:', err));
+    }
+    fetchUserTrustScore();
 
-fetch('http://localhost:3000/products')
-    .then(res => res.json())
-    .then(products => {
-        const successProducts = products.filter(
-            p => p.currentCount >= p.targetCount
-        );
+    // 올린 공고 수 카운트
+    fetch('http://localhost:3000/products')
+        .then(res => res.json())
+        .then(allProducts => {
+            const myProducts = allProducts.filter(p => p.user_id == userId);
+            document.getElementById('my-post-count').innerText = `${myProducts.length} 건`;
+        })
+        .catch(err => console.error('내 공고 개수 로드 실패:', err));
 
-        document.getElementById('success-count').innerText =
-            `${successProducts.length} 건`;
-    })
-    .catch(err => console.error(err));
-
-async function loadRecentParticipations() {
-    const grid = document.getElementById('recent-participation-grid');
-    grid.innerHTML = '';
-
-    try {
-        // 내가 참여한 목록과 전체 목록을 동시에 불러옵니다
-        const [chatsRes, productsRes] = await Promise.all([
-            fetch(`http://localhost:3000/chats/my/${userId}`),
-            fetch('http://localhost:3000/products')
-        ]);
-
-        let joinedProducts = await chatsRes.json();
-        const allProducts = await productsRes.json();
-        
-        // 내가 직접 올린 공고 필터링
+    // 참여 중 건수 카운트
+    Promise.all([
+        fetch(`http://localhost:3000/chats/my/${userId}`).then(res => res.json()),
+        fetch('http://localhost:3000/products').then(res => res.json())
+    ]).then(([chats, allProducts]) => {
         const myCreatedProducts = allProducts.filter(p => String(p.user_id) === String(userId));
-        const joinedProductIds = joinedProducts.map(p => String(p.product_id));
+        const joinedProductIds = chats.map(c => String(c.product_id));
+
+        let uniqueCount = chats.length;
         
-        // 내가 올린 공고를 참여 목록에 병합 (중복 방지)
-        myCreatedProducts.forEach(myProduct => {
-            if (!joinedProductIds.includes(String(myProduct.id))) {
-                joinedProducts.push({
-                    ...myProduct,
-                    product_id: myProduct.id // id 통일
-                });
+        myCreatedProducts.forEach(p => {
+            if (!joinedProductIds.includes(String(p.id))) {
+                uniqueCount++;
             }
         });
+        
+        document.getElementById('joined-count').innerText = `${uniqueCount} 건`;
+    }).catch(err => console.error('참여 공구 개수 로드 실패:', err));
 
-        // 최신순으로 정렬
-        joinedProducts.sort((a, b) => b.product_id - a.product_id);
+    // 성공 공구 수 카운트
+    fetch('http://localhost:3000/products')
+        .then(res => res.json())
+        .then(products => {
+            const successProducts = products.filter(
+                p => p.currentCount >= p.targetCount
+            );
+            document.getElementById('success-count').innerText = `${successProducts.length} 건`;
+        })
+        .catch(err => console.error(err));
 
-        if (joinedProducts.length === 0) {
-            grid.innerHTML = '<p style="color:#888;">최근 참여 내역이 없습니다.</p>';
-            return;
-        }
+    // 최근 참여 내역 로드
+    async function loadRecentParticipations() {
+        const grid = document.getElementById('recent-participation-grid');
+        grid.innerHTML = '';
 
-        // 최대 2개까지만 화면에 보여주기
-        joinedProducts.slice(0, 2).forEach(product => {
-            const isClosed = product.currentCount >= product.targetCount;
-            const badgeClass = isClosed ? 'success' : 'recruiting';
-            const badgeText = isClosed ? '배송 완료' : '모집중';
+        try {
+            const [chatsRes, productsRes] = await Promise.all([
+                fetch(`http://localhost:3000/chats/my/${userId}`),
+                fetch('http://localhost:3000/products')
+            ]);
 
-            grid.insertAdjacentHTML('beforeend', `
-                <div class="gonggu-card"
-                     onclick="location.href='product.html?id=${product.product_id}'"
-                     style="cursor:pointer;">
+            let joinedProducts = await chatsRes.json();
+            const allProducts = await productsRes.json();
+            
+            const myCreatedProducts = allProducts.filter(p => String(p.user_id) === String(userId));
+            const joinedProductIds = joinedProducts.map(p => String(p.product_id));
+            
+            myCreatedProducts.forEach(myProduct => {
+                if (!joinedProductIds.includes(String(myProduct.id))) {
+                    joinedProducts.push({
+                        ...myProduct,
+                        product_id: myProduct.id
+                    });
+                }
+            });
 
-                    <span class="badge ${badgeClass}">
-                        ${badgeText}
-                    </span>
+            joinedProducts.sort((a, b) => b.product_id - a.product_id);
 
-                    <span class="gonggu-title">
-                        ${product.title}
-                    </span>
+            if (joinedProducts.length === 0) {
+                grid.innerHTML = '<p style="color:#888;">최근 참여 내역이 없습니다.</p>';
+                return;
+            }
 
-                    <div class="gonggu-info">
-                        <span>📍 ${product.location || '교내'}</span>
-                        <span>
-                            👥 ${product.currentCount}
-                            / ${product.targetCount} 명
+            joinedProducts.slice(0, 2).forEach(product => {
+                const isClosed = product.currentCount >= product.targetCount;
+                const badgeClass = isClosed ? 'success' : 'recruiting';
+                const badgeText = isClosed ? '배송 완료' : '모집중';
+
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="gonggu-card"
+                        onclick="location.href='product.html?id=${product.product_id}'"
+                        style="cursor:pointer;">
+
+                        <span class="badge ${badgeClass}">
+                            ${badgeText}
                         </span>
+
+                        <span class="gonggu-title">
+                            ${product.title}
+                        </span>
+
+                        <div class="gonggu-info">
+                            <span>📍 ${product.location || '교내'}</span>
+                            <span>
+                                👥 ${product.currentCount}
+                                / ${product.targetCount} 명
+                            </span>
+                        </div>
                     </div>
-                </div>
-            `);
-        });
+                `);
+            });
 
-    } catch (error) {
-        console.error(error);
-        grid.innerHTML = '<p style="color:#888;">참여 내역을 불러오지 못했습니다.</p>';
+        } catch (error) {
+            console.error(error);
+            grid.innerHTML = '<p style="color:#888;">참여 내역을 불러오지 못했습니다.</p>';
+        }
     }
-}
 
-loadRecentParticipations();
-async function loadLikedProducts() {
-    const grid = document.getElementById('liked-products-grid');
+    loadRecentParticipations();
 
-    grid.innerHTML = `
-        <p style="color:#888;">
-            찜한 공구 기능은 준비 중입니다.
-        </p>
-    `;
-}
-loadLikedProducts();
+    // 찜 목록 로드 (준비 중)
+    async function loadLikedProducts() {
+        const grid = document.getElementById('liked-products-grid');
+        grid.innerHTML = `<p style="color:#888;">찜한 공구 기능은 준비 중입니다.</p>`;
+    }
+    loadLikedProducts();
 </script>
 
 </body>
