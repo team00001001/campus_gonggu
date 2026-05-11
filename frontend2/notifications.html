@@ -335,13 +335,13 @@
         fetch('header.html')
             .then(res => res.text())
             .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
+                document.getElementById('header-placeholder').innerHTML = data;
 
-    updateHeader();
+                updateHeader();
 
-    // 헤더 로드 후 알림 다시 반영
-    loadNotifications();
-});
+                // 헤더 로드 후 알림 다시 반영
+                loadNotifications();
+            });
 
         function updateHeader() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -472,32 +472,32 @@
         }
 
         // 5. 모두 읽음 처리
-       async function markAllAsRead() {
+        async function markAllAsRead() {
 
-    const userId = localStorage.getItem('userId');
+            const userId = localStorage.getItem('userId');
 
-    try {
+            try {
 
-        await fetch(
-            `http://localhost:3000/notifications/user/${userId}/read-all`,
-            {
-                method: 'PATCH'
+                await fetch(
+                    `http://localhost:3000/notifications/user/${userId}/read-all`,
+                    {
+                        method: 'PATCH'
+                    }
+                );
+
+                notifications = notifications.map(n => ({
+                    ...n,
+                    is_read: 1
+                }));
+
+                renderNotifications();
+                updateNotificationBadge();
+
+            } catch (error) {
+
+                console.error('모두 읽음 처리 실패:', error);
             }
-        );
-
-        notifications = notifications.map(n => ({
-            ...n,
-            is_read: 1
-        }));
-
-        renderNotifications();
-        updateNotificationBadge();
-
-    } catch (error) {
-
-        console.error('모두 읽음 처리 실패:', error);
-    }
-}
+        }
         // 페이지 로드 시 렌더링 실행
         document.addEventListener('DOMContentLoaded', loadNotifications);
     </script>

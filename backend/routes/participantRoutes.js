@@ -69,82 +69,83 @@ router.post('/join', async (req, res) => {
                     `,
                     [productId, userId]
                 );
-    await conn.query(
-        'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
-        [productId]
-    );
-            
+                await conn.query(
+                    'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
+                    [productId]
+                );
+
                 // 공구 정보 조회
-const [[productInfo]] = await conn.query(
-    `
+                const [[productInfo]] = await conn.query(
+                    `
     SELECT title, user_id
     FROM products
     WHERE id = ?
     `,
-    [productId]
-);
+                    [productId]
+                );
 
-await conn.commit();
+                await conn.commit();
 
-// 자기 공구 제외
-if (
-    productInfo &&
-    String(productInfo.user_id) !== String(userId)
-) {
-    createNotification(
-        productInfo.user_id,
-        '참여자가 다시 들어왔습니다',
-        `"${productInfo.title}" 공구에 참여자가 다시 들어왔습니다.`,
-        'success'
-    );
-}
+                // 자기 공구 제외
+                if (
+                    productInfo &&
+                    String(productInfo.user_id) !== String(userId)
+                ) {
+                    createNotification(
+                        productInfo.user_id,
+                        '참여자가 다시 들어왔습니다',
+                        `"${productInfo.title}" 공구에 참여자가 다시 들어왔습니다.`,
+                        'success'
+                    );
+                }
 
-return res.status(200).json({ message: '공구 재참여 완료' });
+                return res.status(200).json({ message: '공구 재참여 완료' });
             }
         }
 
-     
-const [insertResult] = await conn.query(
-    `
+
+        const [insertResult] = await conn.query(
+            `
     INSERT INTO product_participants (product_id, user_id, status)
     VALUES (?, ?, 'joined')
     `,
-    [productId, userId]
-);
+            [productId, userId]
+        );
 
 
-const [updateResult] = await conn.query(
-    'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
-    [productId]
-);
+        const [updateResult] = await conn.query(
+            'UPDATE products SET currentCount = currentCount + 1 WHERE id = ?',
+            [productId]
+        );
 
-console.log('currentCount UPDATE 결과:', updateResult);
-// 공구 정보 조회
-const [[productInfo]] = await conn.query(
-    `
+        console.log('currentCount UPDATE 결과:', updateResult);
+        // 공구 정보 조회
+        const [[productInfo]] = await conn.query(
+            `
     SELECT title, user_id
     FROM products
     WHERE id = ?
     `,
-    [productId]
-);
+            [productId]
+        );
 
-await conn.commit();
+        await conn.commit();
 
-// 자기 공구 참여는 제외
-if (
-    productInfo &&
-    String(productInfo.user_id) !== String(userId)
-) {console.log('알림 생성 시도:', productInfo.user_id, productInfo.title);
-    createNotification(
-        productInfo.user_id,
-        '새 참여자가 생겼습니다',
-        `"${productInfo.title}" 공구에 새로운 참여자가 들어왔습니다.`,
-        'success'
-    );
-}
+        // 자기 공구 참여는 제외
+        if (
+            productInfo &&
+            String(productInfo.user_id) !== String(userId)
+        ) {
+            console.log('알림 생성 시도:', productInfo.user_id, productInfo.title);
+            createNotification(
+                productInfo.user_id,
+                '새 참여자가 생겼습니다',
+                `"${productInfo.title}" 공구에 새로운 참여자가 들어왔습니다.`,
+                'success'
+            );
+        }
 
-res.status(201).json({ message: '공구 참여 완료' });
+        res.status(201).json({ message: '공구 참여 완료' });
 
     } catch (error) {
         await conn.rollback();
@@ -202,7 +203,28 @@ router.patch('/cancel', async (req, res) => {
             [productId]
         );
 
+        const [[productInfo]] = await conn.query(
+            `
+    SELECT title, user_id
+    FROM products
+    WHERE id = ?
+    `,
+            [productId]
+        );
+
         await conn.commit();
+
+        if (
+            productInfo &&
+            String(productInfo.user_id) !== String(userId)
+        ) {
+            createNotification(
+                productInfo.user_id,
+                '참여자가 나갔습니다',
+                `"${productInfo.title}" 공구에서 참여자가 나갔습니다.`,
+                'notice'
+            );
+        }
 
         res.json({ message: '참여 취소 완료' });
 
@@ -258,7 +280,7 @@ router.get('/', async (req, res) => {
 // 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
 // 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
 router.patch('/status', async (req, res) => {
-    const { participantId, userId, status, productId } = req.body; 
+    const { participantId, userId, status, productId } = req.body;
 
     const conn = await pool.promise().getConnection();
     try {
@@ -267,13 +289,13 @@ router.patch('/status', async (req, res) => {
         if (status === 'noshow') {
             // 1. 상태를 노쇼로 변경
             await conn.query(
-                `UPDATE product_participants SET status = 'noshow' WHERE id = ?`, 
+                `UPDATE product_participants SET status = 'noshow' WHERE id = ?`,
                 [participantId]
             );
-            
+
             // 2. 신뢰도 10점 차감
             await updateTrustScore(userId, -10, conn);
-            
+
             // 3. ⭐️ 확실한 인원수 -1 감소 처리 ⭐️
             let targetProductId = productId;
             if (!targetProductId) {
@@ -291,11 +313,11 @@ router.patch('/status', async (req, res) => {
                 await conn.query(
                     `UPDATE products 
                      SET currentCount = currentCount - 1 
-                     WHERE id = ? AND currentCount > 0`, 
+                     WHERE id = ? AND currentCount > 0`,
                     [targetProductId]
                 );
             }
-            
+
         } else {
             // 확인(confirmed) 버튼 눌렀을 때
             await conn.query(
@@ -354,7 +376,7 @@ router.patch('/receive', async (req, res) => {
         // 5. 조건 충족 시 점수 보상 지급
         if (received >= threshold) {
             isSuccess = true;
-            
+
             const [[product]] = await conn.query(`
                 SELECT user_id, trust_rewarded FROM products WHERE id = ?
             `, [productId]);
