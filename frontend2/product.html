@@ -232,14 +232,23 @@
             const myInfo = product.members.find(m => String(m.user_id) === String(currentUserId));
             const isParticipant = !!myInfo;
 
+            // 이미 마감된 상태인지 확인 (목표 인원 달성 또는 기한 만료)
+            const now = Math.floor(Date.now() / 1000);
+            const isExpired = Number(product.duration) <= now;
+            const isFull = parseInt(product.currentCount) >= parseInt(product.targetCount);
+            const isClosed = isExpired || isFull;
+
             if (isHost) {
                 actionArea.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:10px;">
-                        <button class="join-btn" style="background-color: #ce152d;" onclick="location.href='direct_chattings.html?id=${product.id}'">💬 채팅방 들어가기 (방장)</button>
+                        <button class="join-btn" style="background-color: var(--ku-crimson);" onclick="location.href='direct_chattings.html?id=${product.id}'">💬 채팅방 들어가기 (방장)</button>
+                        
                         <div style="display:flex; gap:10px;">
-                            <button class="join-btn" style="background:#444; flex:1; font-size: 14px;" onclick="deleteProduct('${product.id}')">공구방 삭제</button>
-                            <button class="join-btn" style="background:#666; flex:1; font-size: 14px;" onclick="location.href='edit.html?id=${product.id}'">내용 수정</button>
+                            <button class="join-btn" style="background:#4A5056; flex:1; font-size: 14px;" onclick="location.href='edit.html?id=${product.id}'">내용 수정</button>
+                            ${!isClosed ? `<button class="join-btn" style="background:#222222; flex:1; font-size: 14px;" onclick="earlyCloseProduct('${product.id}')">모집 조기 마감</button>` : ''}
                         </div>
+                        
+                        <button class="join-btn" style="background:none; border:1px solid #EAECEF; color:#818991; padding: 12px; font-size: 14px;" onclick="deleteProduct('${product.id}')">공구방 삭제</button>
                     </div>
                 `;
                 renderHostMemberManagement(product);
@@ -491,6 +500,30 @@
             if (res.ok) { alert("공구가 성공적으로 종료되었습니다."); location.href = 'main_login.html'; }
         }
 
+        async function earlyCloseProduct(productId) {
+            if (!confirm("정말로 모집을 조기 마감하시겠습니까?\n마감 후에는 더 이상 새로운 참여자를 받을 수 없습니다.")) return;
+
+            try {
+                // API 엔드포인트는 백엔드 라우터 설정에 맞춰 수정해주세요 (예: /products/early-close)
+                const res = await fetch(`${API_BASE_URL}/products/early-close`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId })
+                });
+
+                if (res.ok) {
+                    alert("모집이 조기 마감되었습니다.");
+                    location.reload();
+                } else {
+                    const err = await res.json();
+                    alert(err.message || "마감 처리에 실패했습니다.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("서버 연결 실패");
+            }
+        }
+        
         // --- 기타 유틸리티 ---
         function loadHeader() {
             fetch('header.html').then(res => res.text()).then(data => {

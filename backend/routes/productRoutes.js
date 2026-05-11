@@ -203,4 +203,31 @@ router.patch('/:id/reduce', (req, res) => {
     });
 });
 
+// 7. 상품 조기 마감 (Early Close)
+router.patch('/early-close', (req, res) => {
+    const { productId } = req.body;
+
+    if (!productId) {
+        return res.status(400).json({ error: '상품 ID가 필요합니다.' });
+    }
+
+    const now = getNow(); // 상단에 정의된 현재 시간 계산 함수
+
+    // duration(마감 기한)을 현재 시간으로 변경하여 즉시 마감 처리
+    const sql = `UPDATE products SET duration = ? WHERE id = ?`;
+    
+    db.query(sql, [now, productId], (err, result) => {
+        if (err) {
+            console.error('조기 마감 처리 중 에러 발생:', err);
+            return res.status(500).json({ error: '마감 처리에 실패했습니다.', detail: err.message });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: '해당 공구방을 찾을 수 없습니다.' });
+        }
+
+        res.json({ message: '성공적으로 조기 마감되었습니다.' });
+    });
+});
+
 module.exports = router;

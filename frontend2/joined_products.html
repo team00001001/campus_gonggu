@@ -92,9 +92,18 @@
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     
-                    const isCompleted = product.currentCount >= product.targetCount;
+                    // 현재 시간 구하기 (초 단위)
+                    const now = Math.floor(Date.now() / 1000);
+
+                    // 1. 목표 인원 달성
+                    // 2. 백엔드에서 넘겨준 isClosed 값이 true일 때
+                    // 3. 또는 마감 시간(duration)이 현재 시간보다 과거일 때(조기마감 포함)
+                    const isCompleted = (product.currentCount >= product.targetCount) || 
+                                        product.isClosed || 
+                                        (Number(product.duration) <= now);
+                    
                     const statusClass = isCompleted ? 'status-completed' : 'status-recruiting';
-                    const statusText = isCompleted ? '모집완료' : '모집중';
+                    const statusText = isCompleted ? '마감됨' : '모집중';
 
                     // 💡 방장(내가 올린 글)일 경우 '참여 취소' 버튼 대신 안내 텍스트 표시
                     const isHost = String(product.user_id) === String(userId);
