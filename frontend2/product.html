@@ -189,10 +189,10 @@
             
             // 1. 방어 로직: DB에서 넘어온 값이 문자열 "null", "undefined", 공백인지 깐깐하게 체크
             const isValidImageUrl = product.imageUrl && 
-                                  product.imageUrl !== 'none' && 
-                                  product.imageUrl !== 'null' && 
-                                  product.imageUrl !== 'undefined' && 
-                                  product.imageUrl.trim() !== '';
+                                product.imageUrl !== 'none' && 
+                                product.imageUrl !== 'null' && 
+                                product.imageUrl !== 'undefined' && 
+                                product.imageUrl.trim() !== '';
 
             if (isValidImageUrl) {
                 imgEl.src = product.imageUrl;
@@ -285,7 +285,7 @@
                                 ${isConfirmed ? 
                                     '<span style="color:#28a745; font-weight:bold;">✅ 확인 완료</span>' : 
                                     `<button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" style="color:#007bff; border:1px solid #007bff; background:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:13px; font-weight:bold;">확인</button>
-                                     <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" style="color:#dc3545; border:1px solid #dc3545; background:none; padding:4px 8px; border-radius:4px; margin-left:5px; cursor:pointer; font-size:13px; font-weight:bold;">노쇼</button>`
+                                    <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" style="color:#dc3545; border:1px solid #dc3545; background:none; padding:4px 8px; border-radius:4px; margin-left:5px; cursor:pointer; font-size:13px; font-weight:bold;">노쇼</button>`
                                 }
                             </div>
                         </div>
@@ -410,6 +410,90 @@
                     alert(err.message || "참여 실패");
                 }
             } catch (e) { alert("서버 오류"); }
+        }
+
+        // 공구 참여 취소
+        async function leaveGroup(productId) {
+            if (!confirm("정말로 이 공구 참여를 취소하시겠습니까?")) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/participants/cancel`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        userId: currentUserId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    alert(result.message || '참여 취소 실패');
+                    return;
+                }
+
+                alert("참여가 취소되었습니다.");
+                
+                // 로컬 스토리지에 저장된 참여 목록에서도 제거 (메인화면 상태 동기화용)
+                let joined = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+                joined = joined.filter(id => id !== productId);
+                localStorage.setItem('joinedGroups', JSON.stringify(joined));
+
+                // 새로고침하여 바뀐 상태(비참여자 UI) 반영
+                location.reload();
+
+            } catch (error) {
+                console.error(error);
+                alert("서버 연결 실패");
+            }
+        }
+
+        // 호스트(방장) 신고하기
+        async function reportHost() {
+            if (!isLoggedIn) { 
+                alert('로그인이 필요한 서비스입니다.'); 
+                location.href = 'login.html'; 
+                return; 
+            }
+
+            const productId = new URLSearchParams(window.location.search).get('id');
+            const reason = prompt("신고 사유를 입력해주세요.\n(허위 신고 시 서비스 이용에 제한이 있을 수 있습니다.)");
+
+            if (reason === null) return; // 취소 버튼 클릭 시
+            if (reason.trim() === "") {
+                alert("신고 사유를 입력해야 합니다.");
+                return;
+            }
+
+            if (!confirm("정말로 이 공구를 신고하시겠습니까?")) return;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/reports`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId: productId,
+                        reporterId: currentUserId,
+                        reason: reason,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (res.ok) {
+                    alert("신고가 정상적으로 접수되었습니다. 운영진 확인 후 조치될 예정입니다.");
+                } else {
+                    const err = await res.json();
+                    alert(err.message || "신고 접수에 실패했습니다.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("서버 연결 실패");
+            }
         }
 
         // --- 기타 유틸리티 ---
