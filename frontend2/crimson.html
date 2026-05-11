@@ -236,6 +236,14 @@
                 guestElements.forEach(el => el.style.display = 'block');
             }
         }
+        document.addEventListener('click', function(e) {
+        const logoutBtn = e.target.closest('#logout-btn');
+        if(logoutBtn) {
+            localStorage.removeItem('isLoggedIn');
+            alert('로그아웃 되었습니다.');
+            location.href = 'main_login.html'; 
+        }
+    });
     </script>
 </body>
 </html>
