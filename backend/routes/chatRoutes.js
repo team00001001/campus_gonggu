@@ -80,7 +80,7 @@ router.post('/', async (req, res) => {
         );
 
 
-  
+
         // 공구 제목 + 방장 조회
         const [[product]] = await pool.promise().query(
             `
@@ -90,7 +90,14 @@ router.post('/', async (req, res) => {
     `,
             [productId]
         );
-
+        const [[sender]] = await pool.promise().query(
+            `
+    SELECT nickname
+    FROM users
+    WHERE id = ?
+    `,
+            [userId]
+        );
         // 참여자 조회
         const [participants] = await pool.promise().query(
             `
@@ -119,12 +126,11 @@ router.post('/', async (req, res) => {
             receiverIds.add(Number(product.owner_id));
         }
 
-        // 알림 생성
         receiverIds.forEach(receiverId => {
             createNotification(
                 receiverId,
                 '새 채팅 메시지',
-                `"${product.title}" 채팅방에 새 메시지가 도착했습니다.`,
+                `<b>${sender.nickname}</b>님이 "${product.title}" 채팅방에 메시지를 남겼습니다.`,
                 'chat'
             );
         });
