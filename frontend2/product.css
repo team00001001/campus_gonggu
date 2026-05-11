@@ -1,28 +1,28 @@
         :root {
             /* 메인 컬러 */
             --ku-crimson: #8A1538;
-            --ku-crimson-light: #FDF2F4; 
-            
+            --ku-crimson-light: #FDF2F4;
+
             /* UI 컬러 */
-            --bg-color: #F8F9FA; 
-            --surface-color: #FFFFFF; 
-            --border-color: #EAECEF; 
-            
+            --bg-color: #F8F9FA;
+            --surface-color: #FFFFFF;
+            --border-color: #EAECEF;
+
             /* 텍스트 컬러 */
-            --text-primary: #1A1A1A; 
-            --text-secondary: #4A5056; 
-            --text-tertiary: #818991; 
-            --text-dark: #222222; 
-            
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A5056;
+            --text-tertiary: #818991;
+            --text-dark: #222222;
+
             /* 카테고리 파스텔 톤 */
             --color-food: #FFF3E0;
             --color-living: #E3F2FD;
             --color-study: #E8F5E9;
             --color-etc: #F3E5F5;
-            
+
             /* 그림자 */
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 16px rgba(138, 21, 56, 0.06); 
+            --shadow-md: 0 4px 16px rgba(138, 21, 56, 0.06);
         }
 
         * {
@@ -30,7 +30,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Pretendard', sans-serif;
-            -webkit-font-smoothing: antialiased; 
+            -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
@@ -39,7 +39,7 @@
             color: var(--text-primary);
             line-height: 1.5;
             overflow-x: hidden;
-            padding-top: 100px; 
+            padding-top: 100px;
         }
 
         /* ==========================================
@@ -114,16 +114,16 @@
         }
 
         .container {
-            max-width: 940px; 
+            max-width: 940px;
             margin: 0 auto;
-            padding: 0px 20px 100px; 
+            padding: 0px 20px 100px;
         }
 
         .card {
             background: var(--surface-color);
-            border-radius: 24px; 
+            border-radius: 24px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(0,0,0,0.03); 
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
         /* ==========================================
@@ -131,14 +131,14 @@
            ========================================== */
         .product-hero {
             display: flex;
-            gap: 40px; 
+            gap: 40px;
             padding: 40px;
             margin-bottom: 30px;
             align-items: flex-start;
         }
 
         .product-image-container {
-            flex: 0 0 360px; 
+            flex: 0 0 360px;
             width: 360px;
             height: 360px;
             border-radius: 16px;
@@ -158,11 +158,13 @@
             height: 100%;
             object-fit: cover;
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
         }
-        
-        .product-image[src="none"], .product-image[src=""] {
-            display: none; 
+
+        .product-image[src="none"],
+        .product-image[src=""] {
+            display: none;
         }
 
         .product-info {
@@ -187,15 +189,38 @@
             letter-spacing: -0.2px;
         }
 
-        .tag-hot { background-color: #FFF0F0; color: #FF4B4B; }
-        .tag-official { background-color: #E8F2FF; color: #007AFF; }
-        .tag-study { background-color: var(--color-study); color: #2E7D32; }
-        .tag-food { background-color: #FFF8E1; color: #F57F17; }
-        .tag-living { background-color: var(--color-living); color: #1565C0; }
-        .tag-etc { background-color: var(--color-etc); color: #6A1B9A; }
+        .tag-hot {
+            background-color: #FFF0F0;
+            color: #FF4B4B;
+        }
+
+        .tag-official {
+            background-color: #E8F2FF;
+            color: #007AFF;
+        }
+
+        .tag-study {
+            background-color: var(--color-study);
+            color: #2E7D32;
+        }
+
+        .tag-food {
+            background-color: #FFF8E1;
+            color: #F57F17;
+        }
+
+        .tag-living {
+            background-color: var(--color-living);
+            color: #1565C0;
+        }
+
+        .tag-etc {
+            background-color: var(--color-etc);
+            color: #6A1B9A;
+        }
 
         .title {
-            font-size: 1.75rem; 
+            font-size: 1.75rem;
             font-weight: 700;
             line-height: 1.3;
             color: var(--text-primary);
@@ -206,7 +231,7 @@
         .price-box {
             margin-bottom: 24px;
             padding: 20px;
-            background-color: var(--bg-color); 
+            background-color: var(--bg-color);
             border-radius: 12px;
             border: 1px solid var(--border-color);
         }
@@ -232,7 +257,7 @@
         }
 
         .n-pay-price {
-            font-size: 1.8rem; 
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--ku-crimson);
             letter-spacing: -0.5px;
@@ -255,7 +280,7 @@
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .status-label {
             font-weight: 600;
             font-size: 0.95rem;
@@ -266,11 +291,25 @@
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        
+
         .status-count strong {
             color: var(--ku-crimson);
             font-weight: 700;
             font-size: 1rem;
+        }
+
+        .detail-no-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+            z-index: 2;
         }
 
         .progress-bar-container {
@@ -282,7 +321,7 @@
 
         .progress-bar-bg {
             flex: 1;
-            height: 10px; 
+            height: 10px;
             background-color: var(--border-color);
             border-radius: 5px;
             overflow: hidden;
@@ -290,12 +329,13 @@
 
         .progress-fill {
             height: 100%;
-            background: var(--ku-crimson); 
+            background: var(--ku-crimson);
             border-radius: 5px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 0%; /* 초기값 */
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+            /* 초기값 */
         }
-        
+
         .progress-percent {
             font-size: 0.85rem;
             font-weight: 700;
@@ -317,11 +357,11 @@
         .join-btn {
             margin-top: auto;
             width: 100%;
-            background: var(--ku-crimson); 
+            background: var(--ku-crimson);
             color: white;
             border: none;
-            padding: 18px; 
-            font-size: 1.05rem; 
+            padding: 18px;
+            font-size: 1.05rem;
             font-weight: 700;
             border-radius: 14px;
             cursor: pointer;
@@ -330,7 +370,7 @@
         }
 
         .join-btn:hover {
-            background-color: #72112e; 
+            background-color: #72112e;
             transform: translateY(-1px);
             box-shadow: 0 6px 16px rgba(138, 21, 56, 0.25);
         }
@@ -356,7 +396,7 @@
         .host-avatar {
             width: 48px;
             height: 48px;
-            background-color: #EAECEF; 
+            background-color: #EAECEF;
             color: var(--text-secondary);
             border-radius: 50%;
             display: flex;
@@ -364,7 +404,7 @@
             justify-content: center;
             font-weight: 600;
             font-size: 1.1rem;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .host-details {
@@ -383,7 +423,7 @@
             font-size: 1.05rem;
             color: var(--text-primary);
         }
-        
+
         .host-dept {
             font-size: 0.85rem;
             color: var(--text-tertiary);
@@ -409,8 +449,8 @@
         }
 
         .content-body {
-            font-size: 0.98rem; 
-            line-height: 1.8; 
+            font-size: 0.98rem;
+            line-height: 1.8;
             color: var(--text-secondary);
             white-space: pre-line;
             letter-spacing: -0.1px;
@@ -435,7 +475,8 @@
             box-sizing: border-box;
         }
 
-        .carrier-select, .tracking-input {
+        .carrier-select,
+        .tracking-input {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -452,14 +493,16 @@
 
         .track-btn {
             padding: 10px 20px;
-            background-color: #8b0029; /* 크림슨 컬러 포인트 */
+            background-color: #8b0029;
+            /* 크림슨 컬러 포인트 */
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.2s;
-            white-space: nowrap; /* 버튼 글씨 줄바꿈 방지 */
+            white-space: nowrap;
+            /* 버튼 글씨 줄바꿈 방지 */
         }
 
         .track-btn:hover {

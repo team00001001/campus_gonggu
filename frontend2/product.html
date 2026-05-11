@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <link rel="stylesheet" href="mobile.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 | KU GONGGU</title>
-    
+
     <link rel="stylesheet" href="product.css" media="(min-width: 769px)">
-<link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
+
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -18,23 +20,29 @@
     <div class="container">
         <section class="product-hero card">
             <div class="product-image-container">
-                <span>이미지 준비중</span>
+
                 <img src="" alt="상품 이미지" class="product-image" id="product-img">
+
+                <div id="detail-no-image-overlay" class="detail-no-image-overlay">
+                    등록된 사진이 없습니다
+                </div>
+
             </div>
-            
+
             <div class="product-info">
                 <div class="badge-group">
                     <span class="category-badge tag-hot" id="badge-hot" style="display:none;">🔥 마감임박</span>
                     <span class="category-badge tag-official">✓ 신뢰도 인증</span>
                     <span class="category-badge" id="product-category">카테고리 불러오는 중...</span>
                 </div>
-                
+
                 <h1 class="title" id="product-title">데이터를 불러오는 중입니다...</h1>
-                
+
                 <div class="price-box">
                     <div class="n-pay-row">
                         <span class="n-pay-label">공구 참여가 (인당)</span>
-                        <div class="n-pay-price" id="product-price">0원 <span id="product-target-count">(0명 기준)</span></div>
+                        <div class="n-pay-price" id="product-price">0원 <span id="product-target-count">(0명 기준)</span>
+                        </div>
                     </div>
                 </div>
 
@@ -45,7 +53,7 @@
                     </div>
                     <div class="progress-bar-container">
                         <div class="progress-bar-bg">
-                            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div> 
+                            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
                         </div>
                         <div class="progress-percent" id="progress-percent">0%</div>
                     </div>
@@ -80,7 +88,7 @@
 
         <section class="delivery-section card">
             <h2 class="content-title">📦 배송 현황 조회</h2>
-            
+
             <div class="tracking-input-container">
                 <select id="carrier-id" class="carrier-select">
                     <option value="">택배사 선택</option>
@@ -99,10 +107,10 @@
                     <span id="delivery-status-badge" class="delivery-badge">조회 완료</span>
                     <span id="delivery-info-text" class="delivery-info"></span>
                 </div>
-                
+
                 <div class="timeline-container">
                     <ul class="timeline" id="timeline-list">
-                        </ul>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -119,7 +127,7 @@
             })
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-                updateHeader(); 
+                updateHeader();
             })
             .catch(err => console.error(err));
 
@@ -137,71 +145,71 @@
             }
         }
 
-        document.addEventListener('click', function(e) {
-            if(e.target && e.target.id === 'logout-btn') {
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'logout-btn') {
                 localStorage.removeItem('isLoggedIn');
                 alert('로그아웃 되었습니다.');
-                location.href = 'main_login.html'; 
+                location.href = 'main_login.html';
             }
         });
 
 
-    async function joinGroupBuy() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const userId = localStorage.getItem('userId');
+        async function joinGroupBuy() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userId = localStorage.getItem('userId');
 
-    if (!isLoggedIn || !userId) {
-        alert('로그인이 필요한 서비스입니다.');
-        location.href = 'login.html';
-        return;
-    }
+            if (!isLoggedIn || !userId) {
+                alert('로그인이 필요한 서비스입니다.');
+                location.href = 'login.html';
+                return;
+            }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
 
-    if (!productId) {
-        alert('상품 ID가 없습니다.');
-        return;
-    }
+            if (!productId) {
+                alert('상품 ID가 없습니다.');
+                return;
+            }
 
-    if (!confirm('정말로 이 공동구매에 참여하시겠습니까?')) {
-        return;
-    }
+            if (!confirm('정말로 이 공동구매에 참여하시겠습니까?')) {
+                return;
+            }
 
-    try {
-        const response = await fetch('http://localhost:3000/participants/join', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                productId,
-                userId
-            })
-        });
+            try {
+                const response = await fetch('http://localhost:3000/participants/join', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId,
+                        userId
+                    })
+                });
 
-        const result = await response.json();
+                const result = await response.json();
 
-        if (!response.ok) {
-            alert(result.message || '참여 실패');
-            return;
+                if (!response.ok) {
+                    alert(result.message || '참여 실패');
+                    return;
+                }
+
+                let joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+
+                if (!joinedGroups.includes(productId)) {
+                    joinedGroups.push(productId);
+                    localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups));
+                }
+
+                alert('참여가 완료되었습니다.');
+                location.reload();
+
+            } catch (error) {
+                console.error(error);
+                alert('서버 연결 실패');
+            }
         }
-
-        let joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-
-        if (!joinedGroups.includes(productId)) {
-            joinedGroups.push(productId);
-            localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups));
-        }
-
-        alert('참여가 완료되었습니다.');
-        location.reload();
-
-    } catch (error) {
-        console.error(error);
-        alert('서버 연결 실패');
-    }
-}
         // ==========================================
         // 2. 상품 데이터 동적 로드 스크립트
         // ==========================================
@@ -220,7 +228,7 @@
                 // json-server를 안 쓰신다면 'products.json'으로 경로를 수정하세요.
                 const response = await fetch('http://localhost:3000/products');
                 const products = await response.json();
-                
+
                 // ID에 맞는 상품 찾기
                 const product = products.find(p => p.id == productId);
 
@@ -230,34 +238,46 @@
                 }
 
                 // 이미지 업데이트
-    const defaultImages = {
-    '식재료 / 배달': 'images/default-food.png',
-    '자취 / 생필품': 'images/default-living.png',
-    '전공 / 문구': 'images/default-study.png',
-    '기타 물품': 'images/default-etc.png'
-};
+                const defaultImages = {
+                    '식재료 / 배달': 'images/default-food.png',
+                    '자취 / 생필품': 'images/default-living.png',
+                    '전공 / 문구': 'images/default-study.png',
+                    '기타 물품': 'images/default-etc.png'
+                };
 
-const fallbackImage =
-    defaultImages[product.category] || 'images/default-etc.png';
-const imgEl = document.getElementById('product-img');
-if (product.imageUrl && product.imageUrl !== 'none') {
-    imgEl.src = product.imageUrl;
+                const fallbackImage =
+                    defaultImages[product.category] || 'images/default-etc.png';
+                const imgEl = document.getElementById('product-img');
+                const overlay = document.getElementById('detail-no-image-overlay');
 
-    // 링크 깨졌을 때 기본 이미지
-    imgEl.onerror = () => {
-        imgEl.src = fallbackImage;
-    };
+                const hasValidImage =
+                    product.imageUrl &&
+                    product.imageUrl.trim() !== '' &&
+                    product.imageUrl !== 'null' &&
+                    product.imageUrl !== 'undefined';
 
-} else {
-    // 이미지 없을 때 기본 이미지
-    imgEl.src = fallbackImage;
-}
+                overlay.style.display = hasValidImage ? 'none' : 'flex';
+                console.log('imageUrl:', product.imageUrl);
+                console.log('hasValidImage:', hasValidImage);
+                console.log('overlay:', overlay);
+                if (product.imageUrl && product.imageUrl !== 'none') {
+                    imgEl.src = product.imageUrl;
+
+                    // 링크 깨졌을 때 기본 이미지
+                    imgEl.onerror = () => {
+                        imgEl.src = fallbackImage;
+                    };
+
+                } else {
+                    // 이미지 없을 때 기본 이미지
+                    imgEl.src = fallbackImage;
+                }
 
                 // 카테고리 태그 및 색상 설정
                 const categoryEl = document.getElementById('product-category');
                 categoryEl.innerText = product.category;
                 categoryEl.className = 'category-badge'; // 기본 클래스 초기화
-                
+
                 if (product.category.includes('식재료')) categoryEl.classList.add('tag-food');
                 else if (product.category.includes('전공') || product.category.includes('스터디')) categoryEl.classList.add('tag-study');
                 else if (product.category.includes('생필품') || product.category.includes('의류')) categoryEl.classList.add('tag-living');
@@ -282,7 +302,7 @@ if (product.imageUrl && product.imageUrl !== 'none') {
 
                 // 모집 현황 업데이트
                 document.getElementById('status-count-text').innerHTML = `현재 <strong>${product.currentCount}명</strong> / 목표 ${product.targetCount}명`;
-                
+
                 // 프로그래스바 게이지 계산 (최대 100%)
                 const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
                 setTimeout(() => {
@@ -294,51 +314,51 @@ if (product.imageUrl && product.imageUrl !== 'none') {
                 // 마감일(duration) 업데이트
                 const deadlineElement = document.getElementById('deadline-text');
 
-if (deadlineElement && product.duration) {
-    const timerId = setInterval(() => {
-        const timeText = formatDynamic(product.duration); 
-        deadlineElement.innerHTML = `<span>⏳</span> 남은 기간: <strong style="color: ${timeText.includes('초') ? '#b11226' : 'inherit'}">${timeText}</strong>`;
+                if (deadlineElement && product.duration) {
+                    const timerId = setInterval(() => {
+                        const timeText = formatDynamic(product.duration);
+                        deadlineElement.innerHTML = `<span>⏳</span> 남은 기간: <strong style="color: ${timeText.includes('초') ? '#b11226' : 'inherit'}">${timeText}</strong>`;
 
-// [수정] 마감 시 버튼 처리 로직 (product.html 하단 setInterval 내부)
-if (timeText === "모집 마감") {
-    clearInterval(timerId);
-    
-    const allBtns = document.querySelectorAll('.join-btn');
-    
-    allBtns.forEach(btn => {
-        const text = btn.textContent.trim();
-        
-        // 1. 참여 버튼 비활성화
-        if (text === "이 공구에 참여하기") {
-            btn.disabled = true;
-            btn.style.backgroundColor = "#ccc";
-            btn.textContent = "모집 마감";
-        }
-        
-        // 2. [추가] 방장용 삭제 버튼 비활성화
-        if (text.includes("공구방 삭제")) {
-            btn.disabled = true;
-            btn.style.backgroundColor = "#ccc";
-            btn.style.cursor = "not-allowed";
-            btn.textContent = "삭제 불가";
-        }
+                        // [수정] 마감 시 버튼 처리 로직 (product.html 하단 setInterval 내부)
+                        if (timeText === "모집 마감") {
+                            clearInterval(timerId);
 
-        // ※ '내용 수정'이나 '채팅방 가기'는 마감 후에도 필요할 수 있으니 그대로 둡니다.
-    });
-}
-    }, 1000);
-}
+                            const allBtns = document.querySelectorAll('.join-btn');
+
+                            allBtns.forEach(btn => {
+                                const text = btn.textContent.trim();
+
+                                // 1. 참여 버튼 비활성화
+                                if (text === "이 공구에 참여하기") {
+                                    btn.disabled = true;
+                                    btn.style.backgroundColor = "#ccc";
+                                    btn.textContent = "모집 마감";
+                                }
+
+                                // 2. [추가] 방장용 삭제 버튼 비활성화
+                                if (text.includes("공구방 삭제")) {
+                                    btn.disabled = true;
+                                    btn.style.backgroundColor = "#ccc";
+                                    btn.style.cursor = "not-allowed";
+                                    btn.textContent = "삭제 불가";
+                                }
+
+                                // ※ '내용 수정'이나 '채팅방 가기'는 마감 후에도 필요할 수 있으니 그대로 둡니다.
+                            });
+                        }
+                    }, 1000);
+                }
 
                 // 상세 설명 (Location과 Description 결합)
-// [수정] product.duration 대신 formatStatic(product.duration)을 사용합니다.
-const staticDate = formatStatic(product.duration);
+                // [수정] product.duration 대신 formatStatic(product.duration)을 사용합니다.
+                const staticDate = formatStatic(product.duration);
 
-const descHtml = `
+                const descHtml = `
     📌 <strong>수령 장소</strong>: ${product.location}<br>
     📌 <strong>마감 일시</strong>: ${staticDate}<br><br>
     ${product.description.replace(/\n/g, '<br>')}
 `;
-document.getElementById('product-description').innerHTML = descHtml;
+                document.getElementById('product-description').innerHTML = descHtml;
 
             } catch (error) {
                 console.error('상품 데이터를 불러오는 중 오류 발생:', error);
@@ -349,182 +369,182 @@ document.getElementById('product-description').innerHTML = descHtml;
     </script>
 
     <script>
-    // [1] 동적 타이머용: "3분 5초 남음" 처럼 계산해주는 함수
-function formatDynamic(expireAt) {
-    const expire = Number(expireAt);
-    const now = Math.floor(Date.now() / 1000);
-    const diff = expire - now;
+        // [1] 동적 타이머용: "3분 5초 남음" 처럼 계산해주는 함수
+        function formatDynamic(expireAt) {
+            const expire = Number(expireAt);
+            const now = Math.floor(Date.now() / 1000);
+            const diff = expire - now;
 
-    if (isNaN(expire) || diff <= 0) return "모집 마감";
+            if (isNaN(expire) || diff <= 0) return "모집 마감";
 
-    const d = Math.floor(diff / 86400);
-    const h = Math.floor((diff % 86400) / 3600);
-    const m = Math.floor((diff % 3600) / 60);
-    const s = diff % 60;
+            const d = Math.floor(diff / 86400);
+            const h = Math.floor((diff % 86400) / 3600);
+            const m = Math.floor((diff % 3600) / 60);
+            const s = diff % 60;
 
-    if (d > 0) return `${d}일 ${h}시간 남음`;
-    if (h > 0) return `${h}시간 ${m}분 남음`;
-    return `${m}분 ${s}초 남음`;
-}
+            if (d > 0) return `${d}일 ${h}시간 남음`;
+            if (h > 0) return `${h}시간 ${m}분 남음`;
+            return `${m}분 ${s}초 남음`;
+        }
 
-// [2] 고정 날짜용: "5월 15일 18:30" 처럼 바꿔주는 함수
-function formatStatic(expireAt) {
-    const expire = Number(expireAt);
-    const date = new Date(expire * 1000);
-    if (isNaN(date.getTime())) return "정보 없음";
+        // [2] 고정 날짜용: "5월 15일 18:30" 처럼 바꿔주는 함수
+        function formatStatic(expireAt) {
+            const expire = Number(expireAt);
+            const date = new Date(expire * 1000);
+            if (isNaN(date.getTime())) return "정보 없음";
 
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    return `${month}월 ${day}일 ${hours}:${minutes}까지`;
-}
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. 초기 설정 및 유저 정보 가져오기
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-    const currentUserId = localStorage.getItem('userId'); // 내 ID
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            return `${month}월 ${day}일 ${hours}:${minutes}까지`;
+        }
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. 초기 설정 및 유저 정보 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const currentUserId = localStorage.getItem('userId'); // 내 ID
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
-    if (!productId) {
-        alert('상품 ID가 없습니다.');
-        location.href = 'product_list.html';
-        return;
-    }
+            if (!productId) {
+                alert('상품 ID가 없습니다.');
+                location.href = 'product_list.html';
+                return;
+            }
 
-    // 헤더 불러오기 (기존 로직 유지)
-    fetch('header.html')
-        .then(res => res.text())
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-            if(typeof updateHeader === 'function') updateHeader();
+            // 헤더 불러오기 (기존 로직 유지)
+            fetch('header.html')
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                    if (typeof updateHeader === 'function') updateHeader();
+                });
+
+            try {
+                // 2. 서버에서 상품 상세 데이터 가져오기
+                // 주의: 서버에서 응답 줄 때 참여자 명단(members)이 포함되어야 합니다.
+                const response = await fetch(`http://localhost:3000/products/${productId}`);
+                const product = await response.json();
+                if (!response.ok) throw new Error('상품 정보를 불러오지 못했습니다.');
+                const participantsRes = await fetch(`http://localhost:3000/participants?productId=${productId}`);
+                if (participantsRes.ok) {
+                    const membersData = await participantsRes.json();
+                    product.members = membersData; // 방장 화면에서 맵핑할 수 있게 배열 저장
+                } else {
+                    product.members = [];
+                }
+
+                // 3. 공통 데이터 렌더링 (제목, 가격, 인원 등)
+                renderProductInfo(product)
+
+                // 4. 권한별 버튼 및 리스트 생성
+                const infoArea = document.querySelector('.product-info');
+                const detailArea = document.querySelector('.details-section');
+
+                // 👉 [중요] 작성자인지 확인 (서버의 user_id와 내 userId 비교)
+                const isHost = String(product.user_id) === String(currentUserId);
+
+                if (isHost) {
+                    // A. 작성자(방장)일 때
+                    renderHostUI(infoArea, detailArea, product);
+                } else {
+                    // B. 참여자(학우)일 때
+                    renderGuestUI(infoArea, product, currentUserId);
+                }
+
+                initDeliveryTracking(productId, currentUserId);
+
+            } catch (error) {
+                console.error(error);
+                alert('데이터를 불러오는데 실패했습니다.');
+            }
         });
 
-    try {
-        // 2. 서버에서 상품 상세 데이터 가져오기
-        // 주의: 서버에서 응답 줄 때 참여자 명단(members)이 포함되어야 합니다.
-        const response = await fetch(`http://localhost:3000/products/${productId}`);
-        const product = await response.json();
-        if (!response.ok) throw new Error('상품 정보를 불러오지 못했습니다.');
-        const participantsRes = await fetch(`http://localhost:3000/participants?productId=${productId}`);
-        if (participantsRes.ok) {
-            const membersData = await participantsRes.json();
-            product.members = membersData; // 방장 화면에서 맵핑할 수 있게 배열 저장
-        } else {
-            product.members = [];
+        // --- UI 렌더링 함수들 ---
+        //1. 공통 데이터 렌더링 함수
+        // 1. 공통 데이터 렌더링 함수 (기본 정보 + 인증 섹션 호출)
+        function renderProductInfo(product) {
+            // [기존 로직]
+            document.getElementById('product-title').innerText = product.title;
+            document.getElementById('product-price').innerHTML = `${Number(product.price).toLocaleString()}원 <span>(${product.targetCount}명 기준)</span>`;
+            document.getElementById('status-count-text').innerHTML = `현재 <strong>${product.currentCount}명</strong> / 목표 ${product.targetCount}명`;
+            document.getElementById('product-description').innerHTML = product.description.replace(/\n/g, '<br>');
+
+            const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
+            document.getElementById('progress-fill').style.width = `${percent}%`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+
+            if (product.imageUrl) document.getElementById('product-img').src = product.imageUrl;
+
+            // ---------------------------------------------------------
+            // 👉 여기서 인증 섹션 함수를 호출합니다!
+            // ---------------------------------------------------------
+            renderCompletionSection(product);
         }
 
-        // 3. 공통 데이터 렌더링 (제목, 가격, 인원 등)
-        renderProductInfo(product)
-    
-        // 4. 권한별 버튼 및 리스트 생성
-        const infoArea = document.querySelector('.product-info');
-        const detailArea = document.querySelector('.details-section');
+        //=========================================================
+        // [수정된 함수 1] 공구 완료 인증 섹션 함수 (모집 완료 시에만 노출)
+        // =========================================================
+        // =========================================================
+        // [수정] 공구 완료 인증 섹션 (숫자 강제 변환 및 노출 조건 강화)
+        // =========================================================
+        function renderCompletionSection(product) {
+            const detailArea = document.querySelector('.details-section');
+            if (!detailArea) return;
 
-        // 👉 [중요] 작성자인지 확인 (서버의 user_id와 내 userId 비교)
-        const isHost = String(product.user_id) === String(currentUserId);
+            // 1. 숫자형으로 확실하게 변환해서 꽉 찼는지 확인
+            const current = parseInt(product.currentCount, 10);
+            const target = parseInt(product.targetCount, 10);
+            const isFull = current >= target;
 
-        if (isHost) {
-            // A. 작성자(방장)일 때
-            renderHostUI(infoArea, detailArea, product);
-        } else {
-            // B. 참여자(학우)일 때
-            renderGuestUI(infoArea, product, currentUserId);
-        }
+            const now = Math.floor(Date.now() / 1000);
+            const isExpired = Number(product.duration) <= now;
+            // 2. 꽉 차지 않았다면 인증창을 띄우지 않음
+            if (!isFull && !isExpired) {
+                console.log(`현재 모집중: ${current}/${target} (아직 꽉 차지 않아 인증창 숨김)`);
+                return;
+            }
 
-        initDeliveryTracking(productId, currentUserId);
+            console.log("모집 완료! 인증창 렌더링 시작");
 
-    } catch (error) {
-        console.error(error);
-        alert('데이터를 불러오는데 실패했습니다.');
-    }
-});
+            const currentUserId = localStorage.getItem('userId');
+            const isHost = String(product.user_id) === String(currentUserId);
 
-// --- UI 렌더링 함수들 ---
-//1. 공통 데이터 렌더링 함수
-// 1. 공통 데이터 렌더링 함수 (기본 정보 + 인증 섹션 호출)
-function renderProductInfo(product) {
-    // [기존 로직]
-    document.getElementById('product-title').innerText = product.title;
-    document.getElementById('product-price').innerHTML = `${Number(product.price).toLocaleString()}원 <span>(${product.targetCount}명 기준)</span>`;
-    document.getElementById('status-count-text').innerHTML = `현재 <strong>${product.currentCount}명</strong> / 목표 ${product.targetCount}명`;
-    document.getElementById('product-description').innerHTML = product.description.replace(/\n/g, '<br>');
-    
-    const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
-    document.getElementById('progress-fill').style.width = `${percent}%`;
-    document.getElementById('progress-percent').innerText = `${percent}%`;
-    
-    if (product.imageUrl) document.getElementById('product-img').src = product.imageUrl;
+            // 내 참여 정보 찾기
+            const myParticipantInfo = product.members ? product.members.find(m => String(m.user_id) === String(currentUserId)) : null;
+            const isGuest = myParticipantInfo !== null && myParticipantInfo !== undefined;
 
-    // ---------------------------------------------------------
-    // 👉 여기서 인증 섹션 함수를 호출합니다!
-    // ---------------------------------------------------------
-    renderCompletionSection(product); 
-}
+            // 방장도 아니고 참여자도 아니면 안 보여줌
+            if (!isHost && !isGuest) return;
 
-//=========================================================
-// [수정된 함수 1] 공구 완료 인증 섹션 함수 (모집 완료 시에만 노출)
-// =========================================================
-// =========================================================
-// [수정] 공구 완료 인증 섹션 (숫자 강제 변환 및 노출 조건 강화)
-// =========================================================
-function renderCompletionSection(product) {
-    const detailArea = document.querySelector('.details-section');
-    if (!detailArea) return;
+            // 수령 완료 확인 누른 사람 수 계산
+            const confirmedCount = product.members ? product.members.filter(m => m.is_received === 1 || m.is_received === true).length : 0;
 
-    // 1. 숫자형으로 확실하게 변환해서 꽉 찼는지 확인
-    const current = parseInt(product.currentCount, 10);
-    const target = parseInt(product.targetCount, 10);
-    const isFull = current >= target;
+            // 아직 '확인'/'노쇼' 처리가 안 된 참여자 찾기
+            const hasUncheckedMembers = product.members ? product.members.some(m => m.status === 'joined') : false;
 
-    const now = Math.floor(Date.now() / 1000);
-    const isExpired = Number(product.duration) <= now;
-    // 2. 꽉 차지 않았다면 인증창을 띄우지 않음
-    if (!isFull && !isExpired) {
-        console.log(`현재 모집중: ${current}/${target} (아직 꽉 차지 않아 인증창 숨김)`);
-        return; 
-    }
+            let btnHtml = '';
 
-    console.log("모집 완료! 인증창 렌더링 시작");
+            if (isHost) {
+                // 방장 화면
+                if (hasUncheckedMembers) {
+                    btnHtml = `<button class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>⚠️ 참여자의 '확인' 또는 '노쇼' 평가를 모두 완료해주세요</button>`;
+                } else {
+                    btnHtml = `<button class="join-btn" onclick="hostCloseProduct('${product.id}')">공구 최종 완료 및 방 닫기 (방장)</button>`;
+                }
+            } else {
+                // 참여자 화면
+                if (myParticipantInfo && myParticipantInfo.status === 'noshow') {
+                    btnHtml = `<button class="join-btn" style="background-color: #ccc; color: #fff;" disabled>방장에 의해 노쇼 처리되었습니다</button>`;
+                } else if (myParticipantInfo && (myParticipantInfo.is_received === 1 || myParticipantInfo.is_received === true)) {
+                    btnHtml = `<button class="join-btn" style="background-color: #ccc;" disabled>✅ 수령 확인 완료</button>`;
+                } else {
+                    btnHtml = `<button class="join-btn" onclick="guestReceiveItem('${product.id}', ${myParticipantInfo.participant_id})">📦 물건 수령 확인</button>`;
+                }
+            }
 
-    const currentUserId = localStorage.getItem('userId');
-    const isHost = String(product.user_id) === String(currentUserId);
-    
-    // 내 참여 정보 찾기
-    const myParticipantInfo = product.members ? product.members.find(m => String(m.user_id) === String(currentUserId)) : null;
-    const isGuest = myParticipantInfo !== null && myParticipantInfo !== undefined;
-
-    // 방장도 아니고 참여자도 아니면 안 보여줌
-    if (!isHost && !isGuest) return; 
-
-    // 수령 완료 확인 누른 사람 수 계산
-    const confirmedCount = product.members ? product.members.filter(m => m.is_received === 1 || m.is_received === true).length : 0;
-    
-    // 아직 '확인'/'노쇼' 처리가 안 된 참여자 찾기
-    const hasUncheckedMembers = product.members ? product.members.some(m => m.status === 'joined') : false;
-    
-    let btnHtml = '';
-
-    if (isHost) {
-        // 방장 화면
-        if (hasUncheckedMembers) {
-            btnHtml = `<button class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>⚠️ 참여자의 '확인' 또는 '노쇼' 평가를 모두 완료해주세요</button>`;
-        } else {
-            btnHtml = `<button class="join-btn" onclick="hostCloseProduct('${product.id}')">공구 최종 완료 및 방 닫기 (방장)</button>`;
-        }
-    } else {
-        // 참여자 화면
-        if (myParticipantInfo && myParticipantInfo.status === 'noshow') {
-            btnHtml = `<button class="join-btn" style="background-color: #ccc; color: #fff;" disabled>방장에 의해 노쇼 처리되었습니다</button>`;
-        } else if (myParticipantInfo && (myParticipantInfo.is_received === 1 || myParticipantInfo.is_received === true)) {
-            btnHtml = `<button class="join-btn" style="background-color: #ccc;" disabled>✅ 수령 확인 완료</button>`;
-        } else {
-            btnHtml = `<button class="join-btn" onclick="guestReceiveItem('${product.id}', ${myParticipantInfo.participant_id})">📦 물건 수령 확인</button>`;
-        }
-    }
-
-    const completionHtml = `
+            const completionHtml = `
         <div class="completion-card" style="margin-top:20px; border: 2px solid #ce152d; padding:20px; border-radius:10px; background-color: #fff;">
             <h4 style="color:#ce152d; margin-top:0;">✅ 수령 및 거래 완료 인증</h4>
             <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">모집 인원이 모두 차서 거래 인증 단계가 활성화되었습니다.</p>
@@ -534,84 +554,84 @@ function renderCompletionSection(product) {
             ${btnHtml}
         </div>
     `;
-    
-    detailArea.insertAdjacentHTML('beforeend', completionHtml);
-}
 
-// =========================================================
-// [2] 참여자가 "물건 수령 확인" 버튼을 누를 때 실행되는 함수
-// =========================================================
-// =========================================================
-// [수정 완료] 참여자가 "물건 수령 확인" 버튼을 누를 때
-// =========================================================
-async function guestReceiveItem(productId, participantId) {
-    if (!confirm("물건을 확실히 수령하셨나요? (확인 후 취소 불가)")) return;
+            detailArea.insertAdjacentHTML('beforeend', completionHtml);
+        }
 
-    // ⭐️ 추가된 부분: 백엔드가 요구하는 내 유저 ID 가져오기
-    const userId = localStorage.getItem('userId'); 
+        // =========================================================
+        // [2] 참여자가 "물건 수령 확인" 버튼을 누를 때 실행되는 함수
+        // =========================================================
+        // =========================================================
+        // [수정 완료] 참여자가 "물건 수령 확인" 버튼을 누를 때
+        // =========================================================
+        async function guestReceiveItem(productId, participantId) {
+            if (!confirm("물건을 확실히 수령하셨나요? (확인 후 취소 불가)")) return;
 
-    try {
-        const response = await fetch('http://localhost:3000/participants/receive', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                productId: productId, 
-                userId: userId // ⭐️ participantId 대신 userId를 보냅니다.
-            })
-        });
+            // ⭐️ 추가된 부분: 백엔드가 요구하는 내 유저 ID 가져오기
+            const userId = localStorage.getItem('userId');
 
-        if (response.ok) {
-            const result = await response.json();
-            
-            // 백엔드가 계산한 성공/실패 여부를 활용해 알림을 다르게 띄웁니다.
-            if (result.isSuccess) {
-                alert(`🎉 수령 확인이 완료되었습니다! 과반수(${result.threshold}명)가 충족되어 방장과 참여자의 신뢰도가 상승했습니다.`);
-            } else {
-                alert(`✅ 수령 확인이 완료되었습니다! (목표 달성까지 ${result.threshold - result.received}명 남음)`);
+            try {
+                const response = await fetch('http://localhost:3000/participants/receive', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId: productId,
+                        userId: userId // ⭐️ participantId 대신 userId를 보냅니다.
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // 백엔드가 계산한 성공/실패 여부를 활용해 알림을 다르게 띄웁니다.
+                    if (result.isSuccess) {
+                        alert(`🎉 수령 확인이 완료되었습니다! 과반수(${result.threshold}명)가 충족되어 방장과 참여자의 신뢰도가 상승했습니다.`);
+                    } else {
+                        alert(`✅ 수령 확인이 완료되었습니다! (목표 달성까지 ${result.threshold - result.received}명 남음)`);
+                    }
+                    location.reload();
+                } else {
+                    const err = await response.json();
+                    alert(err.message || '인증 처리 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('서버 연결 실패');
             }
-            location.reload(); 
-        } else {
-            const err = await response.json();
-            alert(err.message || '인증 처리 중 오류가 발생했습니다.');
         }
-    } catch (error) {
-        console.error(error);
-        alert('서버 연결 실패');
-    }
-}
 
-// =========================================================
-// [3] 방장이 "공구 최종 완료" 버튼을 누를 때 실행되는 함수
-// =========================================================
-async function hostCloseProduct(productId) {
-    if (!confirm("모든 참여자의 수령이 완료되었습니까? 공구방을 최종 마감합니다.")) return;
+        // =========================================================
+        // [3] 방장이 "공구 최종 완료" 버튼을 누를 때 실행되는 함수
+        // =========================================================
+        async function hostCloseProduct(productId) {
+            if (!confirm("모든 참여자의 수령이 완료되었습니까? 공구방을 최종 마감합니다.")) return;
 
-    try {
-        const response = await fetch('http://localhost:3000/products/close', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                productId: productId 
-            })
-        });
+            try {
+                const response = await fetch('http://localhost:3000/products/close', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId: productId
+                    })
+                });
 
-        if (response.ok) {
-            alert('공구방이 성공적으로 마감되었습니다!');
-            location.href = 'main_login.html'; // 마감 후 메인 페이지로 이동 (원하시면 location.reload()로 변경 가능)
-        } else {
-            const err = await response.json();
-            alert(err.message || '마감 처리 중 오류가 발생했습니다.');
+                if (response.ok) {
+                    alert('공구방이 성공적으로 마감되었습니다!');
+                    location.href = 'main_login.html'; // 마감 후 메인 페이지로 이동 (원하시면 location.reload()로 변경 가능)
+                } else {
+                    const err = await response.json();
+                    alert(err.message || '마감 처리 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('서버 연결 실패');
+            }
         }
-    } catch (error) {
-        console.error(error);
-        alert('서버 연결 실패');
-    }
-}
 
-function renderHostUI(infoArea, detailArea, product) {
-    const joinBtn = infoArea.querySelector('.join-btn');
-    
-    joinBtn.outerHTML = `
+        function renderHostUI(infoArea, detailArea, product) {
+            const joinBtn = infoArea.querySelector('.join-btn');
+
+            joinBtn.outerHTML = `
         <div style="display:flex; flex-direction:column; gap:10px;">
             <button class="join-btn" style="background-color: #ce152d;" 
                 onclick="location.href='direct_chattings.html?id=${product.id}'">
@@ -627,303 +647,303 @@ function renderHostUI(infoArea, detailArea, product) {
         </div>
     `;
 
-    // renderHostUI 함수 내부의 memberSection 수정
-const memberSection = `
+            // renderHostUI 함수 내부의 memberSection 수정
+            const memberSection = `
     <div class="member-list card" style="margin-top:20px; padding:20px;">
         <h3>👥 참여자 관리 (방장 전용)</h3>
         <div id="member-items">
-            ${(product.members && product.members.length > 0) 
-                ? product.members
-                    .filter(m => m.status !== 'noshow') // 🔥 노쇼인 사람은 목록에서 제외
-                    .map(m => {
-                        // 이미 확인 완료된 유저는 버튼 대신 '확인됨' 텍스트 표시
-                        const isConfirmed = m.status === 'confirmed';
-                        return `
+            ${(product.members && product.members.length > 0)
+                    ? product.members
+                        .filter(m => m.status !== 'noshow') // 🔥 노쇼인 사람은 목록에서 제외
+                        .map(m => {
+                            // 이미 확인 완료된 유저는 버튼 대신 '확인됨' 텍스트 표시
+                            const isConfirmed = m.status === 'confirmed';
+                            return `
                             <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
                                 <span>${m.nickname} 학우</span>
                                 <div>
-                                    ${isConfirmed ? 
-                                        '<span style="color:gray; font-weight:bold;">✅ 확인 완료</span>' : 
-                                        `<button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" 
+                                    ${isConfirmed ?
+                                    '<span style="color:gray; font-weight:bold;">✅ 확인 완료</span>' :
+                                    `<button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" 
                                             style="color:blue; border:none; background:none; cursor:pointer; font-weight:bold;">확인</button>
                                          <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" 
                                             style="color:red; border:none; background:none; margin-left:10px; cursor:pointer; font-weight:bold;">노쇼</button>`
-                                    }
+                                }
                                 </div>
                             </div>
                         `;
-                    }).join('') 
-                : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
+                        }).join('')
+                    : '<p style="color:#999;">아직 참여자가 없습니다.</p>'}
         </div>
     </div>
 `;
-    detailArea.insertAdjacentHTML('beforeend', memberSection);
-}
+            detailArea.insertAdjacentHTML('beforeend', memberSection);
+        }
 
-// [참여자 전용 화면]
-function renderGuestUI(infoArea, product, currentUserId) {
-    const joinBtn = infoArea.querySelector('.join-btn');
-    
-    // 이미 참여했는지 확인
-    const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-    const isAlreadyJoined = joinedGroups.includes(String(product.id));
+        // [참여자 전용 화면]
+        function renderGuestUI(infoArea, product, currentUserId) {
+            const joinBtn = infoArea.querySelector('.join-btn');
 
-    if (isAlreadyJoined) {
-        joinBtn.innerText = "참여 완료 (채팅방 가기)";
-        joinBtn.style.background = "#ce152d"; // 고대색
-        joinBtn.onclick = () => location.href = `direct_chattings.html?id=${product.id}`;
+            // 이미 참여했는지 확인
+            const joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+            const isAlreadyJoined = joinedGroups.includes(String(product.id));
 
-        // 취소 및 신고 버튼 추가
-        infoArea.insertAdjacentHTML('beforeend', `
+            if (isAlreadyJoined) {
+                joinBtn.innerText = "참여 완료 (채팅방 가기)";
+                joinBtn.style.background = "#ce152d"; // 고대색
+                joinBtn.onclick = () => location.href = `direct_chattings.html?id=${product.id}`;
+
+                // 취소 및 신고 버튼 추가
+                infoArea.insertAdjacentHTML('beforeend', `
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button onclick="leaveGroup('${product.id}')" style="flex:1; padding:8px; border:none; border-radius:5px;">참여 취소</button>
                 <button onclick="reportHost()" style="flex:1; padding:8px; border:1px solid #ddd; background:none; border-radius:5px; color:#999;">신고하기</button>
             </div>
         `);
-    }
-}
-
-// --- 액션 함수들 (서버 연동용) ---
-//삭제 버튼
-async function deleteProduct(id) {
-    if(confirm("공구방을 삭제하시겠습니까? 참여자들에게 알림이 전송됩니다.")) {
-        try {
-            const response = await fetch(`http://localhost:3000/products/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
-                alert("삭제되었습니다.");
-                location.href = 'main_login.html'; // 삭제 후 메인으로 이동
-            } else {
-                const errorData = await response.json();
-                alert(errorData.message || '삭제 실패');
             }
-        } catch (error) {
-            console.error(error);
-            alert("서버 오류로 삭제하지 못했습니다.");
-        }
-    }
-}
-//나중에 참여자 데이터베이스 필요함
-async function leaveGroup(id) {
-    if (!confirm("참여를 취소하시겠습니까?")) {
-        return;
-    }
-
-    const userId = localStorage.getItem('userId');
-
-    try {
-        const response = await fetch('http://localhost:3000/participants/cancel', {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                productId: id,
-                userId: userId
-            })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            alert(result.message || '참여 취소 실패');
-            return;
         }
 
-        let joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
-        joinedGroups = joinedGroups.filter(item => String(item) !== String(id));
-        localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups));
+        // --- 액션 함수들 (서버 연동용) ---
+        //삭제 버튼
+        async function deleteProduct(id) {
+            if (confirm("공구방을 삭제하시겠습니까? 참여자들에게 알림이 전송됩니다.")) {
+                try {
+                    const response = await fetch(`http://localhost:3000/products/${id}`, {
+                        method: 'DELETE'
+                    });
 
-        alert("참여가 취소되었습니다.");
-        location.reload();
-
-    } catch (error) {
-        console.error(error);
-        alert("서버 연결 실패");
-    }
-}
-
-// =========================================================
-// 방장의 참여자 확인 및 노쇼 처리 함수
-// =========================================================
-async function markStatus(participantId, userId, status) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-
-    const msg = status === 'noshow' 
-        ? "노쇼로 등록하시겠습니까? (인원수가 1명 줄어들며, 다시 모집이 시작될 수 있습니다.)" 
-        : "참여 확인 처리하시겠습니까?";
-        
-    if (!confirm(msg)) return;
-
-    try {
-        const response = await fetch('http://localhost:3000/participants/status', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                participantId: participantId,
-                userId: userId,
-                status: status,
-                productId: productId
-            })
-        });
-
-        if (response.ok) {
-            alert("처리가 완료되었습니다.");
-            // ⭐️ 이 줄이 있어야 DB에서 바뀐 인원수(3명 -> 2명 등)를 다시 그려줍니다!
-            window.location.reload(); 
-        } else {
-            const errorData = await response.json();
-            alert(errorData.message || "처리 중 오류 발생");
+                    if (response.ok) {
+                        alert("삭제되었습니다.");
+                        location.href = 'main_login.html'; // 삭제 후 메인으로 이동
+                    } else {
+                        const errorData = await response.json();
+                        alert(errorData.message || '삭제 실패');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("서버 오류로 삭제하지 못했습니다.");
+                }
+            }
         }
-    } catch (error) {
-        console.error('에러:', error);
-        alert("서버 연결 실패");
-    }
-}
+        //나중에 참여자 데이터베이스 필요함
+        async function leaveGroup(id) {
+            if (!confirm("참여를 취소하시겠습니까?")) {
+                return;
+            }
 
-// =========================================================
-// 🚀 배송 현황 조회 통합 기능 모음
-// =========================================================
-const API_BASE_URL = 'http://localhost:3000'; 
+            const userId = localStorage.getItem('userId');
 
-// 1. 페이지 로드 시 배송 섹션을 초기화하는 함수
-async function initDeliveryTracking(productId, userId) {
-    if (!productId || !userId) {
-        hideDeliverySection();
-        return;
-    }
+            try {
+                const response = await fetch('http://localhost:3000/participants/cancel', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: id,
+                        userId: userId
+                    })
+                });
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/delivery/info/${productId}?userId=${userId}`);
-        const dbData = await response.json();
+                const result = await response.json();
 
-        if (!dbData.isParticipant) {
-            hideDeliverySection();
-            return;
+                if (!response.ok) {
+                    alert(result.message || '참여 취소 실패');
+                    return;
+                }
+
+                let joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]');
+                joinedGroups = joinedGroups.filter(item => String(item) !== String(id));
+                localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups));
+
+                alert("참여가 취소되었습니다.");
+                location.reload();
+
+            } catch (error) {
+                console.error(error);
+                alert("서버 연결 실패");
+            }
         }
 
-        if (dbData.exists) {
-            document.querySelector('.tracking-input-container').style.display = 'none';
-            await autoFetchTrackingInfo(dbData.data.carrier_id, dbData.data.tracking_number);
-        }
-    } catch (error) {
-        console.error('배송 정보 초기 로딩 에러:', error);
-        hideDeliverySection();
-    }
-}
+        // =========================================================
+        // 방장의 참여자 확인 및 노쇼 처리 함수
+        // =========================================================
+        async function markStatus(participantId, userId, status) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
 
-// 2. 권한이 없을 때 배송 섹션을 숨기는 함수
-function hideDeliverySection() {
-    const deliverySection = document.querySelector('.delivery-section');
-    if (deliverySection) deliverySection.style.display = 'none';
-}
+            const msg = status === 'noshow'
+                ? "노쇼로 등록하시겠습니까? (인원수가 1명 줄어들며, 다시 모집이 시작될 수 있습니다.)"
+                : "참여 확인 처리하시겠습니까?";
 
-// 3. DB에 정보가 있을 때 자동으로 타임라인을 그리는 함수
-async function autoFetchTrackingInfo(carrierId, trackingNumber) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
-        const data = await response.json();
-        
-        if (data.status === false || data.code) {
-            console.log('운송장은 등록되었으나 아직 이동 내역이 없습니다.');
-            return;
-        }
+            if (!confirm(msg)) return;
 
-        const trackingDetails = data.trackingDetails || [];
-        const formattedData = trackingDetails.map(detail => ({
-            time: detail.timeString,
-            location: detail.where,
-            status: detail.kind,
-            details: detail.telno ? `연락처: ${detail.telno}` : '' 
-        }));
+            try {
+                const response = await fetch('http://localhost:3000/participants/status', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        participantId: participantId,
+                        userId: userId,
+                        status: status,
+                        productId: productId
+                    })
+                });
 
-        const carrierName = getCarrierName(carrierId); 
-        renderTimeline(carrierName, trackingNumber, formattedData);
-    } catch (error) {
-        console.error('자동 배송 조회 에러:', error);
-    }
-}
-
-// 4. 방장이 송장번호를 수동으로 입력하고 '조회하기' 버튼을 눌렀을 때의 함수
-async function fetchTrackingInfo() {
-    const carrierId = document.getElementById('carrier-id').value;
-    const trackingNumber = document.getElementById('tracking-number').value.replace(/[^0-9]/g, ''); 
-    
-    // ⭐️ 기존 코드 포맷에 맞춰 ?id= 파라미터를 사용합니다.
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id'); 
-
-    if (!carrierId || !trackingNumber || !productId) {
-        alert('택배사, 운송장 번호, 또는 상품 정보를 확인할 수 없습니다.');
-        return;
-    }
-
-    const carrierName = document.getElementById('carrier-id').options[document.getElementById('carrier-id').selectedIndex].text;
-
-    try {
-        // 1) 우리 DB에 먼저 저장
-        const saveResponse = await fetch(`${API_BASE_URL}/delivery/${productId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ carrierId, trackingNumber })
-        });
-
-        const saveResult = await saveResponse.json();
-        
-        if (!saveResponse.ok) {
-            alert('DB 저장에 실패했습니다: ' + saveResult.message);
-            return; 
+                if (response.ok) {
+                    alert("처리가 완료되었습니다.");
+                    // ⭐️ 이 줄이 있어야 DB에서 바뀐 인원수(3명 -> 2명 등)를 다시 그려줍니다!
+                    window.location.reload();
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || "처리 중 오류 발생");
+                }
+            } catch (error) {
+                console.error('에러:', error);
+                alert("서버 연결 실패");
+            }
         }
 
-        // 2) 성공하면 입력 폼 숨기기
-        document.querySelector('.tracking-input-container').style.display = 'none';
+        // =========================================================
+        // 🚀 배송 현황 조회 통합 기능 모음
+        // =========================================================
+        const API_BASE_URL = 'http://localhost:3000';
 
-        // 3) 스마트택배 API 조회
-        const response = await fetch(`${API_BASE_URL}/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
-        const data = await response.json();
-        
-        if (data.status === false || data.code) {
-            alert(data.msg || '조회할 수 없는 운송장 번호이거나 잘못된 택배사입니다.');
-            return;
+        // 1. 페이지 로드 시 배송 섹션을 초기화하는 함수
+        async function initDeliveryTracking(productId, userId) {
+            if (!productId || !userId) {
+                hideDeliverySection();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/delivery/info/${productId}?userId=${userId}`);
+                const dbData = await response.json();
+
+                if (!dbData.isParticipant) {
+                    hideDeliverySection();
+                    return;
+                }
+
+                if (dbData.exists) {
+                    document.querySelector('.tracking-input-container').style.display = 'none';
+                    await autoFetchTrackingInfo(dbData.data.carrier_id, dbData.data.tracking_number);
+                }
+            } catch (error) {
+                console.error('배송 정보 초기 로딩 에러:', error);
+                hideDeliverySection();
+            }
         }
 
-        const trackingDetails = data.trackingDetails || [];
-        if (trackingDetails.length === 0) {
-            alert('운송장이 등록되었으나 아직 택배사에서 이동 내역을 제공하지 않습니다.');
-            return;
+        // 2. 권한이 없을 때 배송 섹션을 숨기는 함수
+        function hideDeliverySection() {
+            const deliverySection = document.querySelector('.delivery-section');
+            if (deliverySection) deliverySection.style.display = 'none';
         }
 
-        const formattedData = trackingDetails.map(detail => ({
-            time: detail.timeString,
-            location: detail.where,  
-            status: detail.kind,     
-            details: detail.telno ? `영업소/기사님 연락처: ${detail.telno}` : '' 
-        }));
+        // 3. DB에 정보가 있을 때 자동으로 타임라인을 그리는 함수
+        async function autoFetchTrackingInfo(carrierId, trackingNumber) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
+                const data = await response.json();
 
-        renderTimeline(carrierName, trackingNumber, formattedData);
-    } catch (error) {
-        console.error('배송 조회 및 등록 에러:', error);
-        alert('서버와 통신하는 데 실패했습니다.');
-    }
-}
+                if (data.status === false || data.code) {
+                    console.log('운송장은 등록되었으나 아직 이동 내역이 없습니다.');
+                    return;
+                }
 
-// 5. 화면에 타임라인 UI를 그려주는 함수
-function renderTimeline(carrierName, trackingNumber, dataList) {
-    const resultContainer = document.getElementById('tracking-result');
-    const infoText = document.getElementById('delivery-info-text');
-    const timelineList = document.getElementById('timeline-list');
+                const trackingDetails = data.trackingDetails || [];
+                const formattedData = trackingDetails.map(detail => ({
+                    time: detail.timeString,
+                    location: detail.where,
+                    status: detail.kind,
+                    details: detail.telno ? `연락처: ${detail.telno}` : ''
+                }));
 
-    infoText.innerText = `${carrierName} [${trackingNumber}]`;
-    timelineList.innerHTML = ''; 
+                const carrierName = getCarrierName(carrierId);
+                renderTimeline(carrierName, trackingNumber, formattedData);
+            } catch (error) {
+                console.error('자동 배송 조회 에러:', error);
+            }
+        }
 
-    dataList.forEach((item, index) => {
-        const isLastItem = (index === dataList.length - 1); 
-        const li = document.createElement('li');
-        li.className = `timeline-item ${isLastItem ? 'active' : ''}`;
-        li.innerHTML = `
+        // 4. 방장이 송장번호를 수동으로 입력하고 '조회하기' 버튼을 눌렀을 때의 함수
+        async function fetchTrackingInfo() {
+            const carrierId = document.getElementById('carrier-id').value;
+            const trackingNumber = document.getElementById('tracking-number').value.replace(/[^0-9]/g, '');
+
+            // ⭐️ 기존 코드 포맷에 맞춰 ?id= 파라미터를 사용합니다.
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!carrierId || !trackingNumber || !productId) {
+                alert('택배사, 운송장 번호, 또는 상품 정보를 확인할 수 없습니다.');
+                return;
+            }
+
+            const carrierName = document.getElementById('carrier-id').options[document.getElementById('carrier-id').selectedIndex].text;
+
+            try {
+                // 1) 우리 DB에 먼저 저장
+                const saveResponse = await fetch(`${API_BASE_URL}/delivery/${productId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ carrierId, trackingNumber })
+                });
+
+                const saveResult = await saveResponse.json();
+
+                if (!saveResponse.ok) {
+                    alert('DB 저장에 실패했습니다: ' + saveResult.message);
+                    return;
+                }
+
+                // 2) 성공하면 입력 폼 숨기기
+                document.querySelector('.tracking-input-container').style.display = 'none';
+
+                // 3) 스마트택배 API 조회
+                const response = await fetch(`${API_BASE_URL}/delivery/tracking?carrierId=${carrierId}&trackId=${trackingNumber}`);
+                const data = await response.json();
+
+                if (data.status === false || data.code) {
+                    alert(data.msg || '조회할 수 없는 운송장 번호이거나 잘못된 택배사입니다.');
+                    return;
+                }
+
+                const trackingDetails = data.trackingDetails || [];
+                if (trackingDetails.length === 0) {
+                    alert('운송장이 등록되었으나 아직 택배사에서 이동 내역을 제공하지 않습니다.');
+                    return;
+                }
+
+                const formattedData = trackingDetails.map(detail => ({
+                    time: detail.timeString,
+                    location: detail.where,
+                    status: detail.kind,
+                    details: detail.telno ? `영업소/기사님 연락처: ${detail.telno}` : ''
+                }));
+
+                renderTimeline(carrierName, trackingNumber, formattedData);
+            } catch (error) {
+                console.error('배송 조회 및 등록 에러:', error);
+                alert('서버와 통신하는 데 실패했습니다.');
+            }
+        }
+
+        // 5. 화면에 타임라인 UI를 그려주는 함수
+        function renderTimeline(carrierName, trackingNumber, dataList) {
+            const resultContainer = document.getElementById('tracking-result');
+            const infoText = document.getElementById('delivery-info-text');
+            const timelineList = document.getElementById('timeline-list');
+
+            infoText.innerText = `${carrierName} [${trackingNumber}]`;
+            timelineList.innerHTML = '';
+
+            dataList.forEach((item, index) => {
+                const isLastItem = (index === dataList.length - 1);
+                const li = document.createElement('li');
+                li.className = `timeline-item ${isLastItem ? 'active' : ''}`;
+                li.innerHTML = `
             <div class="timeline-dot"></div>
             <span class="timeline-time">${item.time}</span>
             <div class="timeline-content">
@@ -931,52 +951,53 @@ function renderTimeline(carrierName, trackingNumber, dataList) {
                 <span style="font-size: 13px; color: #666; margin-top: 4px; display: inline-block;">${item.details}</span>
             </div>
         `;
-        timelineList.prepend(li); 
-    });
+                timelineList.prepend(li);
+            });
 
-    resultContainer.style.display = 'block';
-}
-
-// 6. 택배사 코드 변환기
-function getCarrierName(code) {
-    const carriers = { '04': 'CJ대한통운', '01': '우체국택배', '05': '한진택배', '08': '롯데택배', '06': '로젠택배' };
-    return carriers[code] || '알 수 없는 택배사';
-}
-
-// =========================================================
-// [추가됨] 방장 신고 기능
-// =========================================================
-async function reportHost() {
-    const productId = getProductIdFromURL();
-    const reporterId = localStorage.getItem('userId');
-
-    if (!confirm('방장을 신고하시겠습니까? (허위 신고 시 불이익이 있을 수 있습니다)')) return;
-
-    try {
-        const response = await fetch('http://localhost:3000/reports', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                reporterId: reporterId, 
-                productId: productId 
-            })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            alert(result.message);
-            return;
+            resultContainer.style.display = 'block';
         }
 
-        alert('신고가 정상적으로 접수되었습니다. 신고 누적 시 방장의 신뢰도가 대폭 차감됩니다.');
-        
-    } catch (err) {
-        console.error('신고 오류:', err);
-        alert('서버 오류로 신고에 실패했습니다.');
-    }
-}
+        // 6. 택배사 코드 변환기
+        function getCarrierName(code) {
+            const carriers = { '04': 'CJ대한통운', '01': '우체국택배', '05': '한진택배', '08': '롯데택배', '06': '로젠택배' };
+            return carriers[code] || '알 수 없는 택배사';
+        }
 
-</script>
+        // =========================================================
+        // [추가됨] 방장 신고 기능
+        // =========================================================
+        async function reportHost() {
+            const productId = getProductIdFromURL();
+            const reporterId = localStorage.getItem('userId');
+
+            if (!confirm('방장을 신고하시겠습니까? (허위 신고 시 불이익이 있을 수 있습니다)')) return;
+
+            try {
+                const response = await fetch('http://localhost:3000/reports', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reporterId: reporterId,
+                        productId: productId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    alert(result.message);
+                    return;
+                }
+
+                alert('신고가 정상적으로 접수되었습니다. 신고 누적 시 방장의 신뢰도가 대폭 차감됩니다.');
+
+            } catch (err) {
+                console.error('신고 오류:', err);
+                alert('서버 오류로 신고에 실패했습니다.');
+            }
+        }
+
+    </script>
 </body>
+
 </html>
