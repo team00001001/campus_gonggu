@@ -1,0 +1,93 @@
+:root {
+    --ku-crimson: #8A1538;
+    --ku-blue: #007AFF;
+    --text-dark: #222222;
+    --bg-color: #F7F8FA;
+    --border-light: #EAECEF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+body { background-color: var(--bg-color); padding-top: 70px; }
+
+/* 헤더는 fetch로 불러오므로 스타일만 정의 (네 원본과 동일) */
+header {
+    background-color: var(--ku-crimson); height: 70px; display: flex;
+    align-items: center; position: fixed; top: 0; left: 0; width: 100%;
+    z-index: 1000; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* [2. 크림슨 카드 컨테이너 - 1100px 비율 사수] */
+.content-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.crimson-card {
+    background: white;
+    border-radius: 40px;
+    padding: 50px 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+
+.trend-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 8px 16px; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 700; margin-bottom: 24px;
+}
+
+.main-title {
+    font-size: 2.2rem; font-weight: 800; line-height: 1.3;
+    margin-bottom: 15px; color: var(--text-dark);
+}
+.main-title span { color: var(--ku-crimson); }
+.sub-desc {
+    color: #888; font-size: 1rem; line-height: 1.6; margin-bottom: 30px;
+}
+
+/* 지수 비주얼 영역 */
+.index-visual {
+    width: 100%; background: #F7F8FA; border-radius: 30px;
+    padding: 30px; display: flex; align-items: center; gap: 30px;
+    margin-bottom: 40px;
+}
+.emoji-box {
+    font-size: 4rem; background: white; width: 100px; height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.score-info { flex: 1; }
+.score-info h4 { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; }
+.score-num { font-size: 2.5rem; font-weight: 900; }
+.score-num span { font-size: 1rem; color: #aaa; margin-left: 5px; }
+
+/* [게이지 바 - 네가 원한 오->왼 로직] */
+.gauge-bar-bg { width: 100%; height: 12px; background: #EAECEF; border-radius: 10px; margin-top: 15px; overflow: hidden; display: flex; }
+.gauge-bar-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
+.fill-positive { background: var(--ku-crimson); margin-right: auto; }
+.fill-negative { background: var(--ku-blue); margin-left: auto; }
+.next-msg { font-size: 0.85rem; color: #666; margin-top: 10px; font-weight: 600; }
+
+/* 7단계 등급 진화표 */
+.grade-list { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; margin-bottom: 40px; }
+.grade-item { background: #F8F9FB; padding: 15px 2px; border-radius: 20px; text-align: center; opacity: 0.3; transition: 0.3s; border: 1.5px solid transparent; }
+.grade-item.active.pos { opacity: 1; background: #FFF0F3; border-color: var(--ku-crimson); transform: scale(1.05); }
+.grade-item.active.neg { opacity: 1; background: #EBF5FF; border-color: var(--ku-blue); transform: scale(1.05); }
+.grade-item .emoji { font-size: 1.6rem; display: block; margin-bottom: 5px; }
+.grade-item .name { font-size: 0.65rem; font-weight: 800; display: block; line-height: 1.2; height: 32px; display: flex; align-items: center; justify-content: center; }
+
+/* 기준 안내 그리드 */
+.criteria-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%; }
+.criteria-item { background: #ffffff; border: 1px solid var(--border-light); padding: 20px; border-radius: 24px; display: flex; flex-direction: column; gap: 8px; }
+.criteria-item .label { font-size: 0.85rem; color: #888; font-weight: 600; }
+.criteria-item .point { font-size: 1.1rem; font-weight: 800; }
+.plus { color: #2D6A4F; }
+
+@media (max-width: 900px) {
+    .grade-list { grid-template-columns: repeat(4, 1fr); }
+    .index-visual { flex-direction: column; text-align: center; }
+}

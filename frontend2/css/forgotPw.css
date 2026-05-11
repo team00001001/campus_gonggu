@@ -1,0 +1,102 @@
+@import url('https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css');
+
+:root {
+    --ku-crimson: #8A1538;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Pretendard', 'D2Coding', 'Malgun Gothic', sans-serif;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+    color: #333333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(138, 21, 56, 0.08);
+    width: 90%;
+    max-width: 400px;
+    border-top: 4px solid var(--ku-crimson);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--ku-crimson);
+    letter-spacing: 1px;
+}
+
+.description {
+    text-align: center;
+    font-size: 13px;
+    color: #666666;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555555;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #fafafa;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'D2Coding', 'Malgun Gothic', sans-serif;
+    transition: all 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--ku-crimson);
+    box-shadow: 0 0 5px rgba(138, 21, 56, 0.2);
+    background-color: #ffffff;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--ku-crimson);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn:hover { background-color: #6b0f2a; }
+
+.btn-back {
+    background-color: #ffffff;
+    border: 1px solid var(--ku-crimson);
+    color: var(--ku-crimson);
+    margin-top: 15px;
+}
+
+.btn-back:hover { background-color: #fdf0f3; }
