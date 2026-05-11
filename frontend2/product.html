@@ -308,19 +308,25 @@
             const isFull = parseInt(product.currentCount) >= parseInt(product.targetCount);
             const isExpired = Number(product.duration) <= now;
 
-            if (!(isFull || isExpired)) return;
+            //if (!(isFull || isExpired)) return;
             if (!isHost && !myParticipantInfo) return;
-
+            //참여자들이 직접 '수령 완료' 버튼을 누른 횟수(방장)
+            const guestReceivedCount = product.members.filter(m => m.is_received == 1 && String(m.user_id) !== String(product.user_id)).length;
             const confirmedCount = product.members.filter(m => m.is_received == 1 || m.status === 'confirmed').length;
+            //방장이 아직 확인 노쇼 버튼 체크했는지
             const hasUncheckedMembers = product.members.some(m => m.status === 'joined');
 
             let btnHtml = '';
             if (isHost) {
-                if (hasUncheckedMembers) {
-                    btnHtml = `<button class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>⚠️ 참여자 관리 리스트에서 모두 '확인'을 눌러주세요</button>`;
-                } else {
-                    btnHtml = `<button class="join-btn" onclick="hostCloseProduct('${product.id}')">공구 최종 완료 및 방 닫기 (방장)</button>`;
-                }
+        if (hasUncheckedMembers) {
+            btnHtml = `<button class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>⚠️ 참여자 관리 리스트 처리를 완료해주세요</button>`;
+        } else if (guestReceivedCount < 1) {
+            btnHtml = `<button class="join-btn" style="background-color: #ccc; cursor: not-allowed;" disabled>⚠️ 수령 확인을 한 참여자가 최소 1명 필요합니다</button>`;
+        } else {
+            // 모든 조건이 만족될 때만 버튼 활성화 (신고 건수는 백엔드에서 최종 체크)
+            // 모든 조건(명단 처리 완료 + 참여자 수령 1명 이상) 만족 시 버튼 활성화
+            btnHtml = `<button class="join-btn" onclick="hostCloseProduct('${product.id}')">공구 최종 완료 및 방 닫기</button>`;
+        }
             } else if (myParticipantInfo) {
                 if (myParticipantInfo.status === 'noshow') {
                     btnHtml = `<button class="join-btn" style="background-color: #ccc;" disabled>방장에 의해 노쇼 처리되었습니다</button>`;
@@ -332,16 +338,16 @@
             }
 
             sectionArea.innerHTML = `
-                <div class="completion-card" style="margin-top:20px; border: 2px solid #ce152d; padding:20px; border-radius:10px; background-color: #fff;">
-                    <h4 style="color:#ce152d; margin-top:0;">✅ 수령 및 거래 완료 인증</h4>
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">모집이 종료되어 거래 인증 단계가 시작되었습니다.</p>
-                    <div style="margin: 10px 0; font-weight: bold; font-size: 1.1rem;">
-                        현재 수령 확인 인원: <span style="color:#ce152d;">${confirmedCount}</span> / ${product.currentCount}명
-                    </div>
-                    ${btnHtml}
-                </div>
-            `;
-        }
+        <div class="completion-card" style="margin-top:20px; border: 2px solid #ce152d; padding:20px; border-radius:10px; background-color: #fff;">
+            <h4 style="color:#ce152d; margin-top:0;">✅ 거래 최종 완료 단계</h4>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">방장의 명단 처리와 참여자의 수령 확인이 모두 필요합니다.</p>
+            <div style="margin: 10px 0; font-weight: bold; font-size: 1.1rem;">
+                참여자 수령 확인 현황: <span style="color:#ce152d;">${guestReceivedCount}</span> 명
+            </div>
+            ${btnHtml}
+        </div>
+    `;
+}
 
         // --- 액션 함수들 ---
         async function markStatus(pId, uId, status) {
