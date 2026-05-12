@@ -78,8 +78,8 @@
             try {
                 // 2. 백엔드에서 데이터 불러오기 (참여 내역 + 전체 공구)
                 const [chatsRes, productsRes] = await Promise.all([
-                    fetch(`http://localhost:3000/chats/my/${myId}`),
-                    fetch('http://localhost:3000/products')
+                    fetch(`https://campusgonggu-production.up.railway.app/chats/my/${myId}`),
+                    fetch('https://campusgonggu-production.up.railway.app/products')
                 ]);
 
                 const chats = await chatsRes.json();

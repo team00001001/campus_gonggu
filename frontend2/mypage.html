@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./css/mypage.css">
 
     <link rel="stylesheet"
-          href="../css_mobile/mypage_mobile.css"
+          href="css_mobile/mypage_mobile.css"
           media="(max-width: 768px)">
 </head>
 <body>
@@ -173,7 +173,7 @@
 
     try {
         // 1. 주소 확인: 포트번호(3000)와 경로(/participants)가 정확해야 합니다.
-        const res = await fetch(`http://localhost:3000/participants/trust-score/${userId}`);
+        const res = await fetch(`https://campusgonggu-production.up.railway.app/participants/trust-score/${userId}`);
         
         if (res.ok) {
             const data = await res.json();
@@ -196,7 +196,7 @@
 fetchUserTrustScore();
 
     // 올린 공고 수 카운트
-    fetch('http://localhost:3000/products')
+    fetch('https://campusgonggu-production.up.railway.app/products')
         .then(res => res.json())
         .then(allProducts => {
             const myProducts = allProducts.filter(p => p.user_id == userId);
@@ -206,8 +206,8 @@ fetchUserTrustScore();
 
     // 참여 중 건수 카운트
     Promise.all([
-        fetch(`http://localhost:3000/chats/my/${userId}`).then(res => res.json()),
-        fetch('http://localhost:3000/products').then(res => res.json())
+        fetch(`https://campusgonggu-production.up.railway.app/chats/my/${userId}`).then(res => res.json()),
+        fetch('https://campusgonggu-production.up.railway.app/products').then(res => res.json())
     ]).then(([chats, allProducts]) => {
         const myCreatedProducts = allProducts.filter(p => String(p.user_id) === String(userId));
         const joinedProductIds = chats.map(c => String(c.product_id));
@@ -224,7 +224,7 @@ fetchUserTrustScore();
     }).catch(err => console.error('참여 공구 개수 로드 실패:', err));
 
     // 성공 공구 수 카운트
-    fetch('http://localhost:3000/products')
+    fetch('https://campusgonggu-production.up.railway.app/products')
         .then(res => res.json())
         .then(products => {
             const successProducts = products.filter(
@@ -241,8 +241,8 @@ fetchUserTrustScore();
 
         try {
             const [chatsRes, productsRes] = await Promise.all([
-                fetch(`http://localhost:3000/chats/my/${userId}`),
-                fetch('http://localhost:3000/products')
+                fetch(`https://campusgonggu-production.up.railway.app/chats/my/${userId}`),
+                fetch('https://campusgonggu-production.up.railway.app/products')
             ]);
 
             let joinedProducts = await chatsRes.json();

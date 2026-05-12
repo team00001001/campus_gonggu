@@ -6,7 +6,7 @@
     <title>참여 중인 공고 | KU GONGGU</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/joined_products.css">
-<link rel="stylesheet" href="../css_mobile/joined_products_mobile.css" media="(max-width: 768px)">
+<link rel="stylesheet" href="css_mobile/joined_products_mobile.css" media="(max-width: 768px)">
 </head>
 <body>
 
@@ -63,11 +63,11 @@
 
             try {
                 // 1. 내가 '참여한' 공고 리스트 가져오기
-                const response = await fetch(`http://localhost:3000/chats/my/${userId}`);
+                const response = await fetch(`https://campusgonggu-production.up.railway.app/chats/my/${userId}`);
                 let joinedProducts = await response.json();
 
                 // 2. 전체 상품 가져와서 내가 '직접 올린' 공고 필터링하기
-                const productResponse = await fetch('http://localhost:3000/products');
+                const productResponse = await fetch('https://campusgonggu-production.up.railway.app/products');
                 const allProducts = await productResponse.json();
                 const myCreatedProducts = allProducts.filter(p => String(p.user_id) === String(userId));
 
@@ -178,7 +178,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:3000/participants/cancel', {
+                const response = await fetch('https://campusgonggu-production.up.railway.app/participants/cancel', {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'

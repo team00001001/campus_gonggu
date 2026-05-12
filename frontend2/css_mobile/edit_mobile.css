@@ -1,0 +1,49 @@
+/* =========================
+   글 수정 모바일
+========================= */
+@media screen and (max-width: 768px) {
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  header {
+    padding: 1rem;
+  }
+
+  main {
+    padding: 1.5rem 1rem;
+  }
+
+  .write-form {
+    padding: 1.5rem 1rem;
+    border-radius: 20px;
+    gap: 1.5rem;
+  }
+
+  /* 짧은 입력칸(모집 인원, 가격)도 모바일에서 100% */
+  .short-input input {
+    width: 100%;
+  }
+
+  /* 모집 기간 row: 모바일에서 60% 제한 제거 */
+  .input-group > div {
+    width: 100% !important;
+  }
+
+  /* select 드롭다운 padding-right 확보 (화살표 아이콘 겹침 방지) */
+  .input-group select {
+    padding-right: 2.5rem;
+  }
+
+  .submit-btn {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+}

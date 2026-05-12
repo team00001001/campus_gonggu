@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/products';
+const API_URL = 'https://campusgonggu-production.up.railway.app/products';
 const roomGrid = document.getElementById('roomGrid');
 const loadMoreArea = document.getElementById('loadMoreArea');
 const loadMoreBtn = document.getElementById('loadMoreBtn');

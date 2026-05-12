@@ -1,0 +1,106 @@
+/* =========================
+   프로필 수정 모바일
+========================= */
+@media screen and (max-width: 768px) {
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    padding-top: 76px;
+  }
+
+  /* 헤더 */
+  header {
+    height: 56px !important;
+  }
+
+  .nav-inner {
+    padding: 0 10px !important;
+  }
+
+  .logo {
+    font-size: 15px !important;
+    white-space: nowrap !important;
+  }
+
+  nav {
+    gap: 8px !important;
+  }
+
+  nav a.menu-link,
+  nav button,
+  .logout-btn {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  /* 컨테이너 */
+  .container {
+    padding: 0 14px 40px;
+    margin-bottom: 0;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+
+  /* 카드 */
+  .card {
+    padding: 20px 16px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+
+  /* 닉네임 입력 + 버튼 → 세로 스택 */
+  .input-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .input-row .btn {
+    width: 100%;
+  }
+
+  /* 입력칸 */
+  input[type="text"],
+  input[type="password"] {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  /* 버튼 */
+  .btn {
+    padding: 13px 16px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .helper-text {
+    font-size: 0.78rem;
+  }
+
+}

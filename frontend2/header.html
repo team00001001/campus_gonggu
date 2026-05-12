@@ -43,7 +43,7 @@ async function updateHeaderNotificationBadge() {
     try {
 
         const response = await fetch(
-            `http://localhost:3000/notifications/${userId}`
+            `https://campusgonggu-production.up.railway.app/notifications/${userId}`
         );
 
         const notifications = await response.json();
@@ -75,7 +75,7 @@ async function updateHeaderNotificationBadge() {
     if (!badge || !userId) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/notifications/${userId}`);
+        const res = await fetch(`https://campusgonggu-production.up.railway.app/notifications/${userId}`);
         const notifications = await res.json();
 
         const hasUnread = notifications.some(n => Number(n.is_read) === 0);
