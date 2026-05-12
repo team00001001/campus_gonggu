@@ -25,7 +25,7 @@ router.post('/send-auth-email', async (req, res) => {
         const authCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         await axios.post('https://api.brevo.com/v3/smtp/email', {
-            sender: { name: 'Campus Gonggu', email: 'ouroborosuichan@gmail.com' },
+            sender: { name: 'Campus Gonggu', email: 'gongguyong0@gmail.com' },
             to: [{ email }],
             subject: '[대학생 공동구매] 회원가입 인증번호입니다.',
             textContent: `안녕하세요! 회원가입 인증번호는 [${authCode}] 입니다. 3분 안에 입력해주세요!`
