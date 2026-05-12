@@ -25,7 +25,8 @@ router.post('/join', async (req, res) => {
         await conn.beginTransaction();
 
         const [products] = await conn.query(
-            'SELECT currentCount, targetCount FROM products WHERE id = ? FOR UPDATE',
+            // duration을 추가로 SELECT 합니다.
+            'SELECT currentCount, targetCount, duration FROM products WHERE id = ? FOR UPDATE',
             [productId]
         );
 
@@ -35,12 +36,14 @@ router.post('/join', async (req, res) => {
         }
 
         const product = products[0];
+        const now = Math.floor(Date.now() / 1000);
 
-        if (product.currentCount >= product.targetCount) {
+        // 기존 인원수 검증에 시간 만료 검증 로직을 추가합니다.
+        if (product.currentCount >= product.targetCount || Number(product.duration) <= now) {
             await conn.rollback();
             return res.status(400).json({ message: '이미 모집이 마감된 공구입니다.' });
         }
-
+        
         const [existing] = await conn.query(
             `
             SELECT status
