@@ -14,7 +14,6 @@
         <h2>학생 인증 및 회원가입</h2>
         <form id="signup-form">
             
-            <!-- 학교 이메일 인증 -->
             <div class="form-group">
                 <label>학교 이메일</label>
                 <div class="email-input-group">
@@ -27,12 +26,10 @@
                         <option value="direct">직접 입력</option>
                     </select>
                 </div>
-                <!-- 직접 입력 선택 시 나타나는 입력창 (기본 숨김) -->
                 <input type="text" id="custom-domain" class="hidden" placeholder="예: univ.ac.kr" style="margin-bottom: 10px;">
                 <button type="button" class="btn btn-secondary" id="btn-send-code">인증번호 전송</button>
             </div>
 
-            <!-- 인증번호 입력 (처음엔 숨김 처리) -->
             <div class="form-group hidden" id="verification-section">
                 <label>인증번호</label>
                 <div class="verification-group">
@@ -42,19 +39,16 @@
                 <span class="msg" id="verification-msg"></span>
             </div>
 
-            <!-- 닉네임 -->
             <div class="form-group">
                 <label for="nickname">닉네임</label>
                 <input type="text" id="nickname" placeholder="사용할 닉네임을 입력하세요" required>
             </div>
 
-            <!-- 비밀번호 -->
             <div class="form-group">
                 <label for="password">비밀번호</label>
                 <input type="password" id="password" placeholder="8자리 이상 영문, 숫자 조합" required>
             </div>
 
-            <!-- 비밀번호 확인 -->
             <div class="form-group">
                 <label for="password-confirm">비밀번호 확인</label>
                 <input type="password" id="password-confirm" placeholder="비밀번호를 다시 입력하세요" required>
@@ -77,8 +71,25 @@
         const passwordConfirmInput = document.getElementById('password-confirm');
         const pwMatchMsg = document.getElementById('pw-match-msg');
 
+        // ✅ 이메일 인증 완료 상태를 체크하는 변수 추가
+        let isEmailVerified = false;
+
+        // 이메일 입력값이 변경되면 인증 상태를 초기화하는 함수
+        function resetVerification() {
+            isEmailVerified = false;
+            verificationSection.classList.add('hidden');
+            document.getElementById('verification-code').value = '';
+            document.getElementById('verification-code').readOnly = false;
+            btnVerifyCode.disabled = false;
+            verificationMsg.textContent = '';
+        }
+
+        document.getElementById('email-id').addEventListener('input', resetVerification);
+        customDomainInput.addEventListener('input', resetVerification);
+
         // 1. 도메인 직접 입력 처리
         emailDomainSelect.addEventListener('change', (e) => {
+            resetVerification(); // 도메인 변경 시에도 인증 초기화
             if (e.target.value === 'direct') {
                 customDomainInput.classList.remove('hidden');
                 customDomainInput.focus();
@@ -89,92 +100,107 @@
 
         // 2. 인증번호 전송 버튼 클릭 로직
         btnSendCode.addEventListener('click', async () => {
-    const emailId = document.getElementById('email-id').value;
-    let domain = emailDomainSelect.value;
+            const emailId = document.getElementById('email-id').value;
+            let domain = emailDomainSelect.value;
 
-    if (domain === 'direct') {
-        domain = customDomainInput.value;
-    }
+            if (domain === 'direct') {
+                domain = customDomainInput.value;
+            }
 
-if (!emailId || !domain) {
-    alert('이메일을 정확히 입력해주세요.');
-    return;
-}
+            if (!emailId || !domain) {
+                alert('이메일을 정확히 입력해주세요.');
+                return;
+            }
 
+            const email = `${emailId}@${domain}`;
 
-    const email = `${emailId}@${domain}`;
+            try {
+                const response = await fetch('http://localhost:3000/api/send-auth-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
 
-    try {
-        const response = await fetch('http://localhost:3000/api/send-auth-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email })
+                const result = await response.json();
+
+                if (!response.ok) {
+                    alert(result.message || '인증번호 전송 실패');
+                    return;
+                }
+
+                alert(result.message);
+
+                // 전송 성공 시 인증번호 입력창 표시 및 상태 초기화
+                isEmailVerified = false;
+                verificationSection.classList.remove('hidden');
+                document.getElementById('verification-code').value = '';
+                document.getElementById('verification-code').readOnly = false;
+                btnVerifyCode.disabled = false;
+                verificationMsg.textContent = '';
+
+            } catch (error) {
+                console.error(error);
+                alert('서버 연결 실패');
+            }
         });
 
-        const result = await response.json();
+        // 3. 실제 백엔드 연동 인증번호 확인 로직
+        btnVerifyCode.addEventListener('click', async () => {
+            const code = document.getElementById('verification-code').value;
+            const emailId = document.getElementById('email-id').value;
+            let domain = emailDomainSelect.value;
 
-        if (!response.ok) {
-            alert(result.message || '인증번호 전송 실패');
-            return;
-        }
+            if (domain === 'direct') {
+                domain = customDomainInput.value;
+            }
 
-        alert(result.message);
+            const email = `${emailId}@${domain}`;
 
-        verificationSection.classList.remove('hidden');
+            if (!code) {
+                verificationMsg.textContent = '인증번호를 입력해주세요.';
+                verificationMsg.className = 'msg error';
+                return;
+            }
 
-    } catch (error) {
-        console.error(error);
-        alert('서버 연결 실패');
-    }
-});
-        // 3. 인증번호 확인 로직 (가상의 하드코딩된 로직)   
-       btnVerifyCode.addEventListener('click', async () => {
-    const code = document.getElementById('verification-code').value;
+            try {
+                const response = await fetch('http://localhost:3000/api/verify-auth-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        code
+                    })
+                });
 
-    const emailId = document.getElementById('email-id').value;
-    let domain = emailDomainSelect.value;
+                const result = await response.json();
 
-    if (domain === 'direct') {
-        domain = customDomainInput.value;
-    }
+                if (!response.ok) {
+                    verificationMsg.textContent = result.message;
+                    verificationMsg.className = 'msg error';
+                    isEmailVerified = false; // 인증 실패
+                    return;
+                }
 
-    const email = `${emailId}@${domain}`;
+                // ✅ 인증 성공 처리
+                verificationMsg.textContent = result.message;
+                verificationMsg.className = 'msg success';
+                isEmailVerified = true; 
 
-    try {
-        const response = await fetch('http://localhost:3000/api/verify-auth-code', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                code
-            })
+                // 입력창 및 버튼 비활성화
+                document.getElementById('verification-code').readOnly = true;
+                btnVerifyCode.disabled = true;
+
+            } catch (error) {
+                console.error(error);
+                verificationMsg.textContent = '서버 연결 실패';
+                verificationMsg.className = 'msg error';
+                isEmailVerified = false;
+            }
         });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            verificationMsg.textContent = result.message;
-            verificationMsg.className = 'msg error';
-            return;
-        }
-
-        verificationMsg.textContent = result.message;
-        verificationMsg.className = 'msg success';
-
-        document.getElementById('verification-code').readOnly = true;
-        btnVerifyCode.disabled = true;
-
-    } catch (error) {
-        console.error(error);
-
-        verificationMsg.textContent = '서버 연결 실패';
-        verificationMsg.className = 'msg error';
-    }
-});
 
         // 4. 비밀번호 일치 여부 실시간 확인 로직
         function checkPasswordMatch() {
@@ -200,40 +226,46 @@ if (!emailId || !domain) {
 
         // 5. 폼 제출 로직
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+            e.preventDefault();
 
-    if (passwordInput.value !== passwordConfirmInput.value) {
-        alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
-        return;
-    }
+            // ✅ 이메일 인증이 완료되었는지 먼저 확인
+            if (!isEmailVerified) {
+                alert('이메일 인증을 먼저 완료해주세요.');
+                return;
+            }
 
-    const emailId = document.getElementById('email-id').value;
-    let domain = emailDomainSelect.value;
+            if (passwordInput.value !== passwordConfirmInput.value) {
+                alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+                return;
+            }
 
-    if (domain === 'direct') {
-        domain = customDomainInput.value;
-    }
+            const emailId = document.getElementById('email-id').value;
+            let domain = emailDomainSelect.value;
 
-    const userData = {
-        emailId: emailId,
-        emailDomain: domain,
-        nickname: document.getElementById('nickname').value,
-        password: document.getElementById('password').value
-    };
+            if (domain === 'direct') {
+                domain = customDomainInput.value;
+            }
 
-    try {
-        const response = await fetch('http://localhost:3000/api/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        });
+            const userData = {
+                emailId: emailId,
+                emailDomain: domain,
+                nickname: document.getElementById('nickname').value,
+                password: passwordInput.value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
 
                 const result = await response.json();
 
                 if (!response.ok) {
-                    alert(result.error || '회원가입 실패');
+                    alert(result.message || result.error || '회원가입 실패');
                     return;
                 }
 
