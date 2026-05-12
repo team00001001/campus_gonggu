@@ -101,20 +101,25 @@
         const pValue = Number(document.getElementById('periodValue').value); // 입력한 숫자
         const pUnit = document.getElementById('periodUnit').value;           // 선택한 단위 (minute, hour, day, month)
 
-        // 1. 현재 시각 (초 단위)
-        const now = Math.floor(Date.now() / 1000); 
-        let secondsToAdd = 0;
+        // 1. 현재 시각을 기준으로 Date 객체 생성
+        const expireDate = new Date(); 
 
-        // 2. 단위에 따라 더할 초(sec) 계산
-        if (pUnit === 'minute') secondsToAdd = pValue * 60;
-        else if (pUnit === 'hour') secondsToAdd = pValue * 3600;
-        else if (pUnit === 'day') secondsToAdd = pValue * 86400;
-        else if (pUnit === 'month') secondsToAdd = pValue * 86400 * 30;
+        // 2. 단위에 따라 Date 객체의 시간 증가 
+        // (JS Date 객체가 윤년, 월별 일수 차이를 자동으로 계산해 줌)
+        if (pUnit === 'minute') {
+            expireDate.setMinutes(expireDate.getMinutes() + pValue);
+        } else if (pUnit === 'hour') {
+            expireDate.setHours(expireDate.getHours() + pValue);
+        } else if (pUnit === 'day') {
+            expireDate.setDate(expireDate.getDate() + pValue);
+        } else if (pUnit === 'month') {
+            expireDate.setMonth(expireDate.getMonth() + pValue);
+        }
 
-        // 3. 최종 마감 시각 (타임스탬프)
-        const expireAt = now + secondsToAdd;
+        // 3. 최종 마감 시각 (초 단위 타임스탬프)
+        const expireAt = Math.floor(expireDate.getTime() / 1000);
 
-            const productData = {
+        const productData = {
     title: document.getElementById('productName').value,
     category: categoryMap[document.getElementById('category').value],
     targetCount: Number(document.getElementById('people').value),
