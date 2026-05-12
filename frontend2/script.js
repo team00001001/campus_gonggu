@@ -87,8 +87,9 @@ const imageSrc = hasValidImage
 const cardHTML = `
     <div class="product-card" onclick="location.href='product.html?id=${product.id}'" 
     style="cursor:pointer; ${isClosed ? 'opacity: 0.8;' : ''}"> <div class="img-area">
-            <img src="${imageSrc}" class="product-thumbnail" 
-            style="${isClosed ? 'filter: grayscale(0.5);' : ''}"> <div class="no-image-overlay" style="display:${hasValidImage ? 'none' : 'flex'};">
+            <img src="${imageSrc}" class="product-thumbnail"
+            style="${isClosed ? 'filter: grayscale(0.5);' : ''}"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"> <div class="no-image-overlay" style="display:${hasValidImage ? 'none' : 'flex'};">
                 등록된 사진이 없습니다
             </div>
         </div>
