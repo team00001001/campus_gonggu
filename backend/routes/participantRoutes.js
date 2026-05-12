@@ -638,5 +638,24 @@ router.patch('/receive', async (req, res) => {
         conn.release();
     }
 });
+// 유저의 현재 크림슨 지수를 가져오는 API (신규 추가)
+router.get('/trust-score/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const [rows] = await pool.promise().query(
+            'SELECT trust_score FROM users WHERE id = ?',
+            [userId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+        }
+
+        res.json({ trust_score: rows[0].trust_score });
+    } catch (error) {
+        console.error("신뢰도 조회 에러:", error);
+        res.status(500).json({ message: '서버 에러' });
+    }
+});
 
 module.exports = router;
