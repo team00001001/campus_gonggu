@@ -1,0 +1,248 @@
+@media screen and (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: #f4f5f7;
+    font-family: 'Pretendard', sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  header {
+    height: 56px !important;
+  }
+
+  .nav-inner {
+    padding: 0 10px !important;
+  }
+
+  .logo {
+    font-size: 15px !important;
+    white-space: nowrap !important;
+  }
+
+  nav {
+    gap: 8px !important;
+  }
+
+  nav a.menu-link,
+  nav button,
+  .logout-btn {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 84px 16px 36px !important;
+    background: #f4f5f7 !important;
+  }
+
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .page-title {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+
+    margin: 0 !important;
+    color: #111 !important;
+
+    font-size: 25px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+  }
+
+  #count-badge {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 28px;
+    height: 28px;
+    padding: 0 9px;
+
+    border-radius: 999px;
+    background: #fff0f3;
+    color: #9b003f !important;
+
+    font-size: 15px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .product-card {
+    width: 100%;
+    padding: 16px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+
+    display: grid;
+    grid-template-columns: 82px 1fr 62px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .product-img {
+    width: 82px;
+    height: 82px;
+    border-radius: 18px;
+    object-fit: cover;
+    background: #f5edf7;
+  }
+
+  .product-info {
+    min-width: 0;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 7px;
+    padding: 5px 9px;
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .status-recruiting {
+    background: #fff0f3;
+    color: #9b003f;
+  }
+
+  .status-completed {
+    background: #eceff3;
+    color: #777;
+  }
+
+  .product-name {
+    margin-bottom: 8px;
+    color: #111;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.35;
+
+    word-break: keep-all;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    cursor: pointer;
+  }
+
+  .product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 9px;
+
+    color: #666;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .product-meta span {
+    white-space: nowrap;
+  }
+
+  .manage-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-manage {
+    width: 58px;
+    min-height: 38px;
+    border-radius: 12px;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    cursor: pointer;
+  }
+
+  .btn-chat {
+    background: #fff8eb;
+    color: #f59e0b;
+  }
+
+  .btn-cancel {
+    background: #fff5f5;
+    color: #e53e3e;
+  }
+
+  .manage-btns span {
+    display: block !important;
+    width: 58px;
+    padding: 8px 0 !important;
+
+    color: #888 !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+    word-break: keep-all;
+  }
+
+  .empty-state {
+    margin-top: 70px;
+    padding: 34px 20px;
+    border-radius: 24px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+  }
+
+  .empty-state p {
+    margin: 0 0 18px;
+    color: #777;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  .btn-go-main {
+    width: 100%;
+    height: 46px;
+    border-radius: 14px;
+    background: #9b003f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

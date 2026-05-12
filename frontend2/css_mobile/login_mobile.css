@@ -1,0 +1,62 @@
+/* =========================
+   로그인 모바일
+========================= */
+@media screen and (max-width: 768px) {
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* 화면 높이 고정 해제 → 내용이 길어져도 스크롤 가능 */
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 40px 16px;
+    align-items: flex-start;
+  }
+
+  .login-container {
+    padding: 28px 20px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 24px;
+  }
+
+  /* 이메일 입력 + 도메인 선택 → 세로 스택 */
+  .email-input-group {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .email-input-group input,
+  .email-input-group select {
+    width: 100% !important;
+    font-size: 0.95rem;
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    padding: 13px 12px;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 13px;
+    font-size: 0.95rem;
+  }
+
+  .options {
+    font-size: 0.75rem;
+  }
+
+}

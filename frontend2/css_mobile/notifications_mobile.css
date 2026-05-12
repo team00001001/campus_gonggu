@@ -1,0 +1,91 @@
+@media screen and (max-width: 768px) {
+  header {
+    height: 56px !important;
+  }
+
+  .nav-inner {
+    padding: 0 10px !important;
+  }
+
+  .logo {
+    font-size: 15px !important;
+    white-space: nowrap !important;
+  }
+
+  nav {
+    gap: 8px !important;
+  }
+
+  nav a.menu-link,
+  nav button,
+  .logout-btn {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+
+   .container {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+
+    margin: 0 !important;
+  }
+
+  .noti-item {
+    width: 100% !important;
+  }
+
+  .noti-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+
+    font-size: 1rem;
+  }
+
+  .noti-content {
+    min-width: 0;
+  }
+
+  /* 제목 + 날짜 세로 배치 */
+  .noti-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+
+    gap: 4px;
+
+    margin-bottom: 6px;
+  }
+
+  .noti-title {
+    font-size: 0.9rem !important;
+    line-height: 1.35 !important;
+    font-weight: 700;
+  }
+
+  .noti-time {
+    font-size: 0.68rem !important;
+    line-height: 1.25 !important;
+    color: #999;
+  }
+
+  .noti-desc {
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .btn-delete-noti {
+  position: absolute !important;
+
+  top: 0px !important;
+  right: 0px !important;
+
+  font-size: 0.68rem !important;
+}
+}

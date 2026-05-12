@@ -1,0 +1,171 @@
+@media screen and (max-width: 768px) {
+  html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    min-width: 0 !important;
+  }
+
+  @media screen and (max-width: 768px) {
+  header {
+    height: 56px !important;
+  }
+
+  .nav-inner {
+    padding: 0 10px !important;
+  }
+
+  .logo {
+    font-size: 15px !important;
+    white-space: nowrap !important;
+  }
+
+  nav {
+    gap: 8px !important;
+  }
+
+  nav a.menu-link,
+  nav button,
+  .logout-btn {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+}
+  /* 전체 여백 */
+  main,
+  .container {
+    width: 100% !important;
+    padding: 14px !important;
+  }
+.hero-section {
+  width: 100% !important;
+  max-width: 100% !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+
+  padding: 22px 20px !important;
+  gap: 14px !important;
+
+  border-radius: 24px !important;
+  overflow: visible !important;
+}
+
+.hero-left {
+  width: 100% !important;
+}
+
+.hero-right {
+  width: 100% !important;
+  height: 120px !important;
+  min-height: 120px !important;
+
+  display: block !important;
+  border-radius: 20px !important;
+}
+
+.hero-section h1 {
+  font-size: 32px !important;
+  line-height: 1.18 !important;
+  letter-spacing: -1px !important;
+  margin: 14px 0 !important;
+
+  word-break: keep-all !important;
+  white-space: normal !important;
+}
+
+.hero-section p {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.hero-section .welcome-box,
+.hero-section button {
+  width: 100% !important;
+  height: 52px !important;
+  font-size: 14px !important;
+}
+
+  .cat-grid {
+    display: grid !important;
+
+    grid-template-columns: repeat(2, 1fr) !important;
+
+    gap: 14px !important;
+
+    width: 100% !important;
+  }
+
+  .cat-card {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    height: 140px !important;
+
+    padding: 16px 8px !important;
+
+    border-radius: 18px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-align: center !important;
+  }
+
+  .cat-icon {
+    font-size: 40px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .cat-title {
+    font-size: 15px !important;
+    line-height: 1.4 !important;
+
+    word-break: keep-all !important;
+  }
+
+}
+  /* 최근 공구방 */
+  .product-list,
+  .products,
+  .room-list,
+  .gonggu-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  .product-card,
+  .room-card,
+  .gonggu-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 22px !important;
+    border-radius: 18px !important;
+  }
+
+  /* 글쓰기 버튼 */
+  .write-btn,
+  .floating-btn,
+  .write-button {
+    width: 56px !important;
+    height: 56px !important;
+    right: 18px !important;
+    bottom: 18px !important;
+    z-index: 1000 !important;
+  }
+  

@@ -24,7 +24,11 @@ const io = new Server(server, {
 });
 const notificationRoutes = require('./routes/notificationRoutes');
 
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 app.use('/notifications', notificationRoutes);

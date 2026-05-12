@@ -1,0 +1,75 @@
+/* =========================
+   회원가입 모바일
+========================= */
+@media screen and (max-width: 768px) {
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 40px 16px;
+    align-items: flex-start;
+  }
+
+  .signup-container {
+    padding: 28px 20px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  h2 {
+    font-size: 1.15rem;
+    margin-bottom: 24px;
+  }
+
+  /* 이메일 아이디 + 도메인 선택 → 세로 스택 */
+  .email-input-group {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .email-input-group input,
+  .email-input-group select {
+    width: 100%;
+    flex: none;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  select {
+    padding: 13px 12px;
+    font-size: 0.95rem;
+  }
+
+  /* 인증번호 입력 + 확인 버튼 */
+  .verification-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .verification-group input,
+  .verification-group button {
+    flex: none;
+    width: 100%;
+  }
+
+  .btn {
+    padding: 13px;
+    font-size: 0.95rem;
+  }
+
+  .msg {
+    font-size: 0.8rem;
+  }
+
+}
