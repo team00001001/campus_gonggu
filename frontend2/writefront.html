@@ -8,6 +8,15 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquareRound@1.0/nanumsquareround.css">
     <link rel="stylesheet" href="css/writefront.css">
     <link rel="stylesheet" href="css_mobile/writefront_mobile.css" media="(max-width: 768px)">
+    <style>
+        /* 안내 문구를 위한 간단한 스타일 추가 */
+        .info-text {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: normal;
+            margin-left: 8px;
+        }
+    </style>
 </head>
 <body>
 
@@ -67,15 +76,14 @@
             </div>
 
             <div class="input-group">
-                <label for="productUrl" class="required">상품 URL</label>
-                <input type="url" id="productUrl" placeholder="예) https://..." required>
+                <label for="productUrl">상품 URL <span class="info-text">(온라인 구매 상품인 경우 작성)</span></label>
+                <input type="url" id="productUrl" placeholder="예) https://...">
             </div>
 
             <div class="input-group">
                 <label for="imageUrl">상품 이미지 URL (선택)</label>
                 <input type="url" id="imageUrl" placeholder="예) https://...">
             </div>
-
 
             <div class="input-group">
                 <label for="description" class="required">상세 설명</label>
@@ -85,7 +93,6 @@
             <button type="submit" class="submit-btn">공동구매 등록하기</button>
         </form>
     </main>
-
 
     <script>
         document.querySelector('.write-form').addEventListener('submit', async (e) => {
@@ -98,14 +105,11 @@
                 etc: '기타 물품'
             };
 
-            const pValue = Number(document.getElementById('periodValue').value); // 입력한 숫자
-            const pUnit = document.getElementById('periodUnit').value;           // 선택한 단위 (minute, hour, day, month)
+            const pValue = Number(document.getElementById('periodValue').value);
+            const pUnit = document.getElementById('periodUnit').value;
 
-            // 1. 현재 시각을 기준으로 Date 객체 생성
             const expireDate = new Date(); 
 
-            // 2. 단위에 따라 Date 객체의 시간 증가 
-            // (JS Date 객체가 윤년, 월별 일수 차이를 자동으로 계산해 줌)
             if (pUnit === 'minute') {
                 expireDate.setMinutes(expireDate.getMinutes() + pValue);
             } else if (pUnit === 'hour') {
@@ -116,7 +120,6 @@
                 expireDate.setMonth(expireDate.getMonth() + pValue);
             }
 
-            // 3. 최종 마감 시각 (초 단위 타임스탬프)
             const expireAt = Math.floor(expireDate.getTime() / 1000);
 
             const productData = {
@@ -126,7 +129,7 @@
                 price: Number(document.getElementById('price').value),
                 duration: expireAt, 
                 location: document.getElementById('location').value,
-                productUrl: document.getElementById('productUrl').value, // 추가된 부분: 백엔드로 보낼 상품 URL
+                productUrl: document.getElementById('productUrl').value || '', // 입력값이 없으면 빈 문자열 전송
                 imageUrl: document.getElementById('imageUrl').value,
                 description: document.getElementById('description').value,
                 user_id: localStorage.getItem('userId')
