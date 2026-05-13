@@ -184,14 +184,28 @@ main {
 }
 
 .hero-image-area {
-  flex: 1;
-  height: 300px;
-  border-radius: 20px;
-  background-image: none;
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  flex: 1.5;            /* 1.2에서 1.5로 키워 사진 영역을 더 넓게 확보 */
+  height: 450px;        /* 높이를 조금 더 높여 시원한 느낌 추가 */
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;    /* 일러스트가 영역 밖으로 살짝 나가도 잘리지 않게 함 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* 사진을 오른쪽 끝으로 붙여서 텍스트와 간격 확보 */
+}
+
+.hero-image-area img {
+  width: 120%;          /* 부모 영역보다 20% 더 크게 설정 (overflow: visible 덕분에 가능) */
+  height: auto;         /* 높이는 비율에 맞게 자동 조절 */
+  max-height: 500px;    /* 너무 커지지 않게 최대 높이만 제한 */
+  object-fit: contain;
+  transition: transform 0.3s ease; /* 마우스 올렸을 때 효과를 위한 준비 */
+}
+
+/* 추가 팁: 마우스를 올리면 사진이 살짝 커지게 하여 생동감 부여 */
+.hero-image-area img:hover {
+  transform: scale(1.05);
 }
 
 /* ==========================================
