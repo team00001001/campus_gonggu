@@ -62,29 +62,28 @@
             }
 
             try {
-                // 1. 내가 '참여한' 공고 리스트 가져오기
-                const response = await fetch(`https://campusgonggu-production.up.railway.app/chats/my/${userId}`);
-                let joinedProducts = await response.json();
-
-                // 2. 전체 상품 가져와서 내가 '직접 올린' 공고 필터링하기
+                // 1. 상세 정보(마감 시간 등)가 포함된 전체 상품 데이터를 먼저 가져옵니다.
                 const productResponse = await fetch('https://campusgonggu-production.up.railway.app/products');
                 const allProducts = await productResponse.json();
-                const myCreatedProducts = allProducts.filter(p => String(p.user_id) === String(userId));
 
-                // 3. 두 목록 병합 (중복 방지)
-                const joinedProductIds = joinedProducts.map(p => String(p.product_id));
-                myCreatedProducts.forEach(myProduct => {
-                    if (!joinedProductIds.includes(String(myProduct.id))) {
-                        joinedProducts.push({
-                            ...myProduct,
-                            product_id: myProduct.id // 아래 화면 그리기 로직에서 통일해서 쓰기 위함
-                        });
-                    }
-                });
+                // 2. 내가 참여 중인 채팅방 목록(ID)만 확인용으로 가져옵니다.
+                const chatResponse = await fetch(`https://campusgonggu-production.up.railway.app/chats/my/${userId}`);
+                const myChats = await chatResponse.json();
+                const joinedIds = myChats.map(chat => String(chat.product_id));
 
-                // 최신 글이 위로 오도록 정렬
+                // 3. 전체 상품 중 [내가 올린 글]이거나 [내가 참여한 글]만 필터링합니다.
+                // 모든 데이터가 상세 정보가 꽉 찬 allProducts에서 오기 때문에 마감 처리가 정확해집니다.
+                const joinedProducts = allProducts.filter(p => {
+                    const isMyPost = String(p.user_id) === String(userId);
+                    const amIParticipant = joinedIds.includes(String(p.id));
+                    return isMyPost || amIParticipant;
+                }).map(p => ({
+                    ...p,
+                    product_id: p.id // 기존 UI 로직 변수명(product_id)에 맞춰줌
+                }));
+
+                // 최신순 정렬 및 개수 배지 업데이트
                 joinedProducts.sort((a, b) => b.product_id - a.product_id);
-
                 countBadge.innerText = joinedProducts.length;
 
                 if (joinedProducts.length === 0) {
@@ -92,26 +91,23 @@
                     return;
                 }
 
-                // 💡 기본 이미지 매핑 정보 (product.html과 동일)
+                // 카테고리별 기본 이미지 정보 (기존과 동일)
                 const categoryMap = {
                     '식재료 / 배달': { emoji: '🍊', className: 'tag-food', defaultImg: 'images/default-food.png' },
                     '자취 / 생필품': { emoji: '🧴', className: 'tag-living', defaultImg: 'images/default-living.png' },
                     '전공 / 문구': { emoji: '📚', className: 'tag-study', defaultImg: 'images/default-study.png' },
                     '기타 물품': { emoji: '📦', className: 'tag-etc', defaultImg: 'images/default-etc.png' }
                 };
-                const defaultEtcImg = 'images/default-etc.png'; // 대체용 기타 이미지
+                const defaultEtcImg = 'images/default-etc.png';
 
                 // 4. 화면에 리스트 그리기
                 joinedProducts.forEach(product => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     
-                    // 현재 시간 구하기 (초 단위)
                     const now = Math.floor(Date.now() / 1000);
 
-                    // 1. 목표 인원 달성
-                    // 2. 백엔드에서 넘겨준 isClosed 값이 true일 때
-                    // 3. 또는 마감 시간(duration)이 현재 시간보다 과거일 때(조기마감 포함)
+                    // 이제 product.duration 정보가 확실히 들어있어서 마감 판단이 정확해집니다.
                     const isCompleted = (product.currentCount >= product.targetCount) || 
                                         product.isClosed || 
                                         (Number(product.duration) <= now);
@@ -119,13 +115,11 @@
                     const statusClass = isCompleted ? 'status-completed' : 'status-recruiting';
                     const statusText = isCompleted ? '마감됨' : '모집중';
 
-                    // 💡 방장(내가 올린 글)일 경우 '참여 취소' 버튼 대신 안내 텍스트 표시
                     const isHost = String(product.user_id) === String(userId);
                     const cancelBtnHtml = isHost 
                         ? `<span style="font-size: 0.8rem; color: #888; text-align: center; margin-top: 5px; padding: 10px 0;">내가 쓴 공고</span>` 
                         : `<button class="btn-manage btn-cancel" onclick="cancelJoin(${product.product_id})">참여 취소</button>`;
 
-                    // 💡 카테고리별 기본 이미지 및 방어 로직 적용
                     const catInfo = categoryMap[product.category] || { defaultImg: defaultEtcImg };
                     const displayImg = catInfo.defaultImg;
 
@@ -146,7 +140,6 @@
                     `;
                     listContainer.appendChild(card);
                 });
-
             } catch (error) {
                 console.error('데이터 로드 실패:', error);
                 listContainer.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">목록을 불러오는 중 오류가 발생했습니다.</p>';
