@@ -58,7 +58,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     const productId = req.params.id;
     const sql = `
-        SELECT products.*, users.nickname AS writer
+        SELECT products.*, users.nickname AS writer, users.trust_score AS writer_trust_score
         FROM products
         LEFT JOIN users ON products.user_id = users.id
         WHERE products.id = ?

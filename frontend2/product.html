@@ -75,7 +75,7 @@
                         <span class="host-dept" id="host-dept">작성자</span>
                     </div>
                     <div class="host-trust-bar">
-                        <span class="trust-icon">✓</span> 고대생 인증 완료 · 크림슨 지수 30
+                        <span class="trust-icon">✓</span> 고대생 인증 완료 · 크림슨 지수 <span id="host-trust-score">-</span>
                     </div>
                 </div>
             </div>
@@ -165,6 +165,7 @@
         function renderProductBasicInfo(product) {
             document.getElementById('product-title').innerText = product.title;
             document.getElementById('host-name').innerText = product.writer || '익명 학우';
+            document.getElementById('host-trust-score').innerText = product.writer_trust_score ?? '-';
 
             // 카테고리 배지 업데이트
             const categoryMap = {
