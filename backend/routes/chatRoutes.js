@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 const createNotification = require('../utils/createNotification');
+
+// 1. 내 채팅방 목록 조회 (수정됨)
 router.get('/my/:userId', async (req, res) => {
     const { userId } = req.params;
 
@@ -9,19 +11,20 @@ router.get('/my/:userId', async (req, res) => {
         const [rows] = await pool.promise().query(
             `
             SELECT
-    p.id AS product_id,
-    p.title,
-    p.category,
-    p.location,
-    p.price,
-    p.imageUrl,
-    p.currentCount,
-    p.targetCount,
-    pp.created_at AS joined_at
+                p.id AS product_id,
+                p.title,
+                p.category,
+                p.location,
+                p.price,
+                p.imageUrl,
+                p.currentCount,
+                p.targetCount,
+                pp.created_at AS joined_at
             FROM product_participants pp
             JOIN products p ON pp.product_id = p.id
             WHERE pp.user_id = ?
-              AND pp.status = 'joined'
+            -- 노쇼, 취소된 사람만 빼고 모두 채팅방 보이게 수정!
+            AND pp.status IN ('joined', 'confirmed', 'completed')
             ORDER BY pp.created_at DESC
             `,
             [userId]
@@ -33,7 +36,8 @@ router.get('/my/:userId', async (req, res) => {
         res.status(500).json({ message: '내 채팅방 목록 조회 실패' });
     }
 });
-// 특정 공구방 채팅 불러오기
+
+// 2. 특정 공구방 채팅 불러오기
 router.get('/:productId', async (req, res) => {
     const { productId } = req.params;
 
@@ -62,7 +66,7 @@ router.get('/:productId', async (req, res) => {
     }
 });
 
-// 메시지 보내기
+// 3. 메시지 보내기 및 알림 처리 (수정됨)
 router.post('/', async (req, res) => {
     const { productId, userId, message } = req.body;
 
@@ -71,42 +75,41 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const [result] = await pool.promise().query(
+        await pool.promise().query(
             `
-    INSERT INTO chat_messages (product_id, user_id, message)
-    VALUES (?, ?, ?)
-    `,
+            INSERT INTO chat_messages (product_id, user_id, message)
+            VALUES (?, ?, ?)
+            `,
             [productId, userId, message]
         );
-
-
 
         // 공구 제목 + 방장 조회
         const [[product]] = await pool.promise().query(
             `
-    SELECT title, user_id AS owner_id
-    FROM products
-    WHERE id = ?
-    `,
+            SELECT title, user_id AS owner_id
+            FROM products
+            WHERE id = ?
+            `,
             [productId]
         );
         const [[sender]] = await pool.promise().query(
             `
-    SELECT nickname
-    FROM users
-    WHERE id = ?
-    `,
+            SELECT nickname
+            FROM users
+            WHERE id = ?
+            `,
             [userId]
         );
-        // 참여자 조회
+        // 참여자 조회 (알림 받을 사람 목록 - 수정됨)
         const [participants] = await pool.promise().query(
             `
-    SELECT user_id
-    FROM product_participants
-    WHERE product_id = ?
-    AND status = 'joined'
-    AND user_id != ?
-    `,
+            SELECT user_id
+            FROM product_participants
+            WHERE product_id = ?
+            -- 확정되거나 완료된 사람에게도 채팅 알림이 가도록 수정!
+            AND status IN ('joined', 'confirmed', 'completed')
+            AND user_id != ?
+            `,
             [productId, userId]
         );
 
@@ -119,10 +122,7 @@ router.post('/', async (req, res) => {
         });
 
         // 방장 추가 (보낸 사람 제외)
-        if (
-            product &&
-            Number(product.owner_id) !== Number(userId)
-        ) {
+        if (product && Number(product.owner_id) !== Number(userId)) {
             receiverIds.add(Number(product.owner_id));
         }
 
@@ -142,6 +142,5 @@ router.post('/', async (req, res) => {
         res.status(500).json({ message: '메시지 전송 실패' });
     }
 });
-
 
 module.exports = router;
