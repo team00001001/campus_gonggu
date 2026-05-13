@@ -121,9 +121,13 @@
                 else if (noti.type === 'success') { iconClass = 'icon-success'; iconEmoji = '🎉'; }
                 else { iconClass = 'icon-notice'; iconEmoji = '📢'; }
 
+                const chatLink = (noti.type === 'chat' && noti.product_id)
+                    ? `direct_chattings.html?id=${noti.product_id}`
+                    : '#';
+
                 const notiHTML = `
-                    <div class="noti-item ${noti.is_read ? '' : 'unread'}"
-                        onclick="readAndGo(${noti.id}, '#')">
+                    <div class="noti-item ${noti.is_read ? '' : 'unread'}" ${chatLink !== '#' ? 'style="cursor:pointer;"' : ''}
+                        onclick="readAndGo(${noti.id}, '${chatLink}')">
 
                         <div class="noti-icon ${iconClass}">
                             ${iconEmoji}

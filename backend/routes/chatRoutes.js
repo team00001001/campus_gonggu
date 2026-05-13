@@ -131,7 +131,8 @@ router.post('/', async (req, res) => {
                 receiverId,
                 '새 채팅 메시지',
                 `<b>${sender.nickname}</b>님이 "${product.title}" 채팅방에 메시지를 남겼습니다.`,
-                'chat'
+                'chat',
+                productId
             );
         });
 
