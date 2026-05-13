@@ -144,4 +144,49 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// 🚀 비밀번호 찾기 (임시 비밀번호 발급 및 메일 전송) API
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // 1. DB에 가입된 이메일인지 먼저 확인
+        const [rows] = await pool.promise().query(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: '가입되지 않은 이메일입니다.' });
+        }
+
+        // 2. 임시 비밀번호 생성 (8자리 영문+숫자 랜덤 문자열)
+        const tempPassword = Math.random().toString(36).slice(-8);
+
+        // 3. 임시 비밀번호 해싱 (암호화)
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+        // 4. DB에 사용자의 비밀번호를 임시 비밀번호로 업데이트
+        await pool.promise().query(
+            'UPDATE users SET password = ? WHERE email = ?',
+            [hashedPassword, email]
+        );
+
+        // 5. 회원가입 때 썼던 Brevo 메일 발송 로직 그대로 사용!
+        await axios.post('https://api.brevo.com/v3/smtp/email', {
+            sender: { name: 'Campus Gonggu', email: 'gongguyong0@gmail.com' },
+            to: [{ email }],
+            subject: '[대학생 공동구매] 임시 비밀번호가 발급되었습니다.',
+            textContent: `안녕하세요! 요청하신 임시 비밀번호는 [ ${tempPassword} ] 입니다. 로그인 후 마이페이지에서 반드시 비밀번호를 변경해주세요!`
+        }, {
+            headers: { 'api-key': process.env.BREVO_API_KEY }
+        });
+
+        res.status(200).json({ message: '임시 비밀번호가 메일로 발송되었습니다.' });
+
+    } catch (error) {
+        console.error('비밀번호 찾기 에러:', error);
+        res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
+});
+
 module.exports = router;

@@ -33,21 +33,31 @@ const router = express.Router();
 const db = require('../db');
 const createNotification = require('../utils/createNotification');
 
-// 1. 상품 목록 조회
+// productRoutes.js 의 상품 목록 조회 (GET /)
 router.get('/', (req, res) => {
-    const sql = `
+    const { search } = req.query; // 🔍 검색어 쿼리스트링 받기
+    
+    let sql = `
         SELECT products.*, users.nickname AS writer
         FROM products
         LEFT JOIN users ON products.user_id = users.id
-        ORDER BY products.id DESC
+        WHERE 1=1
     `;
-    db.query(sql, (err, results) => {
-        if (err) return res.status(500).json({ error: '상품 조회 실패' });
+    const params = [];
 
+    if (search) {
+        sql += ` AND products.title LIKE ?`; // 제목 검색 조건 추가
+        params.push(`%${search}%`);
+    }
+
+    sql += ` ORDER BY products.id DESC`;
+
+    db.query(sql, params, (err, results) => {
+        if (err) return res.status(500).json({ error: '상품 조회 실패' });
+        
         const now = getNow();
         const updatedResults = results.map(product => ({
             ...product,
-            // duration이 숫자형인지 확인하고 마감 여부 결정
             isClosed: now > Number(product.duration)
         }));
         res.json(updatedResults);
