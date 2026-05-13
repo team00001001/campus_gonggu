@@ -198,10 +198,10 @@ setInterval(async () => {
             }
 
             const msg = `공구 마감 후 거래 완료 확인이 필요합니다.`;
-            createNotification(product.user_id, '거래 완료 확인 필요', msg, 'notice');
+            createNotification(product.user_id, '거래 완료 확인 필요', msg, 'notice', product.id);
             for (const p of participants) {
                 if (String(p.user_id) !== String(product.user_id)) {
-                    createNotification(p.user_id, '거래 완료 확인 필요', msg, 'notice');
+                    createNotification(p.user_id, '거래 완료 확인 필요', msg, 'notice', product.id);
                 }
             }
 

@@ -121,9 +121,14 @@
                 else if (noti.type === 'success') { iconClass = 'icon-success'; iconEmoji = '🎉'; }
                 else { iconClass = 'icon-notice'; iconEmoji = '📢'; }
 
-                const chatLink = (noti.type === 'chat' && noti.product_id)
-                    ? `direct_chattings.html?id=${noti.product_id}`
-                    : '#';
+                let chatLink = '#';
+                if (noti.product_id) {
+                    if (noti.type === 'chat') {
+                        chatLink = `direct_chattings.html?id=${noti.product_id}`;
+                    } else {
+                        chatLink = `product.html?id=${noti.product_id}`;
+                    }
+                }
 
                 const notiHTML = `
                     <div class="noti-item ${noti.is_read ? '' : 'unread'}" ${chatLink !== '#' ? 'style="cursor:pointer;"' : ''}
