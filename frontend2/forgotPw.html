@@ -27,15 +27,51 @@
     </div>
 
     <script>
+        // 현재 배포된 백엔드 서버 주소 (로컬 테스트 시 http://localhost:3000 으로 변경)
+        const API_BASE_URL = 'https://campusgonggu-production.up.railway.app';
+
         async function requestPasswordReset() {
             const emailId = document.getElementById('reset-id').value;
+            
             if (!emailId) {
                 alert("이메일 아이디를 입력해주세요.");
                 return;
             }
+            
             const fullEmail = `${emailId}@korea.ac.kr`;
-            alert(`${fullEmail}로 임시 비밀번호가 발송되었습니다.`);
-            location.href = 'login.html'; 
+
+            try {
+                // 안내 문구를 띄워주기 위해 버튼을 '처리중' 상태로 만들기 (선택사항)
+                const btn = document.querySelector('.btn');
+                const originalText = btn.innerText;
+                btn.innerText = "발송 중...";
+                btn.disabled = true;
+
+                // 백엔드 API 호출
+                const response = await fetch(`${API_BASE_URL}/api/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: fullEmail })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`${fullEmail}로 임시 비밀번호가 발송되었습니다. 메일함을 확인해주세요!`);
+                    location.href = 'login.html'; 
+                } else {
+                    alert(result.message || "오류가 발생했습니다.");
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("에러 발생:", error);
+                alert("서버 연결에 실패했습니다. 서버 상태를 확인해주세요.");
+                
+                document.querySelector('.btn').innerText = "임시 비밀번호 발송";
+                document.querySelector('.btn').disabled = false;
+            }
         }
     </script>
 </body>
