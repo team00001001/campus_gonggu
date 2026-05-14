@@ -7,12 +7,15 @@
     <title>KU GONGGU - 마이페이지</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="./css/mypage.css">
+    <link rel="stylesheet" href="css_mobile/mypage_mobile.css" media="(max-width: 768px)">
 
-    <link rel="stylesheet"
-        href="css_mobile/mypage_mobile.css"
-        media="(max-width: 768px)">
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            alert('로그인이 필요한 서비스입니다.');
+            window.location.replace('login.html'); // 뒤로가기 방지하며 이동
+        }
+    </script>
 </head>
 <body>
 
@@ -125,17 +128,15 @@
         const userName = document.getElementById('user-name');
         const userHandle = document.getElementById('user-handle');
 
-        if (!nickname || !email) {
-            userName.textContent = '로그인이 필요합니다.';
-            userHandle.textContent = '@guest';
-            profileCircle.textContent = 'G';
-            return;
-        }
+        // (비로그인 차단 로직이 상단에 있으므로 여긴 도달하지 않겠지만 방어 코드 유지)
+        if (!nickname || !email) return;
 
         userName.textContent = nickname;
+        // 💡 이메일에서 @ 앞의 아이디 부분만 추출해서 보여줌
         const emailId = email.split('@')[0] || email;
         userHandle.textContent = '@' + emailId;
-        profileCircle.textContent = nickname[0] ? nickname[0].toUpperCase() : emailId[0].toUpperCase();
+        // 프사 이니셜은 닉네임 첫 글자로 고정
+        profileCircle.textContent = nickname[0] ? nickname[0].toUpperCase() : 'K';
     }
 
     // ==========================================
@@ -171,6 +172,7 @@
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userNickname');
             localStorage.removeItem('userEmail');
+            localStorage.removeItem('userId');
             alert('로그아웃 되었습니다.');
             location.href = 'main_login.html'; 
         }
@@ -180,35 +182,24 @@
     const userId = localStorage.getItem('userId');
 
     async function fetchUserTrustScore() {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-        console.error("로그인된 사용자 ID를 찾을 수 없습니다.");
-        return;
-    }
+        if (!userId) return;
 
-    try {
-        // 1. 주소 확인: 포트번호(3000)와 경로(/participants)가 정확해야 합니다.
-        const res = await fetch(`https://campusgonggu-production.up.railway.app/participants/trust-score/${userId}`);
-        
-        if (res.ok) {
-            const data = await res.json();
-            console.log("서버에서 받은 데이터:", data); // 데이터가 잘 오는지 콘솔로 확인
-
-            // 2. 서버 데이터(trust_score)를 UI 업데이트 함수에 전달
-            // 백엔드에서 res.json({ trust_score: ... })으로 보냈으므로 똑같이 써야 합니다.
-            updateCrimsonIndexUI(data.trust_score || 0);
-        } else {
-            console.warn("점수를 불러오지 못했습니다. 기본값을 표시합니다.");
+        try {
+            const res = await fetch(`https://campusgonggu-production.up.railway.app/participants/trust-score/${userId}`);
+            
+            if (res.ok) {
+                const data = await res.json();
+                updateCrimsonIndexUI(data.trust_score || 0);
+            } else {
+                updateCrimsonIndexUI(0);
+            }
+        } catch (e) {
+            console.error("네트워크 에러 발생:", e);
             updateCrimsonIndexUI(0);
         }
-    } catch (e) {
-        console.error("네트워크 에러 발생:", e);
-        updateCrimsonIndexUI(0);
     }
-}
 
-// 3. 페이지가 로드될 때 실행되도록 호출
-fetchUserTrustScore();
+    fetchUserTrustScore();
 
     // 올린 공고 수 카운트
     fetch('https://campusgonggu-production.up.railway.app/products')
@@ -243,12 +234,9 @@ fetchUserTrustScore();
         fetch(`https://campusgonggu-production.up.railway.app/chats/my/${userId}`).then(res => res.json()),
         fetch('https://campusgonggu-production.up.railway.app/products').then(res => res.json())
     ]).then(([chats, allProducts]) => {
-        // 1. 내가 참여한 공구 ID 목록
         const joinedIds = chats.map(c => String(c.product_id));
-        // 2. 내가 방장인 공구 ID 목록
         const myCreatedIds = allProducts.filter(p => String(p.user_id) === String(userId)).map(p => String(p.id));
 
-        // 3. 필터링: 내가 참여/방장이고, 백엔드에서 최종 'success' 처리된 공구만 카운트
         const successProducts = allProducts.filter(p => {
             const isMineOrJoined = joinedIds.includes(String(p.id)) || myCreatedIds.includes(String(p.id));
             const isSuccess = p.status === 'success'; 
@@ -296,7 +284,6 @@ fetchUserTrustScore();
                 const isClosed = (Number(product.duration) <= now) || (product.currentCount >= product.targetCount);
                 
                 const badgeClass = isClosed ? 'success' : 'recruiting';
-                // 참여 즉시 '배송 완료'가 되는 것은 어색하므로 '모집 마감'으로 통일하는 것을 권장합니다.
                 const badgeText = isClosed ? '모집 마감' : '모집중';
 
                 grid.insertAdjacentHTML('beforeend', `
@@ -340,10 +327,7 @@ fetchUserTrustScore();
             const res = await fetch('https://campusgonggu-production.up.railway.app/products');
             const allProducts = await res.json();
             
-            // 내가 올린 공고만 필터링 (user_id가 일치하는 것)
             const myProducts = allProducts.filter(p => String(p.user_id) === String(userId));
-
-            // 최신순 정렬
             myProducts.sort((a, b) => b.id - a.id);
 
             if (myProducts.length === 0) {
@@ -351,9 +335,7 @@ fetchUserTrustScore();
                 return;
             }
 
-            // 최근 올린 공고 최대 2개만 화면에 표시
             myProducts.slice(0, 2).forEach(product => {
-                // 마감 기한 또는 인원 달성 여부 확인
                 const now = Math.floor(Date.now() / 1000);
                 const isClosed = (Number(product.duration) <= now) || (product.currentCount >= product.targetCount);
                 

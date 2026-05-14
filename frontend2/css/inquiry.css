@@ -153,8 +153,7 @@ select.form-control {
 }
 
 .btn-submit:hover {
-    background-color: #72112e;
-    transform: translateY(-2px);
+    background-color: #6E102A;
 }
 
 /* ==========================================

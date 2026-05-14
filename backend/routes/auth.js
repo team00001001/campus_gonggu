@@ -52,7 +52,7 @@ router.post('/send-auth-email', async (req, res) => {
     } catch (error) {
         console.error('인증번호 처리 에러 전체:', error);
         console.error('에러 코드:', error.code);
-        console.error('에러 응답:', error.response);
+        console.error('에러 응답:', error.response ? error.response.data : '응답 없음');
 
         res.status(500).json({
             message: '메일 전송에 실패했습니다.',
@@ -163,6 +163,11 @@ router.post('/login', async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
+    // 💡 [추가된 방어 코드] 고려대학교 이메일이 아니면 차단!
+    if (!email.endsWith(ALLOWED_DOMAIN)) {
+        return res.status(403).json({ message: '고려대학교 이메일(@korea.ac.kr)만 비밀번호 찾기가 가능합니다.' });
+    }
+
     try {
         // 1. DB에 가입된 이메일인지 먼저 확인
         const [rows] = await pool.promise().query(
@@ -200,6 +205,7 @@ router.post('/forgot-password', async (req, res) => {
 
     } catch (error) {
         console.error('비밀번호 찾기 에러:', error);
+        console.error('상세 에러 내역:', error.response ? error.response.data : error.message);
         res.status(500).json({ message: '서버 오류가 발생했습니다.' });
     }
 });

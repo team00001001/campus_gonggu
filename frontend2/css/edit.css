@@ -142,10 +142,5 @@ main {
 }
 
 .submit-btn:hover {
-    background-color: #72112e;
-    transform: translateY(-2px);
-}
-
-.submit-btn:active {
-    transform: translateY(0);
+    background-color: #6E102A;
 }

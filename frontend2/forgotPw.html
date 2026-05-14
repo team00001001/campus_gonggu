@@ -17,10 +17,13 @@
         <form id="forgot-pw-form">
             <div class="form-group">
                 <label for="reset-id">학교 이메일</label>
-                <input type="text" id="reset-id" placeholder="이메일 입력 (@korea.ac.kr 제외)" required>
+                <div class="email-input-group" style="display: flex; align-items: center; gap: 8px;">
+                    <input type="text" id="reset-id" placeholder="이메일 아이디" required style="flex: 1;">
+                    <span style="font-weight: 600; color: #555;">@ korea.ac.kr</span>
+                </div>
             </div>
             
-            <button type="button" class="btn" onclick="requestPasswordReset()">임시 비밀번호 발송</button>
+            <button type="button" class="btn" style="margin-top: 15px;" onclick="requestPasswordReset()">임시 비밀번호 발송</button>
         </form>
 
         <button type="button" class="btn btn-back" onclick="location.href='login.html'">로그인으로 돌아가기</button>
@@ -31,7 +34,7 @@
         const API_BASE_URL = 'https://campusgonggu-production.up.railway.app';
 
         async function requestPasswordReset() {
-            const emailId = document.getElementById('reset-id').value;
+            const emailId = document.getElementById('reset-id').value.trim();
             
             if (!emailId) {
                 alert("이메일 아이디를 입력해주세요.");
@@ -41,7 +44,7 @@
             const fullEmail = `${emailId}@korea.ac.kr`;
 
             try {
-                // 안내 문구를 띄워주기 위해 버튼을 '처리중' 상태로 만들기 (선택사항)
+                // 안내 문구를 띄워주기 위해 버튼을 '처리중' 상태로 만들기
                 const btn = document.querySelector('.btn');
                 const originalText = btn.innerText;
                 btn.innerText = "발송 중...";

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KU GONGGU | 고대공구</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+
+/* ───────────────────────────────────────────
+   Design Tokens
+─────────────────────────────────────────── */
+:root {
+  --c:   #8C1536;
+  --cd:  #6E102A;
+  --ink: #0A0A0A;
+  --t2:  #374151;
+  --t3:  #6B7280;
+  --t4:  #9CA3AF;
+  --bg:  #F3F4F6;
+  --wh:  #FFFFFF;
+  --ln:  #E2E2E2;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Pretendard',-apple-system,sans-serif; background:var(--bg); color:var(--ink); }
+a    { text-decoration:none; color:inherit; }
+button { cursor:pointer; font-family:inherit; -webkit-appearance:none; }
+
+
+/* ───────────────────────────────────────────
+   HEADER
+─────────────────────────────────────────── */
+.header {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  height:60px; background:var(--ink);
+  display:flex; align-items:stretch;
+}
+.hd-logo {
+  display:flex; align-items:center; padding:0 28px;
+  color:#fff; font-size:1rem; font-weight:800; letter-spacing:0.05em;
+  border-right:1px solid rgba(255,255,255,0.07); flex-shrink:0;
+}
+.hd-logo span { color:var(--c); }
+.hd-nav { display:flex; align-items:stretch; }
+.hd-nav a {
+  display:flex; align-items:center; padding:0 20px;
+  color:rgba(255,255,255,0.36); font-size:0.82rem; font-weight:500;
+  border-right:1px solid rgba(255,255,255,0.06);
+  transition:color .14s, background .14s;
+}
+.hd-nav a:hover { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.04); }
+.hd-fill { flex:1; }
+.hd-actions { display:flex; align-items:stretch; }
+.hd-act {
+  display:flex; align-items:center; padding:0 20px;
+  background:none; color:rgba(255,255,255,0.36); border:none;
+  border-left:1px solid rgba(255,255,255,0.06);
+  font-size:0.82rem; font-weight:500;
+  transition:color .14s, background .14s;
+}
+.hd-act:hover { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.04); }
+.hd-act.signup {
+  background:var(--c); color:#fff; border-left:none;
+  padding:0 26px; font-weight:700; letter-spacing:0.05em;
+  transition:background .14s;
+}
+.hd-act.signup:hover { background:var(--cd); }
+
+
+/* ───────────────────────────────────────────
+   HERO
+─────────────────────────────────────────── */
+.hero {
+  margin-top:60px;
+  background-color:var(--wh);
+  background-image:
+    linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+  background-size:36px 36px;
+  border-top:3px solid var(--c);
+  border-bottom:1px solid var(--ln);
+  padding:96px 28px 104px;
+  text-align:center;
+}
+.hero-wrap { max-width:640px; margin:0 auto; }
+
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:14px;
+  font-size:0.63rem; font-weight:700; letter-spacing:0.17em; text-transform:uppercase;
+  color:var(--t4); margin-bottom:28px;
+}
+.hero-kicker::before,
+.hero-kicker::after { content:''; flex-shrink:0; width:28px; height:1px; background:var(--ln); }
+
+.hero-h1 {
+  font-size:clamp(3rem, 8vw, 5.6rem);
+  font-weight:800; color:var(--ink);
+  line-height:1.04; letter-spacing:-4px;
+  margin-bottom:18px; word-break:keep-all;
+}
+.hero-h1 em { font-style:normal; color:var(--c); }
+
+.hero-desc {
+  font-size:0.96rem; color:var(--t3); line-height:1.85; margin-bottom:48px;
+}
+
+.hero-form {
+  display:flex; align-items:stretch;
+  border:2px solid var(--ink); height:56px;
+  max-width:500px; margin:0 auto 24px;
+}
+.hero-ico {
+  display:flex; align-items:center; padding:0 16px; color:var(--t4); flex-shrink:0;
+}
+.hero-form input {
+  flex:1; border:none; outline:none; background:transparent;
+  font-size:0.93rem; font-family:inherit; color:var(--ink);
+}
+.hero-form input::placeholder { color:var(--t4); }
+.hero-form button {
+  padding:0 28px; flex-shrink:0;
+  background:var(--c); color:#fff; border:none;
+  font-size:0.85rem; font-weight:700; letter-spacing:0.06em;
+  transition:background .14s;
+}
+.hero-form button:hover { background:var(--cd); }
+
+.hero-tags { display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap; }
+.hero-tags-lbl {
+  font-size:0.64rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--t4); margin-right:4px;
+}
+.hero-tag {
+  background:none; border:1.5px solid var(--ln);
+  color:var(--t3); font-size:0.76rem; font-weight:600;
+  padding:5px 14px; letter-spacing:0.04em;
+  transition:border-color .14s, color .14s, background .14s;
+}
+.hero-tag:hover { border-color:var(--c); color:var(--c); background:rgba(140,21,54,0.04); }
+
+
+/* ───────────────────────────────────────────
+   STATS STRIP
+─────────────────────────────────────────── */
+.stats { background:var(--bg); border-bottom:1px solid var(--ln); }
+.stats-row { max-width:1100px; margin:0 auto; display:flex; }
+.stat-box {
+  flex:1; padding:22px 0; text-align:center;
+  border-right:1px solid var(--ln);
+}
+.stat-box:last-child { border-right:none; }
+.stat-val {
+  font-size:2rem; font-weight:800; color:var(--ink);
+  line-height:1; margin-bottom:4px; letter-spacing:-1.5px;
+}
+.stat-val sup { font-size:0.9rem; font-weight:700; color:var(--c); vertical-align:baseline; margin-left:1px; }
+.stat-key { font-size:0.71rem; font-weight:500; color:var(--t3); }
+
+
+/* ───────────────────────────────────────────
+   SECTIONS (공통)
+─────────────────────────────────────────── */
+.sec { padding:68px 28px; }
+.sec.cat  { background:var(--wh); border-bottom:1px solid var(--ln); }
+.sec.prod { background:var(--bg); border-bottom:1px solid var(--ln); }
+.sec.hiw  { background:var(--wh); }
+
+.sec-in { max-width:1100px; margin:0 auto; }
+
+.sec-hd {
+  display:flex; justify-content:space-between; align-items:flex-end;
+  padding-bottom:18px; border-bottom:1px solid var(--ln); margin-bottom:24px;
+}
+.sec-hd.mid { justify-content:center; text-align:center; margin-bottom:32px; }
+.sec-eye { font-size:0.62rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--c); margin-bottom:5px; }
+.sec-ttl { font-size:1.4rem; font-weight:800; letter-spacing:-0.4px; }
+.sec-link {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:0.76rem; font-weight:600; color:var(--t3);
+  border:1.5px solid var(--ln); padding:7px 18px;
+  letter-spacing:0.03em;
+  transition:border-color .14s, color .14s; flex-shrink:0;
+}
+.sec-link::after { content:'→'; font-size:0.85em; transition:transform .18s; }
+.sec-link:hover { border-color:var(--ink); color:var(--ink); }
+.sec-link:hover::after { transform:translateX(4px); }
+
+
+/* ───────────────────────────────────────────
+   CATEGORY GRID
+─────────────────────────────────────────── */
+.cat-grid { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--ln); }
+.cat-btn {
+  padding:28px 22px;
+  background:var(--wh); border:none; border-right:1px solid var(--ln);
+  display:flex; flex-direction:column; align-items:flex-start; gap:18px;
+  text-align:left; transition:background .15s;
+}
+.cat-btn:last-child { border-right:none; }
+.cat-btn:hover { background:#F9F9F9; }
+.cat-btn:hover .cat-label { color:var(--c); }
+.cat-btn:hover .cat-arrow { color:var(--c); transform:translateX(3px); }
+
+.cat-icon {
+  width:52px; height:52px; background:var(--bg); border:1px solid var(--ln);
+  display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+}
+.cat-row { display:flex; justify-content:space-between; align-items:center; width:100%; }
+.cat-label { font-size:0.9rem; font-weight:700; transition:color .15s; }
+.cat-arrow { color:var(--t4); font-size:0.85rem; transition:all .15s; }
+
+
+/* ───────────────────────────────────────────
+   PRODUCT CARDS
+─────────────────────────────────────────── */
+.prod-grid { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--ln); }
+.prod-card {
+  background:var(--wh); border-right:1px solid var(--ln);
+  padding:26px; cursor:pointer; transition:background .15s;
+}
+.prod-card:last-child { border-right:none; }
+.prod-card:hover { background:#F9F9F9; }
+
+.tag {
+  display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.04em;
+  padding:3px 8px; margin-bottom:13px;
+}
+.tag-f { background:#FEF3E2; color:#C2410C; }
+.tag-l { background:#EFF6FF; color:#1D4ED8; }
+.tag-s { background:#F0FDF4; color:#15803D; }
+.tag-e { background:#F5F3FF; color:#6D28D9; }
+
+.prod-title {
+  font-size:0.97rem; font-weight:700; color:var(--ink);
+  line-height:1.5; margin-bottom:22px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.prod-bar { height:2px; background:var(--bg); margin-bottom:14px; }
+.prod-fill { height:100%; background:var(--c); opacity:0.65; }
+.prod-foot { display:flex; justify-content:space-between; align-items:center; }
+.prod-cnt { font-size:0.79rem; font-weight:500; color:var(--t4); }
+.prod-cnt b { color:var(--c); font-weight:700; font-style:normal; }
+.prod-price { font-size:1.05rem; font-weight:800; letter-spacing:-0.5px; }
+.prod-unit { font-size:0.71rem; font-weight:500; color:var(--t3); margin-left:2px; }
+
+
+/* ───────────────────────────────────────────
+   HOW IT WORKS
+─────────────────────────────────────────── */
+.hiw-grid { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--ln); margin-bottom:28px; }
+.hiw-card {
+  background:var(--wh); border-right:1px solid var(--ln);
+  padding:36px 28px; transition:background .15s;
+}
+.hiw-card:last-child { border-right:none; }
+.hiw-card:hover { background:#F9F9F9; }
+.hiw-n { font-size:0.62rem; font-weight:800; letter-spacing:0.18em; color:var(--c); display:block; margin-bottom:20px; }
+.hiw-icon {
+  width:54px; height:54px; background:var(--bg); border:1px solid var(--ln);
+  display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:18px;
+}
+.hiw-title { font-size:0.9rem; font-weight:700; margin-bottom:8px; }
+.hiw-desc  { font-size:0.8rem; color:var(--t3); line-height:1.7; }
+
+.hiw-foot { text-align:center; }
+.hiw-btn {
+  background:none; border:1.5px solid var(--ln); color:var(--t3);
+  padding:11px 30px; font-size:0.83rem; font-weight:600; font-family:inherit;
+  letter-spacing:0.05em;
+  transition:border-color .14s, color .14s;
+}
+.hiw-btn:hover { border-color:var(--c); color:var(--c); }
+
+
+/* ───────────────────────────────────────────
+   CTA STRIP
+─────────────────────────────────────────── */
+.cta {
+  background:var(--ink); border-top:3px solid var(--c); padding:52px 28px;
+}
+.cta-in {
+  max-width:1100px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between; gap:32px;
+}
+.cta-hl  { font-size:1.4rem; font-weight:800; color:#fff; margin-bottom:6px; letter-spacing:-0.4px; }
+.cta-sub { font-size:0.86rem; color:rgba(255,255,255,0.34); }
+.cta-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--c); color:#fff; border:none;
+  padding:15px 38px; font-size:0.88rem; font-weight:700; font-family:inherit;
+  letter-spacing:0.06em;
+  transition:background .14s; flex-shrink:0; white-space:nowrap;
+}
+.cta-btn::after { content:'→'; font-size:1em; transition:transform .18s; }
+.cta-btn:hover { background:var(--cd); }
+.cta-btn:hover::after { transform:translateX(4px); }
+
+
+/* ───────────────────────────────────────────
+   FAB
+─────────────────────────────────────────── */
+.fab {
+  position:fixed; bottom:28px; right:28px;
+  width:48px; height:48px; background:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,0.28);
+  z-index:900; transition:background .15s;
+}
+.fab:hover { background:var(--c); }
+
+  </style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header class="header">
+  <a href="#" class="hd-logo">KU<span>&nbsp;GONGGU</span></a>
+  <nav class="hd-nav">
+    <a href="#">공구 목록</a>
+    <a href="#">내 공구</a>
+    <a href="#">채팅</a>
+    <a href="#">마이페이지</a>
+  </nav>
+  <div class="hd-fill"></div>
+  <div class="hd-actions">
+    <button class="hd-act">로그인</button>
+    <button class="hd-act signup">회원가입</button>
+  </div>
+</header>
+
+
+<!-- ════════ HERO ════════ -->
+<section class="hero">
+  <div class="hero-wrap">
+    <p class="hero-kicker">고려대학교 학생 전용 공구 플랫폼</p>
+    <h1 class="hero-h1">배달비를 나누고<br><em>할인은 함께.</em></h1>
+    <p class="hero-desc">
+      학우들과 공동구매로 더 저렴하게 —<br>
+      배달비 절약부터 대량구매 할인까지
+    </p>
+    <div class="hero-form">
+      <span class="hero-ico">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </span>
+      <input type="text" placeholder="공구를 검색하세요...">
+      <button>검색</button>
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tags-lbl">인기</span>
+      <button class="hero-tag">배달 공구</button>
+      <button class="hero-tag">생필품</button>
+      <button class="hero-tag">전공서적</button>
+      <button class="hero-tag">기타</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════ STATS STRIP ════════ -->
+<div class="stats">
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-val">12<sup>개</sup></div>
+      <div class="stat-key">현재 모집 중인 공구</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">3,200<sup>+</sup></div>
+      <div class="stat-key">누적 참여 학우</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">580<sup>+</sup></div>
+      <div class="stat-key">완료된 공구</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════ CATEGORY ════════ -->
+<section class="sec cat">
+  <div class="sec-in">
+    <div class="sec-hd">
+      <div>
+        <p class="sec-eye">Categories</p>
+        <h2 class="sec-ttl">카테고리</h2>
+      </div>
+      <a href="#" class="sec-link">전체 보기</a>
+    </div>
+    <div class="cat-grid">
+      <button class="cat-btn">
+        <div class="cat-icon">🍊</div>
+        <div class="cat-row">
+          <span class="cat-label">식재료 · 배달</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon">🧴</div>
+        <div class="cat-row">
+          <span class="cat-label">자취 · 생필품</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon">📚</div>
+        <div class="cat-row">
+          <span class="cat-label">전공 · 문구</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </button>
+      <button class="cat-btn">
+        <div class="cat-icon">📦</div>
+        <div class="cat-row">
+          <span class="cat-label">기타 물품</span>
+          <span class="cat-arrow">→</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════ PRODUCTS ════════ -->
+<section class="sec prod">
+  <div class="sec-in">
+    <div class="sec-hd">
+      <div>
+        <p class="sec-eye">Now Open</p>
+        <h2 class="sec-ttl">지금 모집 중</h2>
+      </div>
+      <a href="#" class="sec-link">더 보기</a>
+    </div>
+    <div class="prod-grid">
+
+      <div class="prod-card">
+        <span class="tag tag-f">식재료 · 배달</span>
+        <h3 class="prod-title">강남 교촌치킨 반반 배달 공구</h3>
+        <div class="prod-bar"><div class="prod-fill" style="width:75%"></div></div>
+        <div class="prod-foot">
+          <span class="prod-cnt"><b>3</b> / 4명 모집 중</span>
+          <span class="prod-price">8,750<span class="prod-unit">원/인</span></span>
+        </div>
+      </div>
+
+      <div class="prod-card">
+        <span class="tag tag-l">자취 · 생필품</span>
+        <h3 class="prod-title">스타벅스 아메리카노 (tall) 공동구매</h3>
+        <div class="prod-bar"><div class="prod-fill" style="width:40%"></div></div>
+        <div class="prod-foot">
+          <span class="prod-cnt"><b>2</b> / 5명 모집 중</span>
+          <span class="prod-price">5,500<span class="prod-unit">원/인</span></span>
+        </div>
+      </div>
+
+      <div class="prod-card">
+        <span class="tag tag-s">전공 · 문구</span>
+        <h3 class="prod-title">[필수] 경영대 2학기 전공서 패키지 공구</h3>
+        <div class="prod-bar"><div class="prod-fill" style="width:60%"></div></div>
+        <div class="prod-foot">
+          <span class="prod-cnt"><b>3</b> / 5명 모집 중</span>
+          <span class="prod-price">12,000<span class="prod-unit">원/인</span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════ HOW IT WORKS ════════ -->
+<section class="sec hiw">
+  <div class="sec-in">
+    <div class="sec-hd mid">
+      <div>
+        <p class="sec-eye">How it works</p>
+        <h2 class="sec-ttl">어떻게 사용하나요?</h2>
+      </div>
+    </div>
+    <div class="hiw-grid">
+      <div class="hiw-card">
+        <span class="hiw-n">01</span>
+        <div class="hiw-icon">✏️</div>
+        <h3 class="hiw-title">공구 개설 또는 참여</h3>
+        <p class="hiw-desc">원하는 물건의 공구방을 직접 열거나, 이미 열린 공구에 참여하세요.</p>
+      </div>
+      <div class="hiw-card">
+        <span class="hiw-n">02</span>
+        <div class="hiw-icon">💬</div>
+        <h3 class="hiw-title">채팅으로 소통</h3>
+        <p class="hiw-desc">인원이 모이면 채팅방에서 수령 장소와 시간을 조율하세요.</p>
+      </div>
+      <div class="hiw-card">
+        <span class="hiw-n">03</span>
+        <div class="hiw-icon">📦</div>
+        <h3 class="hiw-title">물건 수령 확인</h3>
+        <p class="hiw-desc">물건을 받으면 수령 확인 버튼을 눌러 공구를 마무리하세요.</p>
+      </div>
+    </div>
+    <div class="hiw-foot">
+      <button class="hiw-btn">단계별 상세 가이드 보기</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════ CTA STRIP ════════ -->
+<div class="cta">
+  <div class="cta-in">
+    <div>
+      <h3 class="cta-hl">지금 바로 시작하세요</h3>
+      <p class="cta-sub">고대 학우들과 함께 공동구매를 시작해보세요.</p>
+    </div>
+    <button class="cta-btn">공구 시작하기</button>
+  </div>
+</div>
+
+
+<!-- FAB -->
+<a href="#" class="fab" title="공구방 만들기">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white"
+       stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20h9"/>
+    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+  </svg>
+</a>
+
+</body>
+</html>
