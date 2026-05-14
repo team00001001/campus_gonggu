@@ -99,6 +99,9 @@
                 <input type="text" id="tracking-number" class="tracking-input" placeholder="- 제외 송장번호 입력">
                 <button class="track-btn" onclick="fetchTrackingInfo()">조회하기</button>
             </div>
+            <div id="tracking-guest-msg" style="display:none; padding: 14px 0; color: #888; font-size: 0.92rem; text-align: center;">
+                🚚 방장이 송장번호를 등록하면 배송 현황을 확인할 수 있습니다.
+            </div>
 
             <div id="tracking-result" class="tracking-result-container" style="display: none;">
                 <div class="tracking-header">
@@ -117,6 +120,7 @@
         const API_BASE_URL = 'https://campusgonggu-production.up.railway.app';
         const currentUserId = localStorage.getItem('userId');
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        let currentProductData = null;
 
         // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', async () => {
@@ -148,6 +152,7 @@
 
                 const product = await pRes.json();
                 product.members = mRes.ok ? await mRes.json() : [];
+                currentProductData = product;
 
                 // 3. UI 렌더링 시작
                 renderProductBasicInfo(product);
@@ -453,7 +458,13 @@
         async function joinGroupBuy() {
             if (!isLoggedIn) { alert('로그인이 필요합니다.'); location.href = 'login.html'; return; }
             const productId = new URLSearchParams(window.location.search).get('id');
-            if (!confirm('이 공동구매에 참여하시겠습니까?')) return;
+
+            const isLastSlot = currentProductData &&
+                (parseInt(currentProductData.currentCount) + 1 >= parseInt(currentProductData.targetCount));
+            const confirmMsg = isLastSlot
+                ? '참여하면 모집 인원이 꽉 차 공구가 마감되며, 이후 취소가 불가능합니다.\n그래도 참여하시겠습니까?'
+                : '이 공동구매에 참여하시겠습니까?';
+            if (!confirm(confirmMsg)) return;
 
             try {
                 const res = await fetch(`${API_BASE_URL}/participants/join`, {
@@ -674,8 +685,17 @@
                     return;
                 }
 
-                if (dbData.exists) {
+                const isHost = currentProductData && String(currentProductData.user_id) === String(userId);
+
+                if (!isHost) {
                     document.querySelector('.tracking-input-container').style.display = 'none';
+                    if (!dbData.exists) {
+                        document.getElementById('tracking-guest-msg').style.display = 'block';
+                    }
+                }
+
+                if (dbData.exists) {
+                    document.getElementById('tracking-guest-msg').style.display = 'none';
                     await autoFetchTrackingInfo(dbData.data.carrier_id, dbData.data.tracking_number, productId);
                 }
             } catch (error) {

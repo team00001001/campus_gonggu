@@ -173,13 +173,13 @@ router.put('/:id', async (req, res) => {
 
     try {
         const [rows] = await db.promise().query(
-            'SELECT isClosed, currentCount, targetCount, duration FROM products WHERE id = ?',
+            'SELECT currentCount, targetCount, duration FROM products WHERE id = ?',
             [productId]
         );
         if (rows.length === 0) return res.status(404).json({ error: '상품을 찾을 수 없습니다.' });
         const p = rows[0];
         const nowSec = Math.floor(Date.now() / 1000);
-        if (p.isClosed || p.currentCount >= p.targetCount || Number(p.duration) <= nowSec) {
+        if (p.currentCount >= p.targetCount || Number(p.duration) <= nowSec) {
             return res.status(403).json({ error: '이미 마감된 공고는 수정할 수 없습니다.' });
         }
     } catch (e) {

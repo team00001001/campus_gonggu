@@ -135,7 +135,7 @@
                         </div>
                         <div class="manage-btns">
                             <a href="direct_chattings.html?id=${product.id}" class="btn-manage btn-chat">채팅방</a>
-                            <a href="edit.html?id=${product.id}" class="btn-manage btn-edit">수정</a>
+                            ${!isCompleted ? `<a href="edit.html?id=${product.id}" class="btn-manage btn-edit">수정</a>` : ''}
                             <a href="#" class="btn-manage  btn-danger btn-delete" onclick="deleteProduct(${product.id})">삭제</a>
                         </div>
                     `;
