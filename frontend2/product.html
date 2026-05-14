@@ -67,7 +67,7 @@
                 <div class="host-avatar">호</div>
                 <div class="host-details">
                     <div class="host-name-row">
-                        <span class="host-name" id="host-name">로딩중</span>
+                        <span class="host-name" id="host-name" style="cursor:pointer; text-decoration:underline; text-underline-offset:3px;" onclick="goToHostProfile()">로딩중</span>
                         <span class="host-dept" id="host-dept">작성자</span>
                     </div>
                     <div class="host-trust-bar">
@@ -287,6 +287,7 @@
                 `;
             } else if (isParticipant) {
                 const canCancel = !isClosed && myInfo.status === 'joined';
+                const isCompleted = myInfo.status === 'completed';
                 actionArea.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:10px;">
                         <button class="join-btn" style="background-color: #ce152d;" onclick="location.href='direct_chattings.html?id=${product.id}'">💬 채팅방 가기 (참여중)</button>
@@ -294,8 +295,10 @@
                             ${canCancel ? `<button class="join-btn" style="background:#eee; color:#666; flex:1; font-size: 14px;" onclick="leaveGroup('${product.id}')">참여 취소</button>` : ''}
                             <button class="join-btn" style="background:none; border:1px solid #ddd; color:#999; flex:1; font-size: 14px;" onclick="reportHost()">신고하기</button>
                         </div>
+                        ${isCompleted ? `<button class="join-btn" id="review-btn" style="background:#fff5f7; color:#8A1538; border:1.5px solid #f5c0cc; font-size:14px;" onclick="openReviewModal('${product.id}', '${product.user_id}')">💬 방장에게 후기 남기기</button>` : ''}
                     </div>
                 `;
+                if (isCompleted) checkAlreadyReviewed(product.id);
             } else{
                 if(isClosed){
                     actionArea.innerHTML = `
@@ -483,6 +486,66 @@
                     alert(err.message || "참여 실패");
                 }
             } catch (e) { alert("서버 오류"); }
+        }
+
+        // 방장 프로필 이동
+        function goToHostProfile() {
+            if (!currentProductData) return;
+            location.href = `profile.html?id=${currentProductData.user_id}`;
+        }
+
+        // 후기 이미 작성했는지 확인
+        async function checkAlreadyReviewed(productId) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/reviews/check/${productId}/${currentUserId}`);
+                const data = await res.json();
+                if (data.hasReviewed) {
+                    const btn = document.getElementById('review-btn');
+                    if (btn) { btn.textContent = '✅ 후기 작성 완료'; btn.disabled = true; btn.style.opacity = '0.6'; }
+                }
+            } catch(e) {}
+        }
+
+        // 후기 모달 열기
+        function openReviewModal(productId, hostId) {
+            const existing = document.getElementById('review-modal-overlay');
+            if (existing) existing.remove();
+
+            const overlay = document.createElement('div');
+            overlay.id = 'review-modal-overlay';
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            overlay.innerHTML = `
+                <div style="background:#fff;border-radius:20px;padding:32px 28px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.18);">
+                    <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:6px;">💬 방장에게 후기 남기기</h3>
+                    <p style="font-size:0.82rem;color:#888;margin-bottom:16px;">후기를 남기면 방장의 크림슨 지수가 1 올라갑니다.</p>
+                    <textarea id="review-content" placeholder="공구 진행은 어땠나요? 솔직한 후기를 남겨주세요!" style="width:100%;height:120px;border:1.5px solid #eee;border-radius:12px;padding:12px;font-size:0.9rem;font-family:inherit;resize:none;outline:none;"></textarea>
+                    <div style="display:flex;gap:10px;margin-top:14px;">
+                        <button onclick="document.getElementById('review-modal-overlay').remove()" style="flex:1;padding:12px;border-radius:10px;border:1px solid #eee;background:#f7f8fa;cursor:pointer;font-weight:700;color:#666;">취소</button>
+                        <button onclick="submitReview('${productId}','${hostId}')" style="flex:2;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#8A1538,#D32F2F);color:#fff;cursor:pointer;font-weight:700;">후기 등록</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        }
+
+        // 후기 제출
+        async function submitReview(productId, hostId) {
+            const content = document.getElementById('review-content')?.value.trim();
+            if (!content) { alert('후기 내용을 입력해주세요.'); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId, reviewerId: currentUserId, hostId, content })
+                });
+                const result = await res.json();
+                if (!res.ok) { alert(result.message || '후기 등록 실패'); return; }
+                document.getElementById('review-modal-overlay')?.remove();
+                alert('후기가 등록되었습니다! 방장의 크림슨 지수가 올랐습니다 🔴');
+                const btn = document.getElementById('review-btn');
+                if (btn) { btn.textContent = '✅ 후기 작성 완료'; btn.disabled = true; btn.style.opacity = '0.6'; }
+            } catch(e) { alert('서버 오류'); }
         }
 
         async function leaveGroup(productId) {

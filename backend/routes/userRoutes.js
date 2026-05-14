@@ -103,4 +103,43 @@ router.delete('/:id', (req, res) => {
         });
     });
 });
+// GET /users/:userId/profile - 방장 프로필 조회
+router.get('/:userId/profile', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const [[user]] = await db.promise().query(
+            `SELECT id, nickname, trust_score FROM users WHERE id = ?`,
+            [userId]
+        );
+        if (!user) return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+
+        const [[hostDeals]] = await db.promise().query(
+            `SELECT COUNT(DISTINCT p.id) AS count
+             FROM products p
+             WHERE p.user_id = ?
+               AND EXISTS (
+                   SELECT 1 FROM product_participants pp
+                   WHERE pp.product_id = p.id AND pp.status = 'completed'
+               )`,
+            [userId]
+        );
+
+        const [[reviewCount]] = await db.promise().query(
+            `SELECT COUNT(*) AS count FROM reviews WHERE host_id = ?`,
+            [userId]
+        );
+
+        res.json({
+            id: user.id,
+            nickname: user.nickname,
+            trust_score: user.trust_score,
+            completedDeals: hostDeals.count,
+            reviewCount: reviewCount.count
+        });
+    } catch (e) {
+        console.error('프로필 조회 실패:', e);
+        res.status(500).json({ message: '서버 오류' });
+    }
+});
+
 module.exports = router;

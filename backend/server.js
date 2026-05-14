@@ -23,6 +23,7 @@ const io = new Server(server, {
     }
 });
 const notificationRoutes = require('./routes/notificationRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 app.use(cors({
     origin: '*',
@@ -40,6 +41,7 @@ app.use('/participants', participantRoutes);
 app.use('/chats', chatRoutes);
 app.use('/delivery', deliveryRoutes);
 app.use('/reports', reportRoutes);
+app.use('/reviews', reviewRoutes);
 
 io.on('connection', (socket) => {
     console.log('채팅 접속:', socket.id);
@@ -135,6 +137,26 @@ async function addColumnIfNotExists(columnName) {
 }
 
 addColumnIfNotExists('closing_notified').catch(err => console.error('closing_notified 컬럼 추가 실패:', err));
+
+// reviews 테이블 생성
+(async () => {
+    try {
+        await pool.promise().query(`
+            CREATE TABLE IF NOT EXISTS reviews (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                product_id INT NOT NULL,
+                reviewer_id INT NOT NULL,
+                host_id INT NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_review (product_id, reviewer_id)
+            )
+        `);
+        console.log('reviews 테이블 확인/생성 완료');
+    } catch (err) {
+        console.error('reviews 테이블 생성 실패:', err);
+    }
+})();
 addColumnIfNotExists('transaction_notified').catch(err => console.error('transaction_notified 컬럼 추가 실패:', err));
 
 // 배송 조회 결과 캐시 컬럼 추가

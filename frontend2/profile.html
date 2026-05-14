@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>방장 프로필 | KU GONGGU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --ku-crimson: #8A1538; --ku-gradient: linear-gradient(135deg, #8A1538, #D32F2F); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', sans-serif; background: #F7F8FA; color: #222; }
+
+        .back-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 20px; background: #fff;
+            border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10;
+        }
+        .back-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; }
+        .back-header h1 { font-size: 1rem; font-weight: 700; }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
+
+        /* 프로필 카드 */
+        .profile-card {
+            background: #fff; border-radius: 20px; padding: 32px 28px;
+            text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+        .profile-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: var(--ku-gradient);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: 800; color: #fff;
+            margin: 0 auto 14px;
+        }
+        .profile-nickname { font-size: 1.35rem; font-weight: 800; margin-bottom: 6px; }
+        .profile-label { font-size: 0.82rem; color: #888; margin-bottom: 18px; }
+
+        .crimson-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #fff5f7; border: 1.5px solid #f5c0cc;
+            border-radius: 30px; padding: 7px 18px;
+            font-size: 0.95rem; font-weight: 700; color: var(--ku-crimson);
+            margin-bottom: 24px;
+        }
+        .crimson-badge .score { font-size: 1.3rem; font-weight: 800; }
+
+        .stats-row { display: flex; gap: 16px; justify-content: center; }
+        .stat-box {
+            flex: 1; background: #F7F8FA; border-radius: 14px;
+            padding: 16px 10px; text-align: center;
+        }
+        .stat-num { font-size: 1.5rem; font-weight: 800; color: var(--ku-crimson); }
+        .stat-label { font-size: 0.78rem; color: #888; margin-top: 4px; }
+
+        /* 후기 목록 */
+        .section-title {
+            font-size: 1rem; font-weight: 800; margin-bottom: 14px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .review-list { display: flex; flex-direction: column; gap: 12px; }
+        .review-card {
+            background: #fff; border-radius: 14px; padding: 18px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .review-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px;
+        }
+        .review-writer { font-size: 0.85rem; font-weight: 700; }
+        .review-product { font-size: 0.75rem; color: #aaa; }
+        .review-date { font-size: 0.75rem; color: #bbb; }
+        .review-content { font-size: 0.9rem; color: #444; line-height: 1.6; }
+
+        .empty-reviews {
+            text-align: center; color: #bbb; padding: 40px 0; font-size: 0.9rem;
+        }
+
+        #loading { text-align: center; padding: 60px 0; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<div class="back-header">
+    <button class="back-btn" onclick="history.back()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+    </button>
+    <h1>방장 프로필</h1>
+</div>
+
+<div class="container">
+    <div id="loading">프로필 불러오는 중...</div>
+
+    <div id="profile-wrap" style="display:none;">
+        <div class="profile-card">
+            <div class="profile-avatar" id="profile-avatar"></div>
+            <div class="profile-nickname" id="profile-nickname"></div>
+            <div class="profile-label">고대 공구 방장</div>
+            <div class="crimson-badge">
+                🔴 크림슨 지수 &nbsp;<span class="score" id="profile-score"></span>
+            </div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-num" id="stat-deals">-</div>
+                    <div class="stat-label">완료한 거래</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="stat-reviews">-</div>
+                    <div class="stat-label">받은 후기</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">💬 받은 후기</div>
+        <div class="review-list" id="review-list"></div>
+        <div class="empty-reviews" id="empty-reviews" style="display:none;">아직 받은 후기가 없습니다.</div>
+    </div>
+</div>
+
+<script>
+    const API = 'https://campusgonggu-production.up.railway.app';
+    const params = new URLSearchParams(location.search);
+    const hostId = params.get('id');
+
+    if (!hostId) {
+        alert('잘못된 접근입니다.');
+        history.back();
+    }
+
+    async function loadProfile() {
+        try {
+            const [profileRes, reviewsRes] = await Promise.all([
+                fetch(`${API}/users/${hostId}/profile`),
+                fetch(`${API}/reviews/host/${hostId}`)
+            ]);
+            const profile = await profileRes.json();
+            const reviews = await reviewsRes.json();
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('profile-wrap').style.display = 'block';
+
+            const initial = (profile.nickname || '?').charAt(0).toUpperCase();
+            document.getElementById('profile-avatar').textContent = initial;
+            document.getElementById('profile-nickname').textContent = profile.nickname;
+            document.getElementById('profile-score').textContent = profile.trust_score ?? 0;
+            document.getElementById('stat-deals').textContent = profile.completedDeals ?? 0;
+            document.getElementById('stat-reviews').textContent = profile.reviewCount ?? 0;
+
+            document.title = `${profile.nickname} 프로필 | KU GONGGU`;
+
+            const list = document.getElementById('review-list');
+            if (!reviews.length) {
+                document.getElementById('empty-reviews').style.display = 'block';
+                return;
+            }
+            reviews.forEach(r => {
+                const date = new Date(r.created_at).toLocaleDateString('ko-KR');
+                list.insertAdjacentHTML('beforeend', `
+                    <div class="review-card">
+                        <div class="review-meta">
+                            <div>
+                                <span class="review-writer">${r.reviewer_nickname}</span>
+                                <span class="review-product"> · ${r.product_title}</span>
+                            </div>
+                            <span class="review-date">${date}</span>
+                        </div>
+                        <div class="review-content">${r.content}</div>
+                    </div>
+                `);
+            });
+        } catch (e) {
+            console.error(e);
+            document.getElementById('loading').textContent = '프로필을 불러오지 못했습니다.';
+        }
+    }
+
+    loadProfile();
+</script>
+</body>
+</html>
