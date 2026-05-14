@@ -134,9 +134,11 @@
                     const statusText = isCompleted ? '마감됨' : '모집중';
 
                     const isHost = String(product.user_id) === String(userId);
-                    const cancelBtnHtml = isHost 
-                        ? `<span style="font-size: 0.8rem; color: #888; text-align: center; margin-top: 5px; padding: 10px 0;">내가 쓴 공고</span>` 
-                        : `<button class="btn-manage btn-cancel" onclick="cancelJoin(${product.product_id})">참여 취소</button>`;
+                    const cancelBtnHtml = isHost
+                        ? `<span style="font-size: 0.8rem; color: #888; text-align: center; margin-top: 5px; padding: 10px 0;">내가 쓴 공고</span>`
+                        : isCompleted
+                            ? ''
+                            : `<button class="btn-manage btn-cancel" onclick="cancelJoin(${product.product_id})">참여 취소</button>`;
 
                     const catInfo = categoryMap[product.category] || { defaultImg: defaultEtcImg };
                     const displayImg = catInfo.defaultImg;
