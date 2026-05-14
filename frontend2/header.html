@@ -26,8 +26,8 @@
                     </button>
                 </div> 
 
-                <a href="mypage.html" class="menu-link auth-only" style="display: none;">마이페이지</a>
-                <a href="product_list.html" class="menu-link auth-only" style="display: none;">검색창</a>
+                <a href="#" class="menu-link" onclick="if(localStorage.getItem('isLoggedIn')==='true'){location.href='mypage.html';}else{alert('로그인이 필요합니다.');location.href='login.html';}">마이페이지</a>
+                <a href="product_list.html" class="menu-link">검색창</a>
                 <button id="logout-btn" class="btn-login-nav auth-only" style="display: none;">로그아웃</button>
             </nav>
         </div>
