@@ -30,9 +30,10 @@ router.post('/', async (req, res) => {
             [productId, reviewerId, hostId, content.trim()]
         );
 
+        // 방장 +1, 후기 작성자 +1
         await db.promise().query(
-            `UPDATE users SET trust_score = trust_score + 1 WHERE id = ?`,
-            [hostId]
+            `UPDATE users SET trust_score = trust_score + 1 WHERE id IN (?, ?)`,
+            [hostId, reviewerId]
         );
 
         res.json({ message: '후기가 등록되었습니다.' });
