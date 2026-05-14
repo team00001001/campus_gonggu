@@ -80,10 +80,8 @@
 
             try {
                 const response = await fetch(`https://campusgonggu-production.up.railway.app/notifications/${userId}`);
+                if (!response.ok) throw new Error(`알림 API 오류: ${response.status}`);
                 notifications = await response.json();
-
-                console.log('현재 로그인 userId:', userId);
-                console.log('불러온 알림:', notifications);
                 renderNotifications();
                 updateNotificationBadge();
             } catch (error) {
@@ -163,12 +161,12 @@
         }
 
         // 4. 클릭 시 읽음 처리 후 이동
-        function readAndGo(id, link) {
-            fetch(`https://campusgonggu-production.up.railway.app/notifications/${id}/read`, { method: 'PATCH' });
-            
-            notifications = notifications.map(n => {
-                return n.id === id ? { ...n, is_read: 1 } : n;
-            });
+        async function readAndGo(id, link) {
+            try {
+                await fetch(`https://campusgonggu-production.up.railway.app/notifications/${id}/read`, { method: 'PATCH' });
+            } catch (e) { /* 읽음 실패해도 이동은 진행 */ }
+
+            notifications = notifications.map(n => n.id === id ? { ...n, is_read: 1 } : n);
             renderNotifications();
             updateNotificationBadge();
 
@@ -178,6 +176,7 @@
         // 5. 모두 읽음 처리
         async function markAllAsRead() {
             const userId = localStorage.getItem('userId');
+            if (!userId) return;
             try {
                 await fetch(`https://campusgonggu-production.up.railway.app/notifications/user/${userId}/read-all`, {
                     method: 'PATCH'
@@ -218,8 +217,7 @@
             }
         }
 
-        // 페이지 로드 시 렌더링 실행
-        document.addEventListener('DOMContentLoaded', loadNotifications);
+        // loadNotifications는 헤더 로드 후(위 then 블록)에서 호출되므로 중복 제거
     </script>
 </body>
 
