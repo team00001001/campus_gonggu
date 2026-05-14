@@ -133,19 +133,19 @@
         <!-- 카테고리 (파스텔 & 이모지) -->
         <div class="section-title">👀 카테고리 둘러보기</div>
         <section class="cat-grid">
-            <div class="cat-card cat-1" onclick="if(checkAccess()) filterCategory('식재료 / 배달')">
+            <div class="cat-card cat-1" onclick="filterCategory('식재료 / 배달')">
                 <span class="cat-icon">🍊</span>
                 <div class="cat-title">식재료 / 배달</div>
             </div>
-            <div class="cat-card cat-2" onclick="if(checkAccess())filterCategory('자취 / 생필품')">
+            <div class="cat-card cat-2" onclick="filterCategory('자취 / 생필품')">
                 <span class="cat-icon">🧴</span>
                 <div class="cat-title">자취 / 생필품</div>
             </div>
-            <div class="cat-card cat-3" onclick="if(checkAccess()) filterCategory('전공 / 문구')">
+            <div class="cat-card cat-3" onclick="filterCategory('전공 / 문구')">
                 <span class="cat-icon">📚</span>
                 <div class="cat-title">전공 / 문구</div>
             </div>
-            <div class="cat-card cat-4" onclick="if(checkAccess())filterCategory('기타 물품')">
+            <div class="cat-card cat-4" onclick="filterCategory('기타 물품')">
                 <span class="cat-icon">📦</span>
                 <div class="cat-title">기타 물품</div>
             </div>
@@ -364,7 +364,7 @@
                     );
 
                     const cardHTML = `
-                <div class="room-item" onclick="if(checkAccess()) location.href='product.html?id=${product.id}'">
+                <div class="room-item" onclick="location.href='product.html?id=${product.id}'"
                     <div class="room-content">
                         <div class="tag-group">
                             <span class="room-tag tag-study">${product.category}</span>
