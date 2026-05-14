@@ -1,4 +1,3 @@
-/* 기본 스타일 초기화 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,45 +5,41 @@
 }
 
 body {
-    /* 둥근 글씨체 적용 */
-    font-family: 'NanumSquareRound', sans-serif;
-    background-color: #fff5f5; /* 연한 빨강 배경 */
-    color: #333;
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background-color: #F3F4F6;
+    color: #111;
     line-height: 1.6;
 }
 
-/* 상단 헤더 */
 header {
     display: flex;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 0 2rem;
+    height: 60px;
     background-color: #8A1538;
-    border-bottom: 1px solid #ffeded;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .back-btn {
-    color: #fff;
+    color: rgba(255,255,255,0.75);
     text-decoration: none;
     display: flex;
     align-items: center;
     margin-right: 1rem;
-    transition: color 0.2s;
+    transition: color 0.15s;
 }
 
-.back-btn:hover {
-    color: #4e0404;
-}
+.back-btn:hover { color: #fff; }
 
 .header-title {
-    font-size: 1.2rem;
-    font-weight: 800;
+    font-size: 1rem;
+    font-weight: 700;
     color: #fff;
+    letter-spacing: 0.02em;
 }
 
-/* 메인 폼 영역 */
 main {
     padding: 2rem 1rem;
     max-width: 600px;
@@ -52,27 +47,27 @@ main {
 }
 
 .write-form {
-    background-color: #ffffff;
+    background-color: #fff;
     padding: 2rem;
-    border-radius: 25px; /* 전체적으로 둥글게 */
-    box-shadow: 0 8px 20px rgba(220, 20, 60, 0.05);
-    border: 1px solid #ffeded;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E2E2E2;
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
+    gap: 1.6rem;
 }
 
-/* 개별 입력 그룹 */
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: 0.6rem;
 }
 
 .input-group label {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     font-weight: 700;
-    color: #444;
+    color: #333;
+    letter-spacing: 0.01em;
 }
 
 .required::after {
@@ -80,30 +75,30 @@ main {
     color: #8A1538;
 }
 
-/* 입력칸 (Input, Textarea, Select) 공통 스타일 */
 .input-group input,
 .input-group textarea,
 .input-group select {
     width: 100%;
-    padding: 0.9rem 1.2rem;
-    border: 1.5px solid #eee;
-    border-radius: 15px; /* 입력창도 둥글게 */
-    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid #E2E2E2;
+    border-radius: 6px;
+    font-size: 0.95rem;
     font-family: inherit;
-    transition: all 0.2s;
-    background-color: #fafafa;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background-color: #FAFAFA;
+    color: #111;
 }
 
-/* 드롭다운(Select) 화살표 스타일링 */
 .input-group select {
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1em;
+    padding-right: 2.5rem;
 }
 
 .input-group textarea {
@@ -117,30 +112,25 @@ main {
     outline: none;
     border-color: #8A1538;
     background-color: #fff;
-    box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.1);
+    box-shadow: 0 0 0 3px rgba(138, 21, 56, 0.08);
 }
 
-.short-input input {
-    width: 60%;
-}
+.short-input input { width: 60%; }
 
-/* 수정하기 버튼 */
 .submit-btn {
-    margin-top: 1rem;
-    padding: 1.1rem;
+    margin-top: 0.5rem;
+    padding: 1rem;
     background-color: #8A1538;
     color: white;
-    font-size: 1.1rem;
-    font-weight: 800;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     border: none;
-    border-radius: 15px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: transform 0.1s, background-color 0.2s;
+    transition: background-color 0.15s;
     text-align: center;
     width: 100%;
-    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.2);
 }
 
-.submit-btn:hover {
-    background-color: #6E102A;
-}
+.submit-btn:hover { background-color: #6E102A; }

@@ -75,8 +75,8 @@ header {
 
 .card {
     background: var(--card-white);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
     padding: 30px;
     margin-bottom: 20px;
 }
@@ -110,18 +110,20 @@ header {
 input[type="text"],
 input[type="password"] {
     flex: 1;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    background-color: #fafafa;
-    transition: all 0.2s;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.93rem;
+    font-family: inherit;
+    background-color: #FAFAFA;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input:focus {
     outline: none;
     border-color: var(--ku-crimson);
     background-color: white;
+    box-shadow: 0 0 0 3px rgba(138, 21, 56, 0.08);
 }
 
 input:disabled {
@@ -140,14 +142,16 @@ input:disabled {
 }
 
 .btn {
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
+    padding: 11px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.93rem;
+    letter-spacing: 0.04em;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.15s, border-color 0.15s;
     border: none;
     text-align: center;
+    font-family: inherit;
 }
 
 .btn-primary {

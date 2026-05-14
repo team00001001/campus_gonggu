@@ -134,15 +134,14 @@ nav a.menu-link:hover {
 
 .faq-item {
     background: var(--surface-color);
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
+    border-radius: 6px;
     overflow: hidden;
     border: 1px solid var(--border-light);
-    transition: box-shadow 0.3s ease;
+    transition: border-color 0.2s;
 }
 
 .faq-item:hover {
-    box-shadow: var(--shadow-md);
+    border-color: #8A1538;
 }
 
 .faq-question {
@@ -211,10 +210,9 @@ nav a.menu-link:hover {
 .contact-section {
     margin-top: 60px;
     background: white;
-    border-radius: 20px;
+    border-radius: 8px;
     padding: 30px;
     text-align: center;
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
 }
 
@@ -234,13 +232,14 @@ nav a.menu-link:hover {
     background-color: var(--ku-crimson);
     color: white;
     text-decoration: none;
-    padding: 12px 28px;
-    border-radius: 30px;
+    padding: 11px 28px;
+    border-radius: 5px;
     font-weight: 700;
+    letter-spacing: 0.05em;
     display: inline-block;
-    transition: background 0.2s;
+    transition: background 0.15s;
 }
 
 .btn-contact:hover {
-    background-color: #72112e;
+    background-color: #6E102A;
 }

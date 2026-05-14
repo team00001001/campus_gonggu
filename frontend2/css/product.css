@@ -183,11 +183,12 @@ nav a.menu-link:hover {
 }
 
 .category-badge {
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: -0.2px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 /* 개별 뱃지 색상 (main_login.html 팔레트와 동일) */
@@ -234,7 +235,7 @@ nav a.menu-link:hover {
     margin-bottom: 24px;
     padding: 20px;
     background-color: var(--bg-color);
-    border-radius: 12px;
+    border-radius: 6px;
     border: 1px solid var(--border-color);
 }
 
@@ -476,7 +477,8 @@ nav a.menu-link:hover {
     margin: 0 auto 25px auto;
     padding: 15px 20px;
     background-color: #f8f9fa;
-    border-radius: 8px;
+    border-radius: 6px;
+    border: 1px solid #E2E2E2;
     width: 85%;
     max-width: 600px;
     box-sizing: border-box;
@@ -601,6 +603,6 @@ nav a.menu-link:hover {
 .timeline-content {
     background-color: #f8f9fa;
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 14px;
 }

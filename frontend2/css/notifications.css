@@ -194,16 +194,15 @@ nav a.menu-link:hover {
 
 .noti-item {
     background: var(--surface-color);
-    border-radius: 16px;
+    border-radius: 6px;
     padding: 20px;
     display: flex;
     gap: 16px;
     align-items: flex-start;
     text-decoration: none;
     color: inherit;
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: border-color 0.15s, box-shadow 0.15s;
     cursor: pointer;
 }
 
