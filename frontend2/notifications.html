@@ -18,7 +18,13 @@
     <div class="container">
         <div class="page-header">
             <h1 class="page-title">알림</h1>
-            <button class="btn-read-all" onclick="markAllAsRead()">모두 읽음 처리</button>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-read-all" onclick="markAllAsRead()">모두 읽음</button>
+                <button class="btn-delete-all" onclick="deleteAllNotifications()" 
+                        style="padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 500; color: #555;">
+                    모두 삭제
+                </button>
+            </div>
         </div>
 
         <div class="noti-list" id="noti-list">
@@ -97,7 +103,7 @@
             badge.style.display = hasUnread ? 'block' : 'none';
         }
 
-        // 3. 알림 화면 렌더링 함수 (삭제 버튼 추가됨)
+        // 3. 알림 화면 렌더링 함수 (개별 삭제 버튼 포함)
         function renderNotifications() {
             const listContainer = document.getElementById('noti-list');
             const emptyState = document.getElementById('empty-state');
@@ -191,19 +197,16 @@
             }
         }
 
-        // 6. 💡 알림 삭제 처리 로직 (새로 추가됨)
+        // 6. 개별 알림 삭제 처리 로직
         async function deleteNotification(event, id) {
-            // 부모 요소인 알림 박스의 클릭(readAndGo) 이벤트가 작동하지 않도록 막습니다.
-            event.stopPropagation();
+            event.stopPropagation(); // 클릭 시 상세 페이지 이동 방지
 
             if (!confirm('이 알림을 삭제하시겠습니까?')) return;
 
-            // 프론트엔드에서 즉시 숨김 처리
             notifications = notifications.filter(n => n.id !== id);
             renderNotifications();
             updateNotificationBadge();
 
-            // 백엔드에 삭제 요청
             try {
                 const response = await fetch(`https://campusgonggu-production.up.railway.app/notifications/${id}`, {
                     method: 'DELETE'
@@ -217,7 +220,33 @@
             }
         }
 
-        // loadNotifications는 헤더 로드 후(위 then 블록)에서 호출되므로 중복 제거
+        // 7. 💡 모두 삭제 처리 로직 (새로 추가됨)
+        async function deleteAllNotifications() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+
+            if (!confirm('모든 알림을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
+
+            // 프론트엔드에서 즉시 비우기 (빠른 UI 반응)
+            notifications = [];
+            renderNotifications();
+            updateNotificationBadge();
+
+            // 백엔드에 모두 삭제 요청
+            try {
+                // 이 엔드포인트 경로는 추후 작성하실 백엔드 라우터에 맞춰 수정하시면 됩니다.
+                const response = await fetch(`https://campusgonggu-production.up.railway.app/notifications/user/${userId}/delete-all`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    console.error('백엔드에서 알림 모두 삭제를 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('알림 모두 삭제 요청 중 에러 발생:', error);
+            }
+        }
+
     </script>
 </body>
 
