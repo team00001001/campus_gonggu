@@ -7,6 +7,92 @@
     <title>대학생 공동구매 - 회원가입</title>
     <link rel="stylesheet" href="css/signup.css">
     <link rel="stylesheet" href="../css_mobile/signup_mobile.css" media="(max-width: 768px)">
+    <style>
+        /* --- 추가된 약관 동의 및 모달 스타일 --- */
+        .agreement-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .agreement-group label {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 0 !important; /* 기존 스타일 간섭 방지 */
+        }
+        .agreement-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: #8b0029;
+        }
+        #btn-open-modal {
+            background: none;
+            border: none;
+            color: #666;
+            text-decoration: underline;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* 모달(팝업) 스타일 */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 70vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-header {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .terms-text {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #444;
+            white-space: pre-wrap;
+        }
+        .btn-close-modal {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #8b0029;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        /* 회원가입 버튼 비활성화 스타일 */
+        #btn-signup:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
 
@@ -48,8 +134,41 @@
                 <span class="msg" id="pw-match-msg"></span>
             </div>
 
-            <button type="submit" class="btn">가입 완료하기</button>
+            <div class="agreement-group">
+                <label>
+                    <input type="checkbox" id="privacy-agree"> [필수] 개인정보 수집 및 이용 동의
+                </label>
+                <button type="button" id="btn-open-modal">약관보기</button>
+            </div>
+
+            <button type="submit" class="btn" id="btn-signup" disabled>가입 완료하기</button>
         </form>
+    </div>
+
+    <div id="terms-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">개인정보 수집 및 이용 동의</div>
+            <div class="terms-text">
+[개인정보 수집 및 이용 동의]
+KU GONGGU는 안전하고 신뢰할 수 있는 학우 간 공동구매 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.
+
+1. 수집하는 개인정보 항목
+• 필수 항목: 고려대학교 이메일, 비밀번호, 닉네임
+(※ 비밀번호는 본 서비스 전용입니다. 포털 등 타 서비스와 다른 비밀번호 사용을 권장합니다.)
+
+2. 개인정보의 수집 및 이용 목적
+• 고려대학교 재학생 본인 인증 및 회원 식별
+• 가입 의사 확인 및 부정 이용 방지
+• 공동구매 매칭 및 참여 관리 안내
+
+3. 개인정보의 보유 및 이용 기간
+• 회원 탈퇴 시 즉시 파기 (또는 프로젝트 종료 시 일괄 파기)
+
+4. 동의를 거부할 권리
+• 이용자는 동의를 거부할 권리가 있으나, 거부 시 회원가입 및 서비스 이용이 불가능합니다.
+            </div>
+            <button type="button" class="btn-close-modal" id="btn-close-modal">닫기</button>
+        </div>
     </div>
 
     <script>
@@ -61,6 +180,25 @@
         const passwordInput = document.getElementById('password');
         const passwordConfirmInput = document.getElementById('password-confirm');
         const pwMatchMsg = document.getElementById('pw-match-msg');
+
+        // ✅ 약관 관련 요소들
+        const privacyAgree = document.getElementById('privacy-agree');
+        const btnSignup = document.getElementById('btn-signup');
+        const termsModal = document.getElementById('terms-modal');
+        const btnOpenModal = document.getElementById('btn-open-modal');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+
+        // 1. ✅ 약관 동의 체크 여부에 따른 버튼 활성화 로직
+        privacyAgree.addEventListener('change', () => {
+            btnSignup.disabled = !privacyAgree.checked;
+        });
+
+        // 2. ✅ 모달 열기/닫기 로직
+        btnOpenModal.addEventListener('click', () => { termsModal.style.display = 'block'; });
+        btnCloseModal.addEventListener('click', () => { termsModal.style.display = 'none'; });
+        window.addEventListener('click', (event) => {
+            if (event.target == termsModal) { termsModal.style.display = 'none'; }
+        });
 
         // ✅ 이메일 도메인 고정
         const FIXED_DOMAIN = 'korea.ac.kr';
@@ -87,15 +225,12 @@
                 return;
             }
 
-            // 고정된 도메인으로 이메일 조합
             const email = `${emailId}@${FIXED_DOMAIN}`;
 
             try {
                 const response = await fetch('https://campusgonggu-production.up.railway.app/api/send-auth-email', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
 
@@ -107,8 +242,6 @@
                 }
 
                 alert(result.message);
-
-                // 전송 성공 시 인증번호 입력창 표시 및 상태 초기화
                 isEmailVerified = false;
                 verificationSection.classList.remove('hidden');
                 document.getElementById('verification-code').value = '';
@@ -137,9 +270,7 @@
             try {
                 const response = await fetch('https://campusgonggu-production.up.railway.app/api/verify-auth-code', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, code })
                 });
 
@@ -148,16 +279,14 @@
                 if (!response.ok) {
                     verificationMsg.textContent = result.message;
                     verificationMsg.className = 'msg error';
-                    isEmailVerified = false; // 인증 실패
+                    isEmailVerified = false; 
                     return;
                 }
 
-                // ✅ 인증 성공 처리
                 verificationMsg.textContent = result.message;
                 verificationMsg.className = 'msg success';
                 isEmailVerified = true; 
 
-                // 입력창 및 버튼 비활성화
                 document.getElementById('verification-code').readOnly = true;
                 btnVerifyCode.disabled = true;
 
@@ -195,7 +324,6 @@
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // ✅ 이메일 인증이 완료되었는지 먼저 확인
             if (!isEmailVerified) {
                 alert('이메일 인증을 먼저 완료해주세요.');
                 return;
@@ -206,11 +334,17 @@
                 return;
             }
 
+            // ✅ 최종 폼 제출 시 한 번 더 체크박스 확인
+            if (!privacyAgree.checked) {
+                alert('개인정보 약관에 동의하셔야 회원가입이 가능합니다.');
+                return;
+            }
+
             const emailId = document.getElementById('email-id').value.trim();
 
             const userData = {
                 emailId: emailId,
-                emailDomain: FIXED_DOMAIN, // 무조건 korea.ac.kr로 전송
+                emailDomain: FIXED_DOMAIN,
                 nickname: document.getElementById('nickname').value.trim(),
                 password: passwordInput.value
             };
@@ -218,9 +352,7 @@
             try {
                 const response = await fetch('https://campusgonggu-production.up.railway.app/api/signup', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData)
                 });
 
