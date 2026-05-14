@@ -76,22 +76,22 @@ nav a.menu-link:hover {
 }
 
 .btn-login-nav {
-    background: var(--ku-crimson);
+    background: transparent;
     color: white !important;
-    padding: 10px 24px;
-    border-radius: 30px;
+    padding: 8px 20px;
+    border-radius: 5px;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px rgba(138, 21, 56, 0.3);
-    border: 2px solid white;
+    border: 1.5px solid rgba(255, 255, 255, 0.65);
     cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
 }
 
 .btn-login-nav:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(138, 21, 56, 0.4);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.9);
 }
 
 /* ==========================================
@@ -113,15 +113,15 @@ nav a.menu-link:hover {
 /* 커스텀 둥근 검색창 스타일 */
 .custom-search-input {
     width: 100%;
-    height: 60px; /* 안정적인 높이 지정 */
-    padding: 0 60px 0 30px; /* 좌우 여백 확보 */
+    height: 54px;
+    padding: 0 56px 0 24px;
     border: 1.5px solid #E2E8F0;
-    border-radius: 999px; /* 모서리를 극한으로 둥글게 (완전한 반원 보장) */
+    border-radius: 6px;
     box-sizing: border-box;
-    font-size: 1.05rem;
+    font-size: 1rem;
     background-color: #FFFFFF;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.15s, box-shadow 0.15s;
     color: var(--text-dark);
     outline: none;
 }
@@ -180,23 +180,23 @@ nav a.menu-link:hover {
 }
 
 .filter-btn {
-    padding: 12px 24px;
-    border-radius: 30px;
-    border: none;
-    font-size: 15px;
-    font-weight: 500; 
+    padding: 10px 22px;
+    border-radius: 6px;
+    border: 1.5px solid transparent;
+    font-size: 0.87rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    transition: border-color 0.15s, filter 0.15s;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     color: #333;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
 .filter-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+    border-color: rgba(0,0,0,0.12);
+    filter: brightness(0.96);
 }
 
 .btn-food { background-color: var(--color-food); }
@@ -236,12 +236,14 @@ nav a.menu-link:hover {
     gap: 6px;
     padding: 7px 16px;
     border: 1.5px solid #ddd;
-    border-radius: 20px;
+    border-radius: 5px;
     background: #fff;
-    font-size: 13px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     color: #555;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: border-color 0.15s, color 0.15s;
     font-family: inherit;
 }
 .col-cycle-btn:hover { border-color: #8A1538; color: #8A1538; }
@@ -294,19 +296,18 @@ nav a.menu-link:hover {
 /* 상품 카드 디자인 */
 .product-card {
     background: #fff;
-    border-radius: 24px; 
-    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    border: 1px solid #eee;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: border-color 0.15s, box-shadow 0.15s;
     cursor: pointer;
     display: flex;
     flex-direction: column;
 }
 
 .product-card:hover {
-    transform: translateY(-12px);
-    box-shadow: var(--card-shadow);
     border-color: var(--main-burgundy);
+    box-shadow: 0 4px 16px rgba(138, 21, 56, 0.08);
 }
 
 .img-area {
@@ -318,7 +319,7 @@ nav a.menu-link:hover {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 15px;
+    border-radius: 0;
 }
 
 .no-image-overlay {
@@ -329,10 +330,10 @@ nav a.menu-link:hover {
     justify-content: center;
     background: rgba(0, 0, 0, 0.28);
     color: white;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 700;
     backdrop-filter: blur(2px);
-    border-radius: 15px;
+    border-radius: 0;
     letter-spacing: -0.2px;
 }
 
@@ -376,10 +377,11 @@ nav a.menu-link:hover {
 .badge {
     background-color: #FFF0F3;
     color: var(--main-burgundy);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.72rem;
     font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 /* 커스텀 체크박스 래퍼 */

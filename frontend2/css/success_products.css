@@ -84,7 +84,8 @@ header {
 }
 
 .product-card:hover {
-    transform: translateY(-3px);
+    border-color: #8A1538;
+    box-shadow: 0 4px 16px rgba(138, 21, 56, 0.08);
 }
 
 .product-img {

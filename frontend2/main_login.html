@@ -1,426 +1,467 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KU GONGGU | 고대공구</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="./css/main_login.css">
-<link rel="stylesheet" href="css_mobile/main_login_mobile.css" media="(max-width: 768px)">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/main_login.css">
+    <link rel="stylesheet" href="css_mobile/main_login_mobile.css" media="(max-width: 768px)">
 </head>
 <body>
 
-    <div id="header-placeholder"></div>
+<div id="header-placeholder"></div>
 
-    <script>
-        async function updateHeaderNotificationBadge() {
+<script>
+    /* ─── 헤더 로드 + 인증 ─── */
+    async function updateHeaderNotificationBadge() {
+        const userId = localStorage.getItem('userId');
+        const badge = document.querySelector('.noti-badge');
+        if (!badge || !userId) return;
+        try {
+            const res = await fetch(`https://campusgonggu-production.up.railway.app/notifications/${userId}`);
+            const noti = await res.json();
+            badge.style.display = noti.some(n => Number(n.is_read) === 0) ? 'block' : 'none';
+        } catch(e) { console.error(e); }
+    }
 
-            const userId = localStorage.getItem('userId');
-            const badge = document.querySelector('.noti-badge');
+    fetch('header.html')
+        .then(r => { if (!r.ok) throw new Error('header.html 없음'); return r.text(); })
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+            updateHeader();
+            updateHeaderNotificationBadge();
+        })
+        .catch(e => console.error(e));
 
-            if (!badge || !userId) return;
+    function updateHeader() {
+        const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        document.querySelectorAll('.auth-only').forEach(el => el.style.display = loggedIn ? 'inline-block' : 'none');
+        document.querySelectorAll('.guest-only').forEach(el => el.style.display = loggedIn ? 'none' : 'inline-block');
+    }
 
-            try {
-
-                const response =
-                    await fetch(`https://campusgonggu-production.up.railway.app/notifications/${userId}`);
-
-                const notifications = await response.json();
-
-                const hasUnread = notifications.some(
-                    n => Number(n.is_read) === 0
-                );
-
-                badge.style.display = hasUnread ? 'block' : 'none';
-
-            } catch (error) {
-
-                console.error('알림 배지 업데이트 실패:', error);
-            }
+    function checkAccess(targetUrl) {
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            alert('로그인이 필요한 서비스입니다!');
+            location.href = 'login.html';
+            return false;
         }
-        // 1. 페이지 열리자마자 헤더 가져오기
-       fetch('header.html')
-    .then(res => {
+        if (targetUrl) location.href = targetUrl;
+        return true;
+    }
 
-        if (!res.ok) {
-            throw new Error('header.html 파일을 찾을 수 없습니다.');
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'logout-btn') {
+            localStorage.removeItem('isLoggedIn');
+            alert('로그아웃 되었습니다.');
+            location.href = 'main_login.html';
         }
+    });
+</script>
 
-        return res.text();
-    })
-    .then(data => {
 
-        document.getElementById('header-placeholder').innerHTML = data;
+<!-- ①  H E R O -->
+<section class="hero">
+    <div class="hero-inner">
+        <p class="hero-eyebrow">고려대학교 학생 전용 공구 플랫폼</p>
 
-        updateHeader();
+        <h1 class="hero-title">
+            배달비를 나누고<br><em>할인은 함께.</em>
+        </h1>
 
-        updateHeaderNotificationBadge();
-    })
-    .catch(err => console.error(err));
+        <p class="hero-desc">
+            학우들과 공동구매로 더 저렴하게<br>
+            배달비 절약부터 대량구매 할인까지
+        </p>
 
-        // 1. 헤더 업데이트 (로그인/로그아웃 버튼 스위칭)
-        function updateHeader() {
-            // 기준 통일: 'isLoggedIn' 키 하나만 사용
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-            const authButtons = document.querySelectorAll('.auth-only');
-            const guestButtons = document.querySelectorAll('.guest-only');
-
-            if (isLoggedIn) {
-                authButtons.forEach(btn => btn.style.display = 'inline-block');
-                guestButtons.forEach(btn => btn.style.display = 'none');
-            } else {
-                authButtons.forEach(btn => btn.style.display = 'none');
-                guestButtons.forEach(btn => btn.style.display = 'inline-block');
-            }
-        }
-
-        // 2. 접근 권한 체크 (클릭 차단용)
-        function checkAccess(targetUrl) {
-            // 위와 동일하게 'isLoggedIn'으로 체크
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-            if (!isLoggedIn) {
-                alert("로그인이 필요한 서비스입니다! 로그인 페이지로 갈까요?");
-                location.href = "login.html";
-                return false;
-            }
-
-            if (targetUrl) {
-                location.href = targetUrl;
-            }
-            return true;
-        }
-
-        // 3. 로그아웃 기능 (버튼 클릭 감시)
-        document.addEventListener('click', function (e) {
-            // id가 logout-btn인 요소를 클릭했을 때만 실행
-            if (e.target && e.target.id === 'logout-btn') {
-                localStorage.removeItem('isLoggedIn'); // 기록 삭제
-                alert('로그아웃 되었습니다.');
-                location.href = 'main_login.html'; // 
-            }
-        });
-    </script>
-
-    <!-- 히어로 -->
-    <section class="hero">
-        <div class="hero-inner">
-            <div class="hero-kicker"><span></span>고려대학교 학생 전용</div>
-            <h1>같이 사면<br><em>더 싸게.</em></h1>
-            <p>배달비부터 대량구매 할인까지 — 고대 학우들과 함께하세요</p>
-            <div class="hero-search">
-                <input type="text" id="main-search" placeholder="무엇을 찾고 계신가요?">
-                <button onclick="doSearch()">검색</button>
-            </div>
+        <div class="hero-search">
+            <span class="hero-search-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+            </span>
+            <input type="text" id="main-search" placeholder="공구 검색..." autocomplete="off">
+            <button onclick="doSearch()">검색</button>
         </div>
-    </section>
 
-    <!-- 스탯 바 -->
-    <div class="stats-bar">
-        <span>🎓 고대생 전용 플랫폼</span>
-        <span class="dot">·</span>
-        <span>💬 실시간 채팅 조율</span>
-        <span class="dot">·</span>
-        <span>🛡️ 크림슨 지수로 신뢰 검증</span>
+        <div class="hero-quick">
+            <span class="hero-quick-label">인기</span>
+            <button class="hero-quick-tag" onclick="filterCategory('식재료 / 배달')">배달 공구</button>
+            <button class="hero-quick-tag" onclick="filterCategory('자취 / 생필품')">생필품</button>
+            <button class="hero-quick-tag" onclick="filterCategory('전공 / 문구')">전공서적</button>
+        </div>
     </div>
+</section>
 
-    <main>
-        <!-- 카테고리 -->
-        <div class="cat-section">
-            <div class="sec-header">
-                <h2>카테고리</h2>
-                <a href="product_list.html">전체 보기 →</a>
+
+<!-- ②  F E A T U R E   S T R I P -->
+<div class="feature-strip">
+    <div class="feature-strip-inner">
+        <div class="feat-item"><span class="feat-icon">🎓</span><span>고대생 전용 플랫폼</span></div>
+        <span class="feat-sep"></span>
+        <div class="feat-item"><span class="feat-icon">💬</span><span>실시간 채팅 조율</span></div>
+        <span class="feat-sep"></span>
+        <div class="feat-item"><span class="feat-icon">🛡️</span><span>크림슨 신뢰 지수</span></div>
+        <span class="feat-sep"></span>
+        <div class="feat-item"><span class="feat-icon">📦</span><span>수령 확인 시스템</span></div>
+    </div>
+</div>
+
+
+<!-- ③  C A T E G O R I E S -->
+<section class="pg-sec cat-pg">
+    <div class="pg-wrap">
+        <div class="pg-head">
+            <div>
+                <p class="pg-eyebrow">Categories</p>
+                <h2 class="pg-title">카테고리</h2>
             </div>
-            <div class="cat-pills">
-                <button class="cat-pill" onclick="filterCategory('식재료 / 배달')">
-                    <span class="cat-emoji">🍊</span> 식재료 / 배달
-                </button>
-                <button class="cat-pill" onclick="filterCategory('자취 / 생필품')">
-                    <span class="cat-emoji">🧴</span> 자취 / 생필품
-                </button>
-                <button class="cat-pill" onclick="filterCategory('전공 / 문구')">
-                    <span class="cat-emoji">📚</span> 전공 / 문구
-                </button>
-                <button class="cat-pill" onclick="filterCategory('기타 물품')">
-                    <span class="cat-emoji">📦</span> 기타 물품
-                </button>
+            <a href="product_list.html" class="pg-link">전체 보기</a>
+        </div>
+
+        <div class="cat-grid">
+            <button class="cat-card" onclick="filterCategory('식재료 / 배달')">
+                <div class="cat-ico">🍊</div>
+                <div class="cat-foot">
+                    <span class="cat-name">식재료 · 배달</span>
+                    <span class="cat-arrow">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </button>
+
+            <button class="cat-card" onclick="filterCategory('자취 / 생필품')">
+                <div class="cat-ico">🧴</div>
+                <div class="cat-foot">
+                    <span class="cat-name">자취 · 생필품</span>
+                    <span class="cat-arrow">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </button>
+
+            <button class="cat-card" onclick="filterCategory('전공 / 문구')">
+                <div class="cat-ico">📚</div>
+                <div class="cat-foot">
+                    <span class="cat-name">전공 · 문구</span>
+                    <span class="cat-arrow">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </button>
+
+            <button class="cat-card" onclick="filterCategory('기타 물품')">
+                <div class="cat-ico">📦</div>
+                <div class="cat-foot">
+                    <span class="cat-name">기타 물품</span>
+                    <span class="cat-arrow">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </button>
+        </div>
+    </div>
+</section>
+
+
+<!-- ④  P R O D U C T S -->
+<section class="pg-sec product-pg">
+    <div class="pg-wrap">
+        <div class="pg-head">
+            <div>
+                <p class="pg-eyebrow">Now Open</p>
+                <h2 class="pg-title">지금 모집 중</h2>
+            </div>
+            <a href="product_list.html" class="pg-link">더 보기</a>
+        </div>
+        <div class="product-grid" id="recent-room-grid"></div>
+    </div>
+</section>
+
+
+<!-- ⑤  H O W   I T   W O R K S  (조건부) -->
+<section class="pg-sec hiw-pg" id="guide-section" style="display:none;">
+    <div class="pg-wrap">
+        <div class="pg-head center">
+            <div>
+                <p class="pg-eyebrow">How it works</p>
+                <h2 class="pg-title">어떻게 사용하나요?</h2>
             </div>
         </div>
 
-        <!-- 최근 공구 -->
-        <div class="recent-section">
-            <div class="sec-header">
-                <h2>⚡ 지금 모집 중</h2>
-                <a href="product_list.html">더 보기 →</a>
+        <div class="hiw-grid">
+            <div class="hiw-card">
+                <span class="hiw-num">01</span>
+                <div class="hiw-ico">✏️</div>
+                <h3 class="hiw-card-title">공구 개설 또는 참여</h3>
+                <p class="hiw-card-desc">원하는 물건의 공구방을 직접 열거나, 이미 열린 공구에 참여하세요.</p>
             </div>
-            <div class="room-grid" id="recent-room-grid"></div>
-        </div>
-
-        <!-- 이용 방법 -->
-        <div id="guide-section" style="display:none;" class="hiw-section">
-            <div class="sec-header">
-                <h2>🚀 이용 방법</h2>
+            <div class="hiw-card">
+                <span class="hiw-num">02</span>
+                <div class="hiw-ico">💬</div>
+                <h3 class="hiw-card-title">채팅으로 소통</h3>
+                <p class="hiw-card-desc">인원이 모이면 채팅방에서 수령 장소와 시간을 조율하세요.</p>
             </div>
-            <div class="how-it-works">
-                <div class="hiw-step">
-                    <div class="hiw-icon">✏️</div>
-                    <div class="hiw-num">1</div>
-                    <div class="hiw-step-title">공구 개설 또는 참여</div>
-                    <div class="hiw-step-desc">원하는 물건의 공구방을 직접 열거나,<br>이미 열린 공구에 참여하세요.</div>
-                </div>
-                <div class="hiw-step">
-                    <div class="hiw-icon">💬</div>
-                    <div class="hiw-num">2</div>
-                    <div class="hiw-step-title">채팅으로 소통</div>
-                    <div class="hiw-step-desc">인원이 모이면 채팅방에서<br>수령 장소·시간을 조율하세요.</div>
-                </div>
-                <div class="hiw-step">
-                    <div class="hiw-icon">📦</div>
-                    <div class="hiw-num">3</div>
-                    <div class="hiw-step-title">물건 수령 확인</div>
-                    <div class="hiw-step-desc">물건을 받으면 수령 확인을 눌러<br>공구를 성공적으로 마무리하세요!</div>
-                </div>
-            </div>
-            <div style="text-align:center;">
-                <button class="hiw-detail-btn" onclick="openGuideModal()">📖 단계별 상세 가이드 보기</button>
+            <div class="hiw-card">
+                <span class="hiw-num">03</span>
+                <div class="hiw-ico">📦</div>
+                <h3 class="hiw-card-title">물건 수령 확인</h3>
+                <p class="hiw-card-desc">물건을 받으면 수령 확인 버튼을 눌러 공구를 성공적으로 마무리하세요.</p>
             </div>
         </div>
-    </main>
 
-        <div id="guide-modal" class="guide-modal-overlay" onclick="closeGuideModal(event)">
-            <div class="guide-modal">
-                <button class="guide-modal-close" onclick="closeGuideModal()">✕</button>
-                <h2 class="guide-modal-title">📖 단계별 이용 가이드</h2>
+        <div class="hiw-cta">
+            <button class="hiw-btn" onclick="openGuideModal()">단계별 상세 가이드 보기</button>
+        </div>
+    </div>
+</section>
 
-                <div class="guide-tabs">
-                    <button class="guide-tab active" onclick="switchTab('join', this)">🙋 공구 참여하기</button>
-                    <button class="guide-tab" onclick="switchTab('host', this)">✏️ 공구 개설하기</button>
+
+<!-- 가이드 모달 -->
+<div id="guide-modal" class="guide-modal-overlay" onclick="closeGuideModal(event)">
+    <div class="guide-modal">
+        <button class="guide-modal-close" onclick="closeGuideModal()">✕</button>
+        <h2 class="guide-modal-title">📖 단계별 이용 가이드</h2>
+
+        <div class="guide-tabs">
+            <button class="guide-tab active" onclick="switchTab('join', this)">🙋 공구 참여하기</button>
+            <button class="guide-tab" onclick="switchTab('host', this)">✏️ 공구 개설하기</button>
+        </div>
+
+        <div id="tab-join" class="guide-flow">
+            <div class="gf-step">
+                <div class="gf-num">1</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🏠 메인 페이지</div>
+                    <div class="gf-desc">검색창에 원하는 물건을 입력하거나, 카테고리를 클릭해 공구를 찾아보세요.</div>
+                    <div class="gf-btn-preview gf-btn-search">🔍 검색창 입력 후 Enter</div>
                 </div>
-
-                <div id="tab-join" class="guide-flow">
-                    <div class="gf-step">
-                        <div class="gf-num">1</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🏠 메인 페이지</div>
-                            <div class="gf-desc">검색창에 원하는 물건을 입력하거나, 카테고리를 클릭해 공구를 찾아보세요.</div>
-                            <div class="gf-btn-preview gf-btn-search">🔍 검색창 입력 후 Enter</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">2</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">📋 공구 목록 페이지</div>
-                            <div class="gf-desc">원하는 공구 카드를 클릭해 상세 페이지로 이동하세요.</div>
-                            <div class="gf-btn-preview gf-btn-card">공구 카드 클릭 👆</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">3</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🛍️ 공구 상세 페이지</div>
-                            <div class="gf-desc">공구 정보를 확인한 후 하단 버튼을 눌러 참여하세요.</div>
-                            <div class="gf-btn-preview gf-btn-join">이 공구에 참여하기</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">4</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">💬 채팅방</div>
-                            <div class="gf-desc">채팅방에서 방장과 수령 장소·시간을 조율하세요.</div>
-                            <div class="gf-btn-preview gf-btn-chat">채팅방 가기 (참여중)</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">5</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🛍️ 공구 상세 페이지</div>
-                            <div class="gf-desc">물건을 받은 후, 상세 페이지로 돌아와 수령 확인 버튼을 눌러 공구를 완료하세요!</div>
-                            <div class="gf-btn-preview gf-btn-receive">📦 물건 수령 확인</div>
-                        </div>
-                    </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">2</div>
+                <div class="gf-body">
+                    <div class="gf-screen">📋 공구 목록 페이지</div>
+                    <div class="gf-desc">원하는 공구 카드를 클릭해 상세 페이지로 이동하세요.</div>
+                    <div class="gf-btn-preview gf-btn-card">공구 카드 클릭 👆</div>
                 </div>
-
-                <div id="tab-host" class="guide-flow" style="display:none;">
-                    <div class="gf-step">
-                        <div class="gf-num">1</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🏠 메인 페이지</div>
-                            <div class="gf-desc">로그인 후 화면 오른쪽 하단의 ✏️ 버튼을 클릭하세요.</div>
-                            <div class="gf-btn-preview gf-btn-fab">✏️ (오른쪽 하단 버튼)</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">2</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">📝 공구 작성 페이지</div>
-                            <div class="gf-desc">상품명, 가격, 모집 인원, 수령 장소 등을 입력하고 공구를 올리세요.</div>
-                            <div class="gf-btn-preview gf-btn-submit">공구 올리기 🚀</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">3</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🛍️ 공구 상세 페이지</div>
-                            <div class="gf-desc">인원이 모이면 채팅방에서 참여자들과 소통하며 공구를 진행하세요.</div>
-                            <div class="gf-btn-preview gf-btn-host-chat">💬 채팅방 들어가기 (방장)</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">4</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🛍️ 공구 상세 페이지 (방장)</div>
-                            <div class="gf-desc">물건이 도착하면 참여자 목록에서 각 참여자의 수령을 확인해주세요.</div>
-                            <div class="gf-btn-preview gf-btn-confirm">참여 확인 ✓</div>
-                        </div>
-                    </div>
-                    <div class="gf-connector"></div>
-                    <div class="gf-step">
-                        <div class="gf-num">5</div>
-                        <div class="gf-body">
-                            <div class="gf-screen">🏆 완료</div>
-                            <div class="gf-desc">모든 참여자가 수령 확인을 하면 공구가 최종 성공 처리되고 신뢰도가 올라갑니다!</div>
-                            <div class="gf-btn-preview gf-btn-done">🎉 공구 성공!</div>
-                        </div>
-                    </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">3</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🛍️ 공구 상세 페이지</div>
+                    <div class="gf-desc">공구 정보를 확인한 후 하단 버튼을 눌러 참여하세요.</div>
+                    <div class="gf-btn-preview gf-btn-join">이 공구에 참여하기</div>
+                </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">4</div>
+                <div class="gf-body">
+                    <div class="gf-screen">💬 채팅방</div>
+                    <div class="gf-desc">채팅방에서 방장과 수령 장소·시간을 조율하세요.</div>
+                    <div class="gf-btn-preview gf-btn-chat">채팅방 가기 (참여중)</div>
+                </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">5</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🛍️ 공구 상세 페이지</div>
+                    <div class="gf-desc">물건을 받은 후, 상세 페이지로 돌아와 수령 확인 버튼을 눌러 공구를 완료하세요!</div>
+                    <div class="gf-btn-preview gf-btn-receive">📦 물건 수령 확인</div>
                 </div>
             </div>
         </div>
 
-    <a href="writefront.html" id="write-fab" class="write-fab" title="공구방 만들기" style="display: none;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 20h9"></path>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-        </svg>
-    </a>
-    <script>
-        window.onload = function () {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const isNewUser = localStorage.getItem('isNewUser') === 'true';
-            const fabButton = document.getElementById('write-fab');
-            const guideSection = document.getElementById('guide-section');
+        <div id="tab-host" class="guide-flow" style="display:none;">
+            <div class="gf-step">
+                <div class="gf-num">1</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🏠 메인 페이지</div>
+                    <div class="gf-desc">로그인 후 화면 오른쪽 하단의 ✏️ 버튼을 클릭하세요.</div>
+                    <div class="gf-btn-preview gf-btn-fab">✏️ (오른쪽 하단 버튼)</div>
+                </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">2</div>
+                <div class="gf-body">
+                    <div class="gf-screen">📝 공구 작성 페이지</div>
+                    <div class="gf-desc">상품명, 가격, 모집 인원, 수령 장소 등을 입력하고 공구를 올리세요.</div>
+                    <div class="gf-btn-preview gf-btn-submit">공구 올리기 🚀</div>
+                </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">3</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🛍️ 공구 상세 페이지</div>
+                    <div class="gf-desc">인원이 모이면 채팅방에서 참여자들과 소통하며 공구를 진행하세요.</div>
+                    <div class="gf-btn-preview gf-btn-host-chat">💬 채팅방 들어가기 (방장)</div>
+                </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">4</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🛍️ 공구 상세 페이지 (방장)</div>
+                    <div class="gf-desc">물건이 도착하면 참여자 목록에서 각 참여자의 수령을 확인해주세요.</div>
+                    <div class="gf-btn-preview gf-btn-confirm">참여 확인 ✓</div>
+                </div>
+            </div>
+            <div class="gf-connector"></div>
+            <div class="gf-step">
+                <div class="gf-num">5</div>
+                <div class="gf-body">
+                    <div class="gf-screen">🏆 완료</div>
+                    <div class="gf-desc">모든 참여자가 수령 확인을 하면 공구가 최종 성공 처리되고 신뢰도가 올라갑니다!</div>
+                    <div class="gf-btn-preview gf-btn-done">🎉 공구 성공!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            fabButton.style.display = isLoggedIn ? 'flex' : 'none';
 
-            // 비로그인 상태 OR 회원가입 직후에만 이용방법 섹션 표시
-            if (!isLoggedIn || isNewUser) {
-                guideSection.style.display = 'block';
-                if (isNewUser) {
-                    localStorage.removeItem('isNewUser');
-                    // 회원가입 직후면 가이드 모달 자동 오픈
-                    setTimeout(() => openGuideModal(), 600);
-                }
+<!-- FAB -->
+<a href="writefront.html" id="write-fab" class="write-fab" title="공구방 만들기" style="display:none;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white"
+         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9"/>
+        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+</a>
+
+
+<!-- ── Scripts ── -->
+<script>
+    window.onload = function () {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const isNewUser  = localStorage.getItem('isNewUser')  === 'true';
+        const fab        = document.getElementById('write-fab');
+        const guide      = document.getElementById('guide-section');
+
+        fab.style.display = isLoggedIn ? 'flex' : 'none';
+
+        if (!isLoggedIn || isNewUser) {
+            guide.style.display = 'block';
+            if (isNewUser) {
+                localStorage.removeItem('isNewUser');
+                setTimeout(() => openGuideModal(), 600);
             }
-        };
-    </script>
-    <script>
-        async function loadRecentProducts() {
-            const roomGrid = document.getElementById('recent-room-grid');
+        }
+    };
+</script>
 
-            try {
-                const response = await fetch('https://campusgonggu-production.up.railway.app/products');
-                const products = await response.json();
+<script>
+    async function loadRecentProducts() {
+        const grid = document.getElementById('recent-room-grid');
+        try {
+            const res      = await fetch('https://campusgonggu-production.up.railway.app/products');
+            const products = await res.json();
 
-                // [중요 수정] 마감되지 않은(시간 여유가 있고 인원이 남은) 공구만 필터링
-                const openProducts = products.filter(product => {
-                    // 백엔드에서 준 시간 마감 여부(isClosed)가 false이고,
-                    // 현재 인원이 목표 인원보다 적어야 함
-                    return !product.isClosed && (product.currentCount < product.targetCount);
-                });
+            const open   = products.filter(p => !p.isClosed && p.currentCount < p.targetCount);
+            const recent = open.slice(0, 3);
 
-                // 필터링된 "모집 중" 상품들 중에서 최신 3개만 선택
-                const recentProducts = openProducts.slice(0, 3);
+            grid.innerHTML = '';
 
-                roomGrid.innerHTML = '';
-
-                // 만약 참여 가능한 공구가 하나도 없다면 안내 문구 출력
-                if (recentProducts.length === 0) {
-                    roomGrid.innerHTML = '<p style="text-align:center; width:100%; padding:20px;">현재 참여 가능한 최근 공구가 없습니다.</p>';
-                    return;
-                }
-
-                const tagClass = {
-                    '식재료 / 배달': 'tag-food',
-                    '자취 / 생필품': 'tag-living',
-                    '전공 / 문구': 'tag-study',
-                    '기타 물품': 'tag-etc'
-                };
-
-                recentProducts.forEach(product => {
-                    const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
-                    const base = Number(product.price) || 0;
-                    const ship = Number(product.shipping_fee) || 0;
-                    const cnt  = Number(product.targetCount) || 1;
-                    const pt   = product.price_type || 'per';
-                    const per  = pt === 'total' ? Math.ceil((base + ship) / cnt) : Math.ceil(base + ship / cnt);
-
-                    const cardHTML = `
-                        <div class="room-item" onclick="location.href='product.html?id=${product.id}'">
-                            <span class="room-tag ${tagClass[product.category] || 'tag-etc'}">${product.category}</span>
-                            <h3 class="room-title">${product.title}</h3>
-                            <div class="room-progress-bar">
-                                <div class="progress-fill" style="width:${percent}%;"></div>
-                            </div>
-                            <div class="room-footer">
-                                <span class="count-info">모집 <span>${product.currentCount}명</span> / ${product.targetCount}명</span>
-                                <span style="font-size:0.88rem;font-weight:700;color:#1A1A1A;">${per.toLocaleString()}원</span>
-                            </div>
-                        </div>
-                    `;
-                    roomGrid.insertAdjacentHTML('beforeend', cardHTML);
-                });
-
-            } catch (error) {
-                console.error(error);
-                roomGrid.innerHTML = '<p>최근 공구방을 불러오지 못했습니다.</p>';
+            if (recent.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;width:100%;padding:32px 0;color:#aaa;">현재 참여 가능한 공구가 없습니다.</p>';
+                return;
             }
-        }
 
-        loadRecentProducts();
-    </script>
-    <script>
-        function openGuideModal() {
-            document.getElementById('guide-modal').classList.add('open');
-            document.body.style.overflow = 'hidden';
+            const tagClass = {
+                '식재료 / 배달': 'tag-food',
+                '자취 / 생필품': 'tag-living',
+                '전공 / 문구' : 'tag-study',
+                '기타 물품'   : 'tag-etc'
+            };
+
+            recent.forEach(p => {
+                const pct  = Math.min(Math.round(p.currentCount / p.targetCount * 100), 100);
+                const base = Number(p.price) || 0;
+                const ship = Number(p.shipping_fee) || 0;
+                const cnt  = Number(p.targetCount) || 1;
+                const pt   = p.price_type || 'per';
+                const per  = pt === 'total'
+                    ? Math.ceil((base + ship) / cnt)
+                    : Math.ceil(base + ship / cnt);
+
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="room-item" onclick="location.href='product.html?id=${p.id}'">
+                        <span class="room-tag ${tagClass[p.category] || 'tag-etc'}">${p.category}</span>
+                        <h3 class="room-title">${p.title}</h3>
+                        <div class="room-progress-bar">
+                            <div class="progress-fill" style="width:${pct}%"></div>
+                        </div>
+                        <div class="room-footer">
+                            <span class="count-info">모집 <span>${p.currentCount}명</span> / ${p.targetCount}명</span>
+                            <span style="font-size:0.88rem;font-weight:700;color:#111">${per.toLocaleString()}원</span>
+                        </div>
+                    </div>
+                `);
+            });
+        } catch(e) {
+            console.error(e);
+            grid.innerHTML = '<p style="text-align:center;width:100%;padding:32px 0;color:#aaa;">공구를 불러오지 못했습니다.</p>';
         }
-        function closeGuideModal(e) {
-            if (e && e.target !== document.getElementById('guide-modal')) return;
-            document.getElementById('guide-modal').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-        function switchTab(tab, btn) {
-            document.getElementById('tab-join').style.display = tab === 'join' ? 'flex' : 'none';
-            document.getElementById('tab-host').style.display = tab === 'host' ? 'flex' : 'none';
-            document.querySelectorAll('.guide-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeGuideModal({target: document.getElementById('guide-modal')});
-        });
-    </script>
-    <script>
-        function filterCategory(cat) {
-            location.href = `product_list.html?category=${encodeURIComponent(cat)}`;
-        }
-        function doSearch() {
-            const keyword = document.getElementById('main-search').value.trim();
-            location.href = `product_list.html?search=${encodeURIComponent(keyword)}`;
-        }
-        document.getElementById('main-search').addEventListener('keydown', e => {
-            if (e.key === 'Enter') doSearch();
-        });
-    </script>
+    }
+    loadRecentProducts();
+</script>
+
+<script>
+    function openGuideModal() {
+        document.getElementById('guide-modal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeGuideModal(e) {
+        if (e && e.target !== document.getElementById('guide-modal')) return;
+        document.getElementById('guide-modal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function switchTab(tab, btn) {
+        document.getElementById('tab-join').style.display = tab === 'join' ? 'flex' : 'none';
+        document.getElementById('tab-host').style.display = tab === 'host' ? 'flex' : 'none';
+        document.querySelectorAll('.guide-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeGuideModal({ target: document.getElementById('guide-modal') });
+    });
+</script>
+
+<script>
+    function filterCategory(cat) {
+        location.href = `product_list.html?category=${encodeURIComponent(cat)}`;
+    }
+    function doSearch() {
+        const kw = document.getElementById('main-search').value.trim();
+        location.href = `product_list.html?search=${encodeURIComponent(kw)}`;
+    }
+    document.getElementById('main-search').addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
+    });
+</script>
+
 </body>
-
 </html>
