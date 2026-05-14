@@ -138,6 +138,28 @@ async function addColumnIfNotExists(columnName) {
 
 addColumnIfNotExists('closing_notified').catch(err => console.error('closing_notified 컬럼 추가 실패:', err));
 
+// 가격 구조 컬럼 추가
+(async () => {
+    try {
+        const [r1] = await pool.promise().query(
+            `SELECT COUNT(*) AS cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products' AND COLUMN_NAME = 'shipping_fee'`
+        );
+        if (r1[0].cnt === 0) {
+            await pool.promise().query(`ALTER TABLE products ADD COLUMN shipping_fee INT NOT NULL DEFAULT 0`);
+            console.log('shipping_fee 컬럼 추가 완료');
+        }
+        const [r2] = await pool.promise().query(
+            `SELECT COUNT(*) AS cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products' AND COLUMN_NAME = 'price_type'`
+        );
+        if (r2[0].cnt === 0) {
+            await pool.promise().query(`ALTER TABLE products ADD COLUMN price_type VARCHAR(10) NOT NULL DEFAULT 'per'`);
+            console.log('price_type 컬럼 추가 완료');
+        }
+    } catch (err) {
+        console.error('가격 구조 컬럼 추가 실패:', err);
+    }
+})();
+
 // reviews 테이블 생성
 (async () => {
     try {

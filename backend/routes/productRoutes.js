@@ -99,7 +99,8 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
     const {
         title, category, targetCount, price, duration,
-        location, imageUrl, productUrl, description, user_id
+        location, imageUrl, productUrl, description, user_id,
+        shipping_fee, price_type
     } = req.body;
 
 
@@ -122,12 +123,12 @@ if (durationNum !== null && Number.isNaN(durationNum)) {
 
     const sql = `
         INSERT INTO products
-        (title, category, targetCount, price, duration, location, imageUrl, productUrl, description, user_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, category, targetCount, price, duration, location, imageUrl, productUrl, description, user_id, shipping_fee, price_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(sql,
-        [title, category, targetCount, price, durationNum, location, imageUrl, productUrl, description, user_id],
+        [title, category, targetCount, price, durationNum, location, imageUrl, productUrl, description, user_id, shipping_fee || 0, price_type || 'per'],
         (err, result) => {
             if (err) {
                 console.error(err);
@@ -151,7 +152,9 @@ router.put('/:id', async (req, res) => {
         location,
         imageUrl,
         productUrl,
-        description
+        description,
+        shipping_fee,
+        price_type
     } = req.body;
 
     try {
@@ -191,7 +194,9 @@ durationNum = parseDuration(duration);
             location = ?,
             imageUrl = ?,
             productUrl = ?,
-            description = ?
+            description = ?,
+            shipping_fee = ?,
+            price_type = ?
         WHERE id = ?
     `;
 
@@ -207,6 +212,8 @@ durationNum = parseDuration(duration);
             imageUrl,
             productUrl,
             description,
+            shipping_fee || 0,
+            price_type || 'per',
             productId
         ],
         (err, result) => {

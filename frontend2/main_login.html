@@ -158,7 +158,8 @@
             }
         </script>
 
-        <!-- 이용 방법 가이드 -->
+        <!-- 이용 방법 가이드: 비로그인 / 회원가입 직후에만 표시 -->
+        <div id="guide-section" style="display:none;">
         <div class="section-title">🚀 이용 방법</div>
         <section class="how-it-works">
             <div class="hiw-step">
@@ -192,6 +193,7 @@
         <div style="text-align:center; margin-top:-40px; margin-bottom:70px;">
             <button class="hiw-detail-btn" onclick="openGuideModal()">📖 단계별 상세 가이드 보기</button>
         </div>
+        </div><!-- /guide-section -->
 
         <!-- 상세 가이드 모달 -->
         <div id="guide-modal" class="guide-modal-overlay" onclick="closeGuideModal(event)">
@@ -318,16 +320,21 @@
     </a>
     <script>
         window.onload = function () {
-            // 1. 로그인 상태 확인 (예: 로컬 스토리지에 'isLoggedIn'이 'true'로 저장되어 있다고 가정)
-            // 실제 프로젝트에서는 로그인 성공 시 localStorage.setItem('isLoggedIn', 'true')를 실행해줘야 합니다.
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const isNewUser = localStorage.getItem('isNewUser') === 'true';
             const fabButton = document.getElementById('write-fab');
+            const guideSection = document.getElementById('guide-section');
 
-            // 2. 로그인 상태라면 버튼을 보여줌
-            if (isLoggedIn === 'true') {
-                fabButton.style.display = 'flex'; // 혹은 'block'
-            } else {
-                fabButton.style.display = 'none';
+            fabButton.style.display = isLoggedIn ? 'flex' : 'none';
+
+            // 비로그인 상태 OR 회원가입 직후에만 이용방법 섹션 표시
+            if (!isLoggedIn || isNewUser) {
+                guideSection.style.display = 'block';
+                if (isNewUser) {
+                    localStorage.removeItem('isNewUser');
+                    // 회원가입 직후면 가이드 모달 자동 오픈
+                    setTimeout(() => openGuideModal(), 600);
+                }
             }
         };
     </script>

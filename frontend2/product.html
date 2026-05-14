@@ -36,6 +36,8 @@
                         <div class="n-pay-price" id="product-price">0원 <span id="product-target-count">(0명 기준)</span>
                         </div>
                     </div>
+                    <div id="price-breakdown" style="display:none; margin-top:8px; font-size:0.82rem; color:#888; line-height:1.7;">
+                    </div>
                 </div>
 
                 <div class="progress-section">
@@ -185,7 +187,30 @@
             catBadge.innerText = `${catInfo.emoji} ${product.category}`;
             catBadge.className = `category-badge ${catInfo.className}`;
 
-            document.getElementById('product-price').innerHTML = `${Number(product.price).toLocaleString()}원 <span>(${product.targetCount}명 기준)</span>`;
+            // 인당 금액 계산
+            const basePrice = Number(product.price) || 0;
+            const shippingFee = Number(product.shipping_fee) || 0;
+            const targetCount = Number(product.targetCount) || 1;
+            const pType = product.price_type || 'per';
+            let perPerson;
+            if (pType === 'total') {
+                perPerson = Math.ceil((basePrice + shippingFee) / targetCount);
+            } else {
+                perPerson = Math.ceil(basePrice + shippingFee / targetCount);
+            }
+            document.getElementById('product-price').innerHTML = `${perPerson.toLocaleString()}원 <span>(${product.targetCount}명 기준)</span>`;
+
+            // 가격 상세 내역 표시
+            const breakdownEl = document.getElementById('price-breakdown');
+            if (shippingFee > 0 || pType === 'total') {
+                const label = pType === 'total' ? '상품 전체가' : '상품 개당가';
+                breakdownEl.innerHTML = `
+                    ${label}: ${basePrice.toLocaleString()}원
+                    ${shippingFee > 0 ? ` + 배송비: ${shippingFee.toLocaleString()}원` : ''}
+                    ${pType === 'total' ? ` ÷ ${targetCount}명` : ''}
+                `;
+                breakdownEl.style.display = 'block';
+            }
             document.getElementById('status-count-text').innerHTML = `현재 <strong>${product.currentCount}명</strong> / 목표 ${product.targetCount}명`;
 
             // 프로그래스바

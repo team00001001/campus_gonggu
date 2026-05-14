@@ -93,7 +93,16 @@ function renderGrid() {
     roomGrid.innerHTML = '';
 
     if (filteredProducts.length === 0) {
-        roomGrid.innerHTML = '<p style="text-align:center; padding: 50px;">해당하는 공구 물품이 없습니다.</p>';
+        roomGrid.innerHTML = `
+            <div style="text-align:center; padding:60px 20px; grid-column:1/-1;">
+                <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="margin-bottom:16px; opacity:0.3;">
+                    <circle cx="32" cy="32" r="20" stroke="#8A1538" stroke-width="2.5"/>
+                    <path d="M46 46l14 14" stroke="#8A1538" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M25 32h14M32 25v14" stroke="#8A1538" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div style="font-size:1.05rem; font-weight:700; color:#333; margin-bottom:8px;">검색 결과가 없어요</div>
+                <div style="font-size:0.9rem; color:#aaa;">다른 검색어나 카테고리로 시도해보세요</div>
+            </div>`;
         if(loadMoreArea) loadMoreArea.style.display = 'none';
         return;
     }
@@ -149,7 +158,14 @@ const cardHTML = `
 
             <div class="card-footer" style="display:flex; justify-content:space-between; align-items:center;">
                 <div class="price" style="font-weight:800; font-size:1.1rem; color:${isClosed ? '#888' : '#000'}">
-                    ${Number(product.price).toLocaleString()}원
+                    ${(function() {
+                        const base = Number(product.price) || 0;
+                        const ship = Number(product.shipping_fee) || 0;
+                        const cnt = Number(product.targetCount) || 1;
+                        const pt = product.price_type || 'per';
+                        const per = pt === 'total' ? Math.ceil((base + ship) / cnt) : Math.ceil(base + ship / cnt);
+                        return per.toLocaleString();
+                    })()}원 <span style="font-size:0.75rem; font-weight:500; color:#aaa;">/ 인당</span>
                 </div>
 
                 <div class="status" style="font-size:12px; font-weight:600; color:${isClosed ? '#aaa' : 'var(--main-burgundy)'}">
