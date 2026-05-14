@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
         // 4. ⭐️ 방장 알림은 매번 전송 (메시지 내용만 분기)
         let noticeMessage = `개설하신 "${productTitle}" 공구에 신고가 접수되었습니다.`;
         if (reportCount === 1) {
-            noticeMessage += ` 크림슨 지수가 20점 차감되었습니다. 억울한 상황이라면 운영진에게 문의해주세요.`;
+            noticeMessage += ` 억울한 상황이라면 운영진에게 문의해주세요.`;
         } else {
             noticeMessage += ` (현재 누적 신고 횟수: ${reportCount}회)`;
         }

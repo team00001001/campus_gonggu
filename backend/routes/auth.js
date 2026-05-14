@@ -206,6 +206,8 @@ router.post('/forgot-password', async (req, res) => {
 
 // 🚀 1:1 문의 메일 전송 (운영자에게 발송) API
 router.post('/send-email', async (req, res) => {
+    console.log("👉 [1:1 문의 API 호출됨] 프론트에서 온 데이터:", req.body);
+
     const { category, title, content } = req.body;
 
     const categoryMap = {
@@ -218,9 +220,11 @@ router.post('/send-email', async (req, res) => {
     const categoryKr = categoryMap[category] || category;
 
     try {
-        await axios.post('https://api.brevo.com/v3/smtp/email', {
-            sender: { name: 'KU GONGGU System', email: 'gongguyong0@gmail.com' }, 
-            to: [{ email: 'gongguyong0@gmail.com', name: '운영자' }], 
+        const brevoResponse = await axios.post('https://api.brevo.com/v3/smtp/email', {
+            // 💡 인증번호 보낼 때 썼던 발신자 정보와 100% 동일하게 맞췄습니다.
+            sender: { name: 'Campus Gonggu', email: 'gongguyong0@gmail.com' }, 
+            // 💡 이름 속성을 빼고 수신자 이메일만 넣어 오류 가능성을 차단했습니다.
+            to: [{ email: 'gongguyong0@gmail.com' }], 
             subject: `[1:1 문의 - ${categoryKr}] ${title}`, 
             htmlContent: `
                 <div style="font-family: sans-serif; padding: 20px; line-height: 1.6;">
@@ -236,10 +240,12 @@ router.post('/send-email', async (req, res) => {
             headers: { 'api-key': process.env.BREVO_API_KEY }
         });
 
+        console.log("✅ Brevo 메일 전송 성공!");
         res.status(200).json({ message: '문의가 성공적으로 접수되었습니다.' });
 
     } catch (error) {
-        console.error('문의 메일 전송 에러:', error);
+        // 🚨 실패 시 터미널(콘솔)에 Brevo가 보낸 진짜 에러 이유를 띄워줍니다!
+        console.error('❌ 메일 전송 실패 원인:', error.response ? error.response.data : error.message);
         res.status(500).json({ message: '문의 접수에 실패했습니다. 잠시 후 다시 시도해주세요.' });
     }
 });
