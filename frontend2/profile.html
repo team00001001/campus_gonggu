@@ -7,7 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/skeleton.css">
     <style>
-        :root { --ku-crimson: #8A1538; --ku-gradient: linear-gradient(135deg, #8A1538, #D32F2F); }
+        /* 변수에 블루 컬러 추가 */
+        :root { 
+            --ku-crimson: #8A1538; 
+            --ku-gradient: linear-gradient(135deg, #8A1538, #D32F2F); 
+            --ku-blue: #2B6CB0; 
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Pretendard', sans-serif; background: #F7F8FA; color: #222; }
 
@@ -31,20 +36,30 @@
             width: 80px; height: 80px; border-radius: 50%;
             background: var(--ku-gradient);
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 800; color: #fff;
+            font-size: 2.5rem; 
             margin: 0 auto 14px;
+            box-shadow: 0 4px 10px rgba(138, 21, 56, 0.2);
         }
         .profile-nickname { font-size: 1.35rem; font-weight: 800; margin-bottom: 6px; }
         .profile-label { font-size: 0.82rem; color: #888; margin-bottom: 18px; }
 
+        /* 기본 크림슨 뱃지 (양수) */
         .crimson-badge {
             display: inline-flex; align-items: center; gap: 6px;
             background: #fff5f7; border: 1.5px solid #f5c0cc;
             border-radius: 30px; padding: 7px 18px;
             font-size: 0.95rem; font-weight: 700; color: var(--ku-crimson);
             margin-bottom: 24px;
+            transition: all 0.3s ease;
         }
         .crimson-badge .score { font-size: 1.3rem; font-weight: 800; }
+
+        /* 음수일 때 적용될 블루 뱃지 클래스 */
+        .crimson-badge.negative {
+            background: #EBF5FF;
+            border-color: #BEE3F8;
+            color: var(--ku-blue);
+        }
 
         .stats-row { display: flex; gap: 16px; justify-content: center; }
         .stat-box {
@@ -110,8 +125,8 @@
             <div class="profile-avatar" id="profile-avatar"></div>
             <div class="profile-nickname" id="profile-nickname"></div>
             <div class="profile-label">고대 공구 방장</div>
-            <div class="crimson-badge">
-                🔴 크림슨 지수 &nbsp;<span class="score" id="profile-score"></span>
+            <div class="crimson-badge" id="crimson-badge-container">
+                <span id="badge-emoji">🔴</span> 크림슨 지수 &nbsp;<span class="score" id="profile-score"></span>
             </div>
             <div class="stats-row">
                 <div class="stat-box">
@@ -148,6 +163,17 @@
         history.back();
     }
 
+    // 크림슨 지수에 따라 이모티콘을 반환하는 함수
+    function getGradeEmoji(score) {
+        if (score >= 86) return "🏛️"; 
+        if (score >= 61) return "👑"; 
+        if (score >= 31) return "🐯"; 
+        if (score >= 0)  return "🐱"; 
+        if (score >= -30) return "🐥"; 
+        if (score >= -70) return "🦅"; 
+        return "❄️";                 
+    }
+
     async function loadProfile() {
         try {
             const [profileRes, reviewsRes] = await Promise.all([
@@ -160,10 +186,22 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('profile-wrap').style.display = 'block';
 
-            const initial = (profile.nickname || '?').charAt(0).toUpperCase();
-            document.getElementById('profile-avatar').textContent = initial;
+            const score = profile.trust_score ?? 0;
+            const gradeEmoji = getGradeEmoji(score);
+            const badgeContainer = document.getElementById('crimson-badge-container');
+
+            // 점수가 음수일 경우 파란색 클래스(.negative) 추가
+            if (score < 0) {
+                badgeContainer.classList.add('negative');
+            } else {
+                badgeContainer.classList.remove('negative');
+            }
+
+            document.getElementById('profile-avatar').textContent = gradeEmoji;
+            document.getElementById('badge-emoji').textContent = gradeEmoji;
+            
             document.getElementById('profile-nickname').textContent = profile.nickname;
-            document.getElementById('profile-score').textContent = profile.trust_score ?? 0;
+            document.getElementById('profile-score').textContent = score;
             document.getElementById('stat-deals').textContent = profile.completedDeals ?? 0;
             document.getElementById('stat-reviews').textContent = profile.reviewCount ?? 0;
 

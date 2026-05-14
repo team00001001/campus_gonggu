@@ -63,14 +63,14 @@
 
         <section class="details-section card">
             <div class="host-info-card">
-                <div class="host-avatar">호</div>
+                <div class="host-avatar" id="host-avatar-icon" style="display:flex; align-items:center; justify-content:center; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.1); font-size:1.6rem;">호</div>
                 <div class="host-details">
                     <div class="host-name-row">
                         <span class="host-name" id="host-name" style="cursor:pointer; text-decoration:underline; text-underline-offset:3px;" onclick="goToHostProfile()">로딩중</span>
                         <span class="host-dept" id="host-dept">작성자</span>
                     </div>
                     <div class="host-trust-bar">
-                        <span class="trust-icon">✓</span> 고대생 인증 완료 · 크림슨 지수 <span id="host-trust-score">-</span>
+                        <span class="trust-icon">✓</span> 고대생 인증 완료 · <span id="trust-score-container">크림슨 지수 <span id="host-trust-score">-</span></span>
                     </div>
                 </div>
             </div>
@@ -120,6 +120,17 @@
         const currentUserId = localStorage.getItem('userId');
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         let currentProductData = null;
+
+        // 크림슨 지수에 따라 이모티콘을 반환하는 함수 추가
+        function getGradeEmoji(score) {
+            if (score >= 86) return "🏛️"; 
+            if (score >= 61) return "👑"; 
+            if (score >= 31) return "🐯"; 
+            if (score >= 0)  return "🐱"; 
+            if (score >= -30) return "🐥"; 
+            if (score >= -70) return "🦅"; 
+            return "❄️";                 
+        }
 
         // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', async () => {
@@ -171,7 +182,27 @@
         function renderProductBasicInfo(product) {
             document.getElementById('product-title').innerText = product.title;
             document.getElementById('host-name').innerText = product.writer || '익명 학우';
-            document.getElementById('host-trust-score').innerText = product.writer_trust_score ?? '-';
+            
+            // 💡 크림슨 지수 이모티콘 및 색상 적용 로직
+            const score = parseInt(product.writer_trust_score ?? 0);
+            const gradeEmoji = getGradeEmoji(score);
+            
+            const avatarIcon = document.getElementById('host-avatar-icon');
+            if (avatarIcon) {
+                avatarIcon.textContent = gradeEmoji;
+            }
+
+            const scoreContainer = document.getElementById('trust-score-container');
+            document.getElementById('host-trust-score').innerText = score;
+            
+            // 점수에 따른 텍스트 색상 변경 (양수: 크림슨, 음수: 파란색)
+            if (score < 0) {
+                scoreContainer.style.color = '#2B6CB0';
+                scoreContainer.style.fontWeight = '700';
+            } else {
+                scoreContainer.style.color = '#8A1538';
+                scoreContainer.style.fontWeight = '700';
+            }
 
             // 카테고리 배지 업데이트
             const categoryMap = {
@@ -224,7 +255,7 @@
 
             const staticDate = formatStatic(product.duration);
 
-            // ✅ URL 존재 여부 체크 및 추가 HTML 생성
+            // URL 존재 여부 체크 및 추가 HTML 생성
             let extraUrlsHtml = '';
             
             const isValidProductUrl = product.productUrl && product.productUrl !== 'none' && product.productUrl !== 'null' && product.productUrl !== 'undefined' && product.productUrl.trim() !== '';
@@ -234,7 +265,7 @@
             }
 
 
-            // ✅ 상세 설명에 URL 정보 합치기
+            // 상세 설명에 URL 정보 합치기
             const descHtml = `
                 <div class="product-meta-info" style="margin-bottom: 20px; line-height: 1.6;">
                     📍 <strong>수령 장소</strong>: ${product.location}<br>
@@ -318,12 +349,10 @@
             renderCompletionSection(product, isHost, myInfo);
         }
 
-        // --- 💡 수정된 함수: 방장과 참여자 모두에게 맞게 리스트를 렌더링 ---
         function renderMemberList(product, isHost) {
             const mgmtArea = document.getElementById('member-management-area');
             const validMembers = product.members.filter(m => m.status !== 'noshow');
 
-            // 방장일 때와 참여자일 때의 제목 및 안내 문구 설정
             const titleText = isHost ? '👥 참여자 관리 (방장 전용)' : '👥 참여자';
             const subText = isHost 
                 ? '참여자가 송금하지 않은 경우 노쇼 버튼을 통해 참여자를 내보내는 것이 가능합니다.'
@@ -349,19 +378,16 @@
                 validMembers.forEach(m => {
                     const isConfirmed = m.status === 'confirmed' || m.status === 'completed';
                     
-                    // 확인 완료 여부 및 권한에 따라 보여줄 버튼/텍스트 처리
                     let actionHtml = '';
                     if (isConfirmed) {
                         actionHtml = '<span style="color:#28a745; font-weight:bold;">✅ 확인 완료</span>';
                     } else {
                         if (isHost) {
-                            // 방장일 때는 기존처럼 관리 버튼 출력
                             actionHtml = `
                                 <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'confirmed')" style="color:#007bff; border:1px solid #007bff; background:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:13px; font-weight:bold;">확인</button>
                                 <button onclick="markStatus(${m.participant_id}, ${m.user_id}, 'noshow')" style="color:#dc3545; border:1px solid #dc3545; background:none; padding:4px 8px; border-radius:4px; margin-left:5px; cursor:pointer; font-size:13px; font-weight:bold;">노쇼</button>
                             `;
                         } else {
-                            // 참여자일 때는 버튼 대신 대기중 텍스트 출력
                             actionHtml = '<span style="color:#999; font-weight:bold; font-size:13px;">⏳ 대기중</span>';
                         }
                     }
@@ -378,7 +404,6 @@
             mgmtArea.innerHTML = html;
         }
 
-        // --- 거래 완료 인증 섹션 ---
         function renderCompletionSection(product, isHost, myParticipantInfo) {
             const sectionArea = document.getElementById('completion-section-area');
             
