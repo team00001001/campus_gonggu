@@ -106,82 +106,90 @@
         });
     </script>
 
-    <main>
-        <section class="hero-section">
-            <div class="hero-text-area">
-                <span class="hero-badge">🔥 실시간 트렌드</span>
-
-                <h2 class="hero-main-text">
-                    필요한 물건,<br>
-                    고대생끼리 <span>스마트하게.</span>
-                </h2>
-                <p class="hero-sub-text">배달비 절약부터 대량구매 할인까지. 학우들과 함께하세요!</p>
+    <!-- 히어로 -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-kicker"><span></span>고려대학교 학생 전용</div>
+            <h1>같이 사면<br><em>더 싸게.</em></h1>
+            <p>배달비부터 대량구매 할인까지 — 고대 학우들과 함께하세요</p>
+            <div class="hero-search">
+                <input type="text" id="main-search" placeholder="무엇을 찾고 계신가요?">
+                <button onclick="doSearch()">검색</button>
             </div>
-            <div class="hero-image-area">
-                <img src="images/hero-image.png" alt="공구 이미지" style="width:100%; height:100%; object-fit:contain;">
-            </div>
-        </section>
-
-        <div id="guide-section" style="display:none;">
-        <div class="section-title">🚀 이용 방법</div>
-        <section class="how-it-works">
-            <div class="hiw-step">
-                <div class="hiw-icon">
-                    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8A1538,#D32F2F);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 20h9"></path>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="hiw-step-num">STEP 1</div>
-                <div class="hiw-step-title">공구 개설 또는 참여</div>
-                <div class="hiw-step-desc">원하는 물건의 공구방을 직접 열거나,<br>이미 열린 공구에 참여하세요.</div>
-            </div>
-            <div class="hiw-arrow">›</div>
-            <div class="hiw-step">
-                <div class="hiw-icon">💬</div>
-                <div class="hiw-step-num">STEP 2</div>
-                <div class="hiw-step-title">채팅으로 소통</div>
-                <div class="hiw-step-desc">인원이 모이면 채팅방에서<br>구체적인 수령 장소·시간을 조율하세요.</div>
-            </div>
-            <div class="hiw-arrow">›</div>
-            <div class="hiw-step">
-                <div class="hiw-icon">📦</div>
-                <div class="hiw-step-num">STEP 3</div>
-                <div class="hiw-step-title">물건 수령 확인</div>
-                <div class="hiw-step-desc">물건을 받으면 수령 확인을 눌러<br>공구를 성공적으로 마무리하세요!</div>
-            </div>
-        </section>
-        <div style="text-align:center; margin-top:-40px; margin-bottom:70px;">
-            <button class="hiw-detail-btn" onclick="openGuideModal()">📖 단계별 상세 가이드 보기</button>
         </div>
-        </div><div class="section-title">👀 카테고리 둘러보기</div>
-        <section class="cat-grid">
-            <div class="cat-card cat-1" onclick="filterCategory('식재료 / 배달')">
-                <span class="cat-icon">🍊</span>
-                <div class="cat-title">식재료 / 배달</div>
-            </div>
-            <div class="cat-card cat-2" onclick="filterCategory('자취 / 생필품')">
-                <span class="cat-icon">🧴</span>
-                <div class="cat-title">자취 / 생필품</div>
-            </div>
-            <div class="cat-card cat-3" onclick="filterCategory('전공 / 문구')">
-                <span class="cat-icon">📚</span>
-                <div class="cat-title">전공 / 문구</div>
-            </div>
-            <div class="cat-card cat-4" onclick="filterCategory('기타 물품')">
-                <span class="cat-icon">📦</span>
-                <div class="cat-title">기타 물품</div>
-            </div>
-        </section>
+    </section>
 
-        <script>
-            function filterCategory(categoryName) {
-                // 카테고리 이름을 URL 파라미터로 담아서 이동
-                location.href = `product_list.html?category=${encodeURIComponent(categoryName)}`;
-            }
-        </script>
+    <!-- 스탯 바 -->
+    <div class="stats-bar">
+        <span>🎓 고대생 전용 플랫폼</span>
+        <span class="dot">·</span>
+        <span>💬 실시간 채팅 조율</span>
+        <span class="dot">·</span>
+        <span>🛡️ 크림슨 지수로 신뢰 검증</span>
+    </div>
+
+    <main>
+        <!-- 카테고리 -->
+        <div class="cat-section">
+            <div class="sec-header">
+                <h2>카테고리</h2>
+                <a href="product_list.html">전체 보기 →</a>
+            </div>
+            <div class="cat-pills">
+                <button class="cat-pill" onclick="filterCategory('식재료 / 배달')">
+                    <span class="cat-emoji">🍊</span> 식재료 / 배달
+                </button>
+                <button class="cat-pill" onclick="filterCategory('자취 / 생필품')">
+                    <span class="cat-emoji">🧴</span> 자취 / 생필품
+                </button>
+                <button class="cat-pill" onclick="filterCategory('전공 / 문구')">
+                    <span class="cat-emoji">📚</span> 전공 / 문구
+                </button>
+                <button class="cat-pill" onclick="filterCategory('기타 물품')">
+                    <span class="cat-emoji">📦</span> 기타 물품
+                </button>
+            </div>
+        </div>
+
+        <!-- 최근 공구 -->
+        <div class="recent-section">
+            <div class="sec-header">
+                <h2>⚡ 지금 모집 중</h2>
+                <a href="product_list.html">더 보기 →</a>
+            </div>
+            <div class="room-grid" id="recent-room-grid"></div>
+        </div>
+
+        <!-- 이용 방법 -->
+        <div id="guide-section" style="display:none;" class="hiw-section">
+            <div class="sec-header">
+                <h2>🚀 이용 방법</h2>
+            </div>
+            <div class="how-it-works">
+                <div class="hiw-step">
+                    <div class="hiw-icon">✏️</div>
+                    <div class="hiw-num">1</div>
+                    <div class="hiw-step-title">공구 개설 또는 참여</div>
+                    <div class="hiw-step-desc">원하는 물건의 공구방을 직접 열거나,<br>이미 열린 공구에 참여하세요.</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-icon">💬</div>
+                    <div class="hiw-num">2</div>
+                    <div class="hiw-step-title">채팅으로 소통</div>
+                    <div class="hiw-step-desc">인원이 모이면 채팅방에서<br>수령 장소·시간을 조율하세요.</div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-icon">📦</div>
+                    <div class="hiw-num">3</div>
+                    <div class="hiw-step-title">물건 수령 확인</div>
+                    <div class="hiw-step-desc">물건을 받으면 수령 확인을 눌러<br>공구를 성공적으로 마무리하세요!</div>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <button class="hiw-detail-btn" onclick="openGuideModal()">📖 단계별 상세 가이드 보기</button>
+            </div>
+        </div>
+    </main>
 
         <div id="guide-modal" class="guide-modal-overlay" onclick="closeGuideModal(event)">
             <div class="guide-modal">
@@ -289,10 +297,6 @@
             </div>
         </div>
 
-        <div class="section-title">⚡최근 올라온 공구방</div>
-        <section class="room-grid" id="recent-room-grid">
-        </section>
-    </main>
     <a href="writefront.html" id="write-fab" class="write-fab" title="공구방 만들기" style="display: none;">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
@@ -346,31 +350,34 @@
                     return;
                 }
 
+                const tagClass = {
+                    '식재료 / 배달': 'tag-food',
+                    '자취 / 생필품': 'tag-living',
+                    '전공 / 문구': 'tag-study',
+                    '기타 물품': 'tag-etc'
+                };
+
                 recentProducts.forEach(product => {
-                    const percent = Math.min(
-                        Math.round((product.currentCount / product.targetCount) * 100),
-                        100
-                    );
+                    const percent = Math.min(Math.round((product.currentCount / product.targetCount) * 100), 100);
+                    const base = Number(product.price) || 0;
+                    const ship = Number(product.shipping_fee) || 0;
+                    const cnt  = Number(product.targetCount) || 1;
+                    const pt   = product.price_type || 'per';
+                    const per  = pt === 'total' ? Math.ceil((base + ship) / cnt) : Math.ceil(base + ship / cnt);
 
                     const cardHTML = `
-                <div class="room-item" onclick="location.href='product.html?id=${product.id}'">
-                    <div class="room-content">
-                        <div class="tag-group">
-                            <span class="room-tag tag-study">${product.category}</span>
+                        <div class="room-item" onclick="location.href='product.html?id=${product.id}'">
+                            <span class="room-tag ${tagClass[product.category] || 'tag-etc'}">${product.category}</span>
+                            <h3 class="room-title">${product.title}</h3>
+                            <div class="room-progress-bar">
+                                <div class="progress-fill" style="width:${percent}%;"></div>
+                            </div>
+                            <div class="room-footer">
+                                <span class="count-info">모집 <span>${product.currentCount}명</span> / ${product.targetCount}명</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1A1A1A;">${per.toLocaleString()}원</span>
+                            </div>
                         </div>
-                        <h3 class="room-title">${product.title}</h3>
-                        <div class="room-progress-bar">
-                            <div class="progress-fill" style="width: ${percent}%;"></div>
-                        </div>
-                        <div class="room-footer">
-                            <span class="count-info">
-                                모집 <span>${product.currentCount}명</span> / ${product.targetCount}명
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `;
-
+                    `;
                     roomGrid.insertAdjacentHTML('beforeend', cardHTML);
                 });
 
@@ -403,19 +410,15 @@
         });
     </script>
     <script>
-        const mainSearch = document.getElementById('main-search');
-
-        mainSearch.addEventListener('keydown', (e) => {
-
-            if (e.key === 'Enter') {
-
-                const keyword = mainSearch.value.trim();
-
-                if (!keyword) return;
-
-                location.href =
-                    `product_list.html?search=${encodeURIComponent(keyword)}`;
-            }
+        function filterCategory(cat) {
+            location.href = `product_list.html?category=${encodeURIComponent(cat)}`;
+        }
+        function doSearch() {
+            const keyword = document.getElementById('main-search').value.trim();
+            location.href = `product_list.html?search=${encodeURIComponent(keyword)}`;
+        }
+        document.getElementById('main-search').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doSearch();
         });
     </script>
 </body>
