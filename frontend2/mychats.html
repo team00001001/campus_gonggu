@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ${statusHtml}
                     <div class="chat-category" style="font-size: 0.85rem; color: #666;">${chat.category || '기타'}</div>
                     <div class="chat-name" style="font-weight: 600; margin: 4px 0; display: flex; align-items: center;">
-                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chat.title}</span>
+                        <a href="product.html?id=${productId}" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${chat.title}</a>
                         ${hostBadgeHtml}
                     </div>
                     <div class="chat-meta" style="font-size: 0.9rem; color: #444;">
