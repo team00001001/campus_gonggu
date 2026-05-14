@@ -251,7 +251,8 @@
             const actionArea = document.getElementById('action-button-area');
             const isHost = String(product.user_id) === String(currentUserId);
             const myInfo = product.members.find(m => String(m.user_id) === String(currentUserId));
-            const isParticipant = !!myInfo;
+            const isNoshow = !!myInfo && myInfo.status === 'noshow';
+            const isParticipant = !!myInfo && myInfo.status !== 'noshow';
 
             const now = Math.floor(Date.now() / 1000);
             const isExpired = Number(product.duration) <= now;
@@ -262,16 +263,22 @@
                 actionArea.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:10px;">
                         <button class="join-btn" style="background-color: var(--ku-crimson);" onclick="location.href='direct_chattings.html?id=${product.id}'">💬 채팅방 들어가기 (방장)</button>
-                        
+
                         <div style="display:flex; gap:10px;">
                             <button class="join-btn" style="background:#4A5056; flex:1; font-size: 14px;" onclick="location.href='edit.html?id=${product.id}'">내용 수정</button>
                             ${!isClosed ? `<button class="join-btn" style="background:#222222; flex:1; font-size: 14px;" onclick="earlyCloseProduct('${product.id}')">모집 조기 마감</button>` : ''}
                         </div>
-                        
+
                         <button class="join-btn" style="background:none; border:1px solid #EAECEF; color:#818991; padding: 12px; font-size: 14px;" onclick="deleteProduct('${product.id}')">공구방 삭제</button>
                     </div>
                 `;
                 renderHostMemberManagement(product);
+            } else if (isNoshow) {
+                actionArea.innerHTML = `
+                    <div style="padding: 15px; background-color: #f8d7da; border-radius: 8px; text-align: center; color: #721c24;">
+                        ❌ 노쇼 처리된 공구입니다.
+                    </div>
+                `;
             } else if (isParticipant) {
                 const canCancel = !isClosed && myInfo.status === 'joined';
                 actionArea.innerHTML = `
