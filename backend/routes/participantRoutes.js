@@ -117,7 +117,7 @@ router.post('/join', async (req, res) => {
                         [productId]
                     );
                     // 방장에게 거래 완료 확인 필요 알림 전송 (상품명 포함)
-                    createNotification(productInfo.user_id, '거래 완료 확인 필요', `"${productInfo.title}" 공구의 거래 완료 확인이 필요합니다.`, 'success', productId);
+                    createNotification(productInfo.user_id, '거래 완료 확인 필요', `"${productInfo.title}" 공구의 거래 완료 확인이 필요합니다. 택배 수령과 참여자 물건 수령 후 확인 버튼을 눌러주세요.`, 'success', productId);
                     allParticipants.forEach(p => {
                         if (String(p.user_id) !== String(productInfo.user_id)) {
                             // 참여자에게 마감 알림 전송
