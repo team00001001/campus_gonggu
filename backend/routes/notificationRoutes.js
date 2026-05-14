@@ -63,7 +63,7 @@ router.patch('/:id/read', (req, res) => {
   });
 });
 
-// 4. 알림 삭제 처리
+// 4. 알림 개별 삭제 처리
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
@@ -82,7 +82,26 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-// 5. 💡 [수정된 부분] 알림 생성 (동적 메세지 처리)
+// 5. 💡 [새로 추가된 부분] 특정 유저 알림 모두 삭제 처리
+router.delete('/user/:userId/delete-all', (req, res) => {
+  const { userId } = req.params;
+
+  const sql = `
+        DELETE FROM notifications
+        WHERE user_id = ?
+    `;
+
+  db.query(sql, [userId], (err) => {
+    if (err) {
+      console.error('알림 모두 삭제 처리 에러:', err);
+      return res.status(500).json({ message: '알림 모두 삭제 처리 실패' });
+    }
+
+    res.json({ message: '알림 모두 삭제 처리 완료' });
+  });
+});
+
+// 6. 알림 생성 (동적 메세지 처리)
 router.post('/', (req, res) => {
   // 클라이언트 요청에서 product_name을 추가로 구조분해할당 받습니다.
   const { user_id, title, message, type, product_name } = req.body;
