@@ -357,36 +357,118 @@ router.get('/', async (req, res) => {
     }
 });
 
+// // ==========================================
+// // 1. 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
+// // ==========================================
+// router.patch('/status', async (req, res) => {
+//     const { participantId, userId, status, productId } = req.body;
+
+//     const conn = await pool.promise().getConnection();
+//     try {
+//         await conn.beginTransaction();
+
+//         // 🚨 알림에 사용할 공구 제목(title) 미리 가져오기
+//         let targetProductId = productId;
+//         if (!targetProductId) {
+//             const [rows] = await conn.query(
+//                 `SELECT product_id FROM product_participants WHERE id = ?`,
+//                 [participantId]
+//             );
+//             if (rows.length > 0) {
+//                 targetProductId = rows[0].product_id;
+//             }
+//         }
+
+//         let productTitle = "공구";
+//         if (targetProductId) {
+//             const [[pRow]] = await conn.query(
+//                 `SELECT title FROM products WHERE id = ?`, 
+//                 [targetProductId]
+//             );
+//             if (pRow) productTitle = pRow.title;
+//         }
+
+//         if (status === 'noshow') {
+//             // 1. 상태를 노쇼로 변경
+//             await conn.query(
+//                 `UPDATE product_participants SET status = 'noshow' WHERE id = ?`,
+//                 [participantId]
+//             );
+
+//             // 2. 신뢰도 10점 차감
+//             await updateTrustScore(userId, -10, conn);
+
+//             // 3. 인원수 -1 감소 처리
+//             if (targetProductId) {
+//                 await conn.query(
+//                     `UPDATE products 
+//                     SET currentCount = currentCount - 1 
+//                     WHERE id = ? AND currentCount > 0`,
+//                     [targetProductId]
+//                 );
+//             }
+
+//             createNotification(
+//                 userId,
+//                 '노쇼 처리 안내',
+//                 '노쇼 처리가 반영되었습니다.',
+//                 'notice', targetProductId
+//             );
+
+//         } else {
+//             // 확인(confirmed) 버튼 눌렀을 때
+//             await conn.query(
+//                 `UPDATE product_participants SET status = ? WHERE id = ?`,
+//                 [status, participantId]
+//             );
+//             // 성공 시 +3점 부여
+//             await updateTrustScore(userId, 3, conn);
+
+//             // 🔔 [알림 전송] 참여자에게 확인 완료 알림
+//             createNotification(
+//                 userId,
+//                 '참여 확인 완료',
+//                 `"${productTitle}" 공구 방장이 참여를 확인했습니다. 물건 수령 후 '수령 확인' 버튼을 눌러주세요.`,
+//                 'success', targetProductId
+//             );
+//         }
+
+//         await conn.commit();
+//         res.json({ message: '상태 업데이트 및 인원수 반영 완료' });
+
+//     } catch (error) {
+//         await conn.rollback();
+//         console.error("상태 업데이트 에러:", error);
+//         res.status(500).json({ message: '상태 업데이트 실패' });
+//     } finally {
+//         conn.release();
+//     }
+// });
 // ==========================================
 // 1. 방장이 참여자의 상태(노쇼/확인)를 업데이트하는 API
 // ==========================================
 router.patch('/status', async (req, res) => {
-    const { participantId, userId, status, productId } = req.body;
+    const { participantId, userId, status } = req.body; // productId는 DB에서 직접 가져오는 게 더 정확합니다.
 
     const conn = await pool.promise().getConnection();
     try {
         await conn.beginTransaction();
 
-        // 🚨 알림에 사용할 공구 제목(title) 미리 가져오기
-        let targetProductId = productId;
-        if (!targetProductId) {
-            const [rows] = await conn.query(
-                `SELECT product_id FROM product_participants WHERE id = ?`,
-                [participantId]
-            );
-            if (rows.length > 0) {
-                targetProductId = rows[0].product_id;
-            }
+        // 🚨 [핵심 수정] 참여자 ID(participantId)를 통해 해당 공구의 ID와 제목(title)을 한 번에 가져옵니다.
+        // 이렇게 하면 어떤 상황에서도 productTitle이 누락되지 않습니다.
+        const [infoRows] = await conn.query(`
+            SELECT p.id AS targetProductId, p.title AS productTitle 
+            FROM products p
+            JOIN product_participants pp ON p.id = pp.product_id
+            WHERE pp.id = ?
+        `, [participantId]);
+
+        if (infoRows.length === 0) {
+            await conn.rollback();
+            return res.status(404).json({ message: '참여 정보를 찾을 수 없습니다.' });
         }
 
-        let productTitle = "공구";
-        if (targetProductId) {
-            const [[pRow]] = await conn.query(
-                `SELECT title FROM products WHERE id = ?`, 
-                [targetProductId]
-            );
-            if (pRow) productTitle = pRow.title;
-        }
+        const { targetProductId, productTitle } = infoRows[0];
 
         if (status === 'noshow') {
             // 1. 상태를 노쇼로 변경
@@ -398,21 +480,21 @@ router.patch('/status', async (req, res) => {
             // 2. 신뢰도 10점 차감
             await updateTrustScore(userId, -10, conn);
 
-            // 3. 인원수 -1 감소 처리
-            if (targetProductId) {
-                await conn.query(
-                    `UPDATE products 
-                    SET currentCount = currentCount - 1 
-                    WHERE id = ? AND currentCount > 0`,
-                    [targetProductId]
-                );
-            }
+            // 3. 인원수 -1 감소 처리 (GREATEST로 0 이하 방지)
+            await conn.query(
+                `UPDATE products 
+                 SET currentCount = GREATEST(currentCount - 1, 0) 
+                 WHERE id = ?`,
+                [targetProductId]
+            );
 
-            createNotification(
+            // 🔔 [노쇼 알림 발송] 이제 "${productTitle}"에 실제 방 이름이 담깁니다.
+            await createNotification(
                 userId,
                 '노쇼 처리 안내',
-                '노쇼 처리가 반영되었습니다.',
-                'notice', targetProductId
+                `"${productTitle}" 공구에서 노쇼 처리가 반영되었습니다.`,
+                'notice', 
+                targetProductId
             );
 
         } else {
@@ -424,17 +506,18 @@ router.patch('/status', async (req, res) => {
             // 성공 시 +3점 부여
             await updateTrustScore(userId, 3, conn);
 
-            // 🔔 [알림 전송] 참여자에게 확인 완료 알림
-            createNotification(
+            // 🔔 [확인 알림 발송]
+            await createNotification(
                 userId,
                 '참여 확인 완료',
                 `"${productTitle}" 공구 방장이 참여를 확인했습니다. 물건 수령 후 '수령 확인' 버튼을 눌러주세요.`,
-                'success', targetProductId
+                'success', 
+                targetProductId
             );
         }
 
         await conn.commit();
-        res.json({ message: '상태 업데이트 및 인원수 반영 완료' });
+        res.json({ message: '상태 업데이트 완료' });
 
     } catch (error) {
         await conn.rollback();
@@ -444,7 +527,6 @@ router.patch('/status', async (req, res) => {
         conn.release();
     }
 });
-
 
 // ==========================================
 // 2. 참여자 -> 수령 완료 확인 및 자동 최종 완료 처리 API
