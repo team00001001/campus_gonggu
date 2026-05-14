@@ -268,13 +268,9 @@ nav a.menu-link:hover {
 .product-grid.cols-2 .product-thumbnail {
     height: 100%;
     border-radius: 0;
-    border-top-left-radius: 24px;
-    border-bottom-left-radius: 24px;
 }
 .product-grid.cols-2 .no-image-overlay {
     border-radius: 0;
-    border-top-left-radius: 24px;
-    border-bottom-left-radius: 24px;
 }
 .product-grid.cols-2 .card-body { justify-content: center; }
 
@@ -296,7 +292,7 @@ nav a.menu-link:hover {
 /* 상품 카드 디자인 */
 .product-card {
     background: #fff;
-    border-radius: 8px;
+    border-radius: 0;
     border: 1px solid #eee;
     overflow: hidden;
     transition: border-color 0.15s, box-shadow 0.15s;
