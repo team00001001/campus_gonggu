@@ -50,10 +50,10 @@ router.get('/host/:hostId', async (req, res) => {
         const [reviews] = await db.promise().query(
             `SELECT r.id, r.content, r.created_at,
                     u.nickname AS reviewer_nickname,
-                    p.title AS product_title
+                    COALESCE(p.title, '삭제된 공구') AS product_title
              FROM reviews r
-             JOIN users u ON r.reviewer_id = u.id
-             JOIN products p ON r.product_id = p.id
+             LEFT JOIN users u ON r.reviewer_id = u.id
+             LEFT JOIN products p ON r.product_id = p.id
              WHERE r.host_id = ?
              ORDER BY r.created_at DESC`,
             [hostId]
