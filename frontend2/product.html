@@ -780,7 +780,7 @@
         // 🚀 배송 현황 조회
         // =========================================================
         async function initDeliveryTracking(productId, userId) {
-            if (!productId || !userId) {
+            if (!isLoggedIn || !productId || !userId) {
                 hideDeliverySection();
                 return;
             }
