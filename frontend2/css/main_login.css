@@ -168,219 +168,111 @@ button { cursor:pointer; font-family:inherit; border:none; background:none; }
 
 
 /* ══════════════════ CATEGORIES ══════════════════ */
-/* ══════════════════ CATEGORIES (강조 업데이트) ══════════════════ */
 .cat-grid {
-  display: grid; 
-  grid-template-columns: repeat(4, 1fr);
-  /* 테두리를 1px에서 2px로 두껍게, 색상을 조금 더 진하게 변경 */
-  border: 2px solid #D1D5DB; 
-  background: #D1D5DB; /* 그리드 사이 간격 선을 위해 배경색 설정 */
-  gap: 2px; /* 카드 사이 경계선 두께 조절 */
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--ln);
 }
-
 .cat-card {
   background: var(--wh);
-  /* 개별 카드 테두리 대신 그리드 갭으로 선 표현 가능하지만, 명확성을 위해 유지 */
-  padding: 32px 24px; /* 패딩을 늘려 여백 확보 */
-  display: flex; 
-  flex-direction: column; 
-  align-items: flex-start; 
-  gap: 20px; /* 아이콘과 글자 사이 간격 증대 */
-  cursor: pointer; 
-  transition: all 0.2s ease;
+  border-right: 1px solid var(--ln);
+  padding: 26px 20px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+  cursor: pointer; transition: background 0.15s;
   text-align: left;
 }
-
-.cat-card:hover { 
-  background: #F9FAFB; 
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 추가 */
-  box-shadow: inset 0 0 0 2px var(--c); /* 호버 시 테두리 색상 강조 */
-}
+.cat-card:last-child { border-right: none; }
+.cat-card:hover { background: #FAFAFA; }
+.cat-card:hover .cat-name { color: var(--c); }
+.cat-card:hover .cat-arrow { color: var(--c); transform: translateX(3px); }
 
 .cat-ico {
-  width: 56px; height: 56px; /* 크기 확대 (기존 48px) */
-  background: var(--bg); 
-  border: 1.5px solid var(--ln);
+  width: 48px; height: 48px;
+  background: var(--bg); border: 1px solid var(--ln);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem; /* 아이콘 크기 확대 (기존 1.45rem) */
-  border-radius: 6px; /* 살짝 더 둥글게 */
+  font-size: 1.45rem; border-radius: 2px;
 }
-
 .cat-foot {
   display: flex; justify-content: space-between; align-items: center; width: 100%;
 }
+.cat-name { font-size: 0.9rem; font-weight: 700; color: var(--ink); transition: color 0.15s; }
+.cat-arrow { color: var(--t4); transition: all 0.15s; display: flex; }
 
-.cat-name { 
-  font-size: 1.15rem; /* 글씨 크기 대폭 확대 (기존 0.9rem) */
-  font-weight: 800;    /* 더 두꺼운 글씨체 적용 */
-  color: var(--ink); 
-  transition: color 0.15s; 
-}
 
-.cat-arrow { 
-  color: var(--t4); 
-  font-size: 1.2rem; /* 화살표 크기 증대 */
-  transition: all 0.15s; 
-}
-
-.cat-card:hover .cat-name { color: var(--c); }
-.cat-card:hover .cat-arrow { color: var(--c); transform: translateX(5px); }
 /* ══════════════════ PRODUCTS ══════════════════ */
-/* ══════════════════ PRODUCTS (색상 유지 + 크기 확대) ══════════════════ */
 .product-grid {
-  display: grid; 
-  grid-template-columns: repeat(3, 1fr);
-  border: 2px solid #D1D5DB; /* 테두리 진하게 */
-  background: #D1D5DB; 
-  gap: 2px; /* 칸 사이 구분 명확하게 */
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--ln);
 }
-
 .room-item {
   background: var(--wh);
-  padding: 32px; /* 내부 여백 확대 */
-  cursor: pointer; 
-  transition: all 0.15s;
-  display: flex;
-  flex-direction: column;
+  border-right: 1px solid var(--ln);
+  padding: 24px; cursor: pointer; transition: background 0.15s;
 }
-
+.room-item:last-child { border-right: none; }
 .room-item:hover { background: #FAFAFA; }
 
-/* 태그 공통 스타일 (크기 확대) */
 .room-tag {
   display: inline-block;
-  font-size: 0.8rem; /* 글씨 키움 */
-  font-weight: 800; 
-  padding: 5px 14px; 
-  margin-bottom: 16px; 
-  border-radius: 4px;
+  font-size: 0.67rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 9px; margin-bottom: 12px; border-radius: 2px;
 }
+.tag-food   { background: #FEF3E2; color: #C2410C; }
+.tag-living { background: #EFF6FF; color: #1D4ED8; }
+.tag-study  { background: #F0FDF4; color: #15803D; }
+.tag-etc    { background: #F5F3FF; color: #6D28D9; }
 
-/* ★ 여기서부터 색상 클래스입니다. 이 부분이 있어야 색이 떠요! ★ */
-.tag-food   { background: #FEF3E2; color: #C2410C; } /* 식재료 / 배달 */
-.tag-living { background: #EFF6FF; color: #1D4ED8; } /* 생활 / 소품 */
-.tag-study  { background: #F0FDF4; color: #15803D; } /* 전공 / 문구 */
-.tag-etc    { background: #F5F3FF; color: #6D28D9; } /* 기타 */
-
-/* 제목 스타일 확대 */
 .room-title {
-  font-size: 1.15rem; 
-  font-weight: 800; 
-  color: var(--ink);
-  line-height: 1.5; 
-  margin-bottom: 24px;
-  display: -webkit-box; 
-  -webkit-line-clamp: 2; 
-  -webkit-box-orient: vertical; 
-  overflow: hidden;
+  font-size: 0.97rem; font-weight: 700; color: var(--ink);
+  line-height: 1.5; margin-bottom: 20px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-
-/* 진행 바 도톰하게 */
-.room-progress-bar { 
-  height: 6px; 
-  background: var(--bg); 
-  margin-bottom: 18px; 
-  border-radius: 10px;
-}
-.room-progress-bar .progress-fill { 
-  height: 100%; 
-  background: var(--c); 
-  opacity: 0.8; 
-}
-
-/* 하단 숫자 정보 */
+.room-progress-bar { height: 2px; background: var(--bg); margin-bottom: 14px; }
+.room-progress-bar .progress-fill { height: 100%; background: var(--c); opacity: 0.7; }
 .room-footer {
   display: flex; justify-content: space-between; align-items: center;
 }
-.count-info { 
-  font-size: 0.9rem; 
-  color: var(--t4); 
-  font-weight: 600; 
-}
-.count-info span { 
-  color: var(--c); 
-  font-weight: 800; 
-}
+.count-info { font-size: 0.78rem; color: var(--t4); font-weight: 500; }
+.count-info span { color: var(--c); font-weight: 700; }
+
 
 /* ══════════════════ HOW IT WORKS ══════════════════ */
-/* ══════════════════ HOW IT WORKS (강조 업데이트) ══════════════════ */
 .hiw-grid {
-  display: grid; 
-  grid-template-columns: repeat(3, 1fr);
-  /* 테두리를 2px로 두껍게, 색상을 통일 */
-  border: 2px solid #D1D5DB; 
-  background: #D1D5DB; 
-  gap: 2px; 
-  margin-bottom: 44px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--ln); margin-bottom: 32px;
 }
-
 .hiw-card {
-  background: var(--wh); 
-  /* 내부 여백을 넉넉히 주어 가독성 향상 */
-  padding: 48px 36px; 
-  transition: all 0.2s ease;
+  background: var(--wh); border-right: 1px solid var(--ln);
+  padding: 36px 28px; transition: background 0.15s;
 }
-
-.hiw-card:hover { 
-  background: #F9FAFB; 
-}
-
-/* 단계 숫자 스타일 확대 */
+.hiw-card:last-child { border-right: none; }
+.hiw-card:hover { background: #FAFAFA; }
 .hiw-num {
-  font-size: 0.75rem; /* 기존 0.61 -> 0.75 */
-  font-weight: 800; 
-  letter-spacing: 0.2em;
-  color: var(--c); 
-  display: block; 
-  margin-bottom: 22px;
+  font-size: 0.61rem; font-weight: 800; letter-spacing: 0.2em;
+  color: var(--c); display: block; margin-bottom: 18px;
 }
-
-/* 아이콘 박스 및 이모지 크기 확대 */
 .hiw-ico {
-  width: 64px; height: 64px; /* 기존 50 -> 64 */
-  background: var(--bg); 
-  border: 1.5px solid var(--ln);
+  width: 50px; height: 50px;
+  background: var(--bg); border: 1px solid var(--ln);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.9rem; /* 아이콘 자체 크기 확대 */
-  margin-bottom: 20px; 
-  border-radius: 6px;
+  font-size: 1.55rem; margin-bottom: 16px; border-radius: 2px;
 }
-
-/* 카드 제목 확대 */
-.hiw-card-title { 
-  font-size: 1.15rem; /* 기존 0.9 -> 1.15 */
-  font-weight: 800; 
-  color: var(--ink); 
-  margin-bottom: 12px; 
-}
-
-/* 설명 문구 확대 */
-.hiw-card-desc { 
-  font-size: 0.92rem; /* 기존 0.8 -> 0.92 */
-  color: var(--t3); 
-  line-height: 1.75; 
-}
+.hiw-card-title { font-size: 0.9rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.hiw-card-desc  { font-size: 0.8rem; color: var(--t3); line-height: 1.7; }
 
 .hiw-cta { text-align: center; }
 
-/* "단계별 상세 가이드" 버튼 확대 및 강화 */
+/* "단계별 상세 가이드" 버튼 */
 .hiw-btn {
   background: none;
-  /* 버튼 테두리도 약간 더 두껍게 */
-  border: 2px solid var(--ln); 
+  border: 1.5px solid var(--ln);
   color: var(--t3);
-  padding: 14px 40px; /* 버튼 크기 확대 */
-  border-radius: 6px;
-  font-size: 0.95rem; /* 글씨 확대 */
-  font-weight: 700;
-  transition: all 0.14s;
+  padding: 11px 32px;
+  border-radius: 4px;
+  font-size: 0.84rem; font-weight: 600;
+  transition: border-color 0.14s, color 0.14s;
 }
+.hiw-btn:hover { border-color: var(--c); color: var(--c); }
 
-.hiw-btn:hover { 
-  border-color: var(--c); 
-  color: var(--c); 
-  background: rgba(138, 21, 56, 0.04); /* 살짝 배경색 추가 */
-}
 
 /* ══════════════════ GUIDE MODAL ══════════════════ */
 .guide-modal-overlay {
