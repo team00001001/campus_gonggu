@@ -42,9 +42,14 @@
 
   /* 검색창 */
   .hero-search {
-    max-width: 100% !important;
-    height: 50px !important;
+    max-width: 85% !important;
+    height: 40px !important;
     margin-bottom: 16px !important;
+  }
+
+  .hero-search input {
+    flex: 1 !important;
+    min-width: 0 !important;
   }
 
   .hero-search button {
