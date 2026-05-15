@@ -159,13 +159,9 @@
         document.getElementById('inquiryForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            //추가
-            const userId = localStorage.getItem('userId');
-    if (!userId) {
-        alert('로그인이 필요한 서비스입니다. 로그인 후 다시 이용해주세요.');
-        location.href = 'main_login.html';
-        return;
-    }
+            const userEmail = localStorage.getItem('userEmail') || "unknown@korea.ac.kr";
+            const displayId = userEmail.split('@')[0];
+            
 
             const category = document.getElementById('category').value;
             const title = document.getElementById('title').value;
@@ -190,7 +186,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId,category, title, content })
+                    body: JSON.stringify({ userId: displayId, category, title, content })
                 });
 
                 if (response.ok) {
