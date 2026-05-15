@@ -83,6 +83,7 @@
     gap: 14px;
   }
 
+  /* 카드 레이아웃 수정 (3열 구조) */
   .product-card {
     width: 100%;
     padding: 16px;
@@ -91,7 +92,7 @@
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
 
     display: grid;
-    grid-template-columns: 82px 1fr;
+    grid-template-columns: 82px 1fr 62px;
     gap: 12px;
     align-items: center;
   }
@@ -122,6 +123,7 @@
     color: #16864f;
   }
 
+  /* 텍스트 줄바꿈 3줄로 통일 */
   .product-name {
     margin-bottom: 8px;
     color: #111 !important;
@@ -132,7 +134,7 @@
     word-break: keep-all;
 
     display: -webkit-box !important;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -150,23 +152,30 @@
     white-space: nowrap;
   }
 
+  /* 버튼 묶음 세로 배치 */
   .manage-btns {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
+  /* 개별 버튼 크기 축소 */
   .btn-manage {
-    height: 46px;
-    border-radius: 14px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 800;
+    width: 58px;
+    min-height: 38px;
+    border-radius: 12px;
+    border: none;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    cursor: pointer;
   }
 
   .btn-detail {
