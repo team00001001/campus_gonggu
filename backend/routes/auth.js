@@ -6,9 +6,9 @@ const axios = require('axios');
 
 const authCodes = {};
 
-// 국내 대학교 도메인(.ac.kr)만 허용
+// 고려대학교 도메인만 허용
 function isAllowedDomain(domain) {
-    return domain && domain.endsWith('.ac.kr');
+    return domain === 'korea.ac.kr';
 }
 
 // 🚀 1. 인증번호 전송 API
@@ -17,7 +17,7 @@ router.post('/send-auth-email', async (req, res) => {
 
     const emailDomain = email.split('@')[1];
     if (!isAllowedDomain(emailDomain)) {
-        return res.status(403).json({ message: '국내 대학교 이메일(.ac.kr)만 가입 가능합니다.' });
+        return res.status(403).json({ message: '고려대학교 이메일(korea.ac.kr)만 가입 가능합니다.' });
     }
     
     try {
@@ -166,7 +166,7 @@ router.post('/forgot-password', async (req, res) => {
 
     const forgotDomain = email.split('@')[1];
     if (!isAllowedDomain(forgotDomain)) {
-        return res.status(403).json({ message: '국내 대학교 이메일(.ac.kr)만 사용 가능합니다.' });
+        return res.status(403).json({ message: '고려대학교 이메일(korea.ac.kr)만 사용 가능합니다.' });
     }
 
     try {
