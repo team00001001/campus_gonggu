@@ -284,10 +284,10 @@
         // --- 권한별 UI 렌더링 ---
         function renderUserSpecificUI(product) {
             const actionArea = document.getElementById('action-button-area');
-            const isHost = String(product.user_id) === String(currentUserId);
+            const isHost = isLoggedIn && (String(product.user_id) === String(currentUserId));
             const myInfo = product.members.find(m => String(m.user_id) === String(currentUserId));
-            const isNoshow = !!myInfo && myInfo.status === 'noshow';
-            const isParticipant = !!myInfo && myInfo.status !== 'noshow';
+            const isNoshow = isLoggedIn && !!myInfo && myInfo.status === 'noshow';
+            const isParticipant = isLoggedIn && !!myInfo && myInfo.status !== 'noshow';
 
             const now = Math.floor(Date.now() / 1000);
             const isExpired = Number(product.duration) <= now;
