@@ -104,11 +104,7 @@
                 <div class="email-input-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
                     <input type="text" id="email-id" placeholder="이메일 아이디" required style="flex: 1;">
                     <span style="font-weight: 600; color: #555;">@</span>
-                    <select id="email-domain" style="padding: 11px 10px; border: 1.5px solid #E2E2E2; border-radius: 6px; font-size: 0.93rem; font-family: inherit; background: #FAFAFA; color: #111; cursor: pointer;">
-                        <option value="korea.ac.kr">korea.ac.kr</option>
-                        <option value="gmail.com">gmail.com</option>
-                        <option value="naver.com">naver.com</option>
-                    </select>
+                    <input type="text" id="email-domain" placeholder="korea.ac.kr" style="flex: 1.5; padding: 11px 10px; border: 1.5px solid #E2E2E2; border-radius: 6px; font-size: 0.93rem; font-family: inherit; background: #FAFAFA; color: #111;">
                 </div>
                 <button type="button" class="btn btn-secondary" id="btn-send-code" style="width: 100%;">인증번호 전송</button>
             </div>
@@ -217,7 +213,7 @@ KU GONGGU는 안전하고 신뢰할 수 있는 학우 간 공동구매 서비스
         }
 
         document.getElementById('email-id').addEventListener('input', resetVerification);
-        document.getElementById('email-domain').addEventListener('change', resetVerification);
+        document.getElementById('email-domain').addEventListener('input', resetVerification);
 
         // 2. 인증번호 전송 버튼 클릭 로직
         btnSendCode.addEventListener('click', async () => {
@@ -226,6 +222,11 @@ KU GONGGU는 안전하고 신뢰할 수 있는 학우 간 공동구매 서비스
 
             if (!emailId) {
                 alert('이메일 아이디를 입력해주세요.');
+                return;
+            }
+
+            if (!domain.endsWith('.ac.kr')) {
+                alert('국내 대학교 이메일(.ac.kr)만 가입 가능합니다.\n예) korea.ac.kr, seoul.ac.kr');
                 return;
             }
 

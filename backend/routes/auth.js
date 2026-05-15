@@ -6,17 +6,18 @@ const axios = require('axios');
 
 const authCodes = {};
 
-// ✅ 허용 도메인 목록
-const ALLOWED_DOMAINS = ['korea.ac.kr', 'gmail.com', 'naver.com'];
+// 국내 대학교 도메인(.ac.kr)만 허용
+function isAllowedDomain(domain) {
+    return domain && domain.endsWith('.ac.kr');
+}
 
 // 🚀 1. 인증번호 전송 API
 router.post('/send-auth-email', async (req, res) => {
     const { email } = req.body;
-    
-    // 💡 방어 코드: 허용된 도메인인지 검사
+
     const emailDomain = email.split('@')[1];
-    if (!ALLOWED_DOMAINS.includes(emailDomain)) {
-        return res.status(403).json({ message: '허용되지 않은 이메일 도메인입니다.' });
+    if (!isAllowedDomain(emailDomain)) {
+        return res.status(403).json({ message: '국내 대학교 이메일(.ac.kr)만 가입 가능합니다.' });
     }
     
     try {
@@ -84,9 +85,8 @@ router.post('/signup', async (req, res) => {
 
         const fullEmail = `${emailId}@${emailDomain}`;
 
-        // 💡 방어 코드: 허용된 도메인인지 검사
-        if (!ALLOWED_DOMAINS.includes(emailDomain)) {
-            return res.status(403).json({ message: '허용되지 않은 이메일 도메인입니다.' });
+        if (!isAllowedDomain(emailDomain)) {
+            return res.status(403).json({ message: '국내 대학교 이메일(.ac.kr)만 가입 가능합니다.' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -164,10 +164,9 @@ router.post('/login', async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
-    // 💡 방어 코드: 허용된 도메인인지 검사
     const forgotDomain = email.split('@')[1];
-    if (!ALLOWED_DOMAINS.includes(forgotDomain)) {
-        return res.status(403).json({ message: '허용되지 않은 이메일 도메인입니다.' });
+    if (!isAllowedDomain(forgotDomain)) {
+        return res.status(403).json({ message: '국내 대학교 이메일(.ac.kr)만 사용 가능합니다.' });
     }
 
     try {
